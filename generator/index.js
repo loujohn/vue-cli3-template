@@ -52,6 +52,7 @@ module.exports = (api, opts, rootOpts) => {
       postcss: {
         'plugins': {
           'autoprefixer': {}
+          //  移动端
           // 'postcss-px-to-viewport': {
           //   'viewportWidth': 750,
           //   'viewportHeight': 1334,
