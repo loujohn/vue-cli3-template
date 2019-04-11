@@ -21,7 +21,20 @@
 ````
 # 安装vue cli3
 > npm install -g @vue/cli
-> vue create --preset [git-repo-address] [project-name]--no-git
+# 从仓库加载
+> vue create --preset direct:http://192.168.11.158/liujunhong/vue-cli3-template.git [project-name] --clone
+# 从本地加载
+> git clone http://192.168.11.158/liujunhong/vue-cli3-template.git
+> vue create --preset ./vue-cli3-template [project-name] --no-git
+
+# 根据需要选择设置
+# ESLint config建议选择perttier
+# css预编译建议选择scss
+# vue router有后端支持选择histiory，没有选hash
+# 建议选择PWA
+# UI框架建议选择ivew，ivew示列模版没有写
+
+cd [project-name]
 
 # 运行开发版本
 npm run dev
