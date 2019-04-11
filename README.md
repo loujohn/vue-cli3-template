@@ -15,6 +15,7 @@
 + css预处理器全局变量（在*.vue文件中直接使用 var.scss定义的变量，增加共同mixin只需手动添加文件的路径）
 + eslint和prettier规范格式化代码
 + postcss集成(autoprefixer)
++ 集成了echart
 ### 快速开始
 ----
 
