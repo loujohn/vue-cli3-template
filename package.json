@@ -1,0 +1,11 @@
+{
+  "name": "template-vue-cli3-preset",
+  "version": "1.0.0",
+  "description": "vue cli3 项目预设模版",
+  "main": "preset.json",
+  "repository": {
+    "type": "git",
+  },
+  "author": "liujunhong",
+  "license": "MIT"
+}
