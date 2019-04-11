@@ -3,19 +3,17 @@
 **基于vue cli3的web项目模版**
 
 功能列表：
-+ 多页面多入口打包
-+ router/vuex
-+ css预处理器(less/sass/scss可选)
+ 多页面多入口打包
++ vue全家桶
++  elment ui/iview可选(新项目建议使用ivew，更新比较快，组件比较多)
++ css预处理器(less/sass/scss可选)，全局变量自动引入
++ postcss集成(autoprefixer)
++  eslint和prettier规范格式化代码
++  i18n实现国际化（多语言采用模块异步延迟加载方式，首先检测语言环境及用户上次使用的语言。在切换语言后，如果尚未加载的语言包将从服务器中加载，达到项目按需加载资源优化。）
 + mock server(easy mock)
 + PWA
-+ axios
-+ elment ui/iview可选(新项目建议使用ivew，更新比较快，组件比较多)
-+ nprogress
-+ i18n实现国际化（多语言采用模块异步延迟加载方式，首先检测语言环境及用户上次使用的语言。在切换语言后，如果尚未加载的语言包将从服务器中加载，达到项目按需加载资源优化。）
-+ css预处理器全局变量（在*.vue文件中直接使用 var.scss定义的变量，增加共同mixin只需手动添加文件的路径）
-+ eslint和prettier规范格式化代码
-+ postcss集成(autoprefixer)
-+ 集成了echart
++ 集成 axios ，nprogress ，echart，lodash等三方常用组件
+
 ### 快速开始
 ----
 

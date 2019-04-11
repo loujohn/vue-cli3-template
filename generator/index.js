@@ -17,7 +17,7 @@ module.exports = (api, opts, rootOpts) => {
   // 开发依赖包
   api.extendPackage({
     devDependencies: {
-      'serve': '^10.0.1',
+      'serve': '^11.0.0',
       'style-resources-loader': '1.2.1'
     }
   })
@@ -31,39 +31,38 @@ module.exports = (api, opts, rootOpts) => {
   api.extendPackage({
     dependencies: {
       'axios': '^0.18.0',
-      'babel-polyfill': '^6.22.0',
+      'babel-polyfill': '^6.26.0',
       'lodash': '^4.17.11',
-      'normalize.css': '^8.0.0',
+      'normalize.css': '^8.0.1',
       'nprogress': '^0.2.0',
-      'vue-i18n': '^8.1.0',
-      'countup': '^1.8.2',
+      'vue-i18n': '^8.10.0',
       "echarts": "^4.2.0-rc.1",
-      [opts['ui-framework']]: opts['ui-framework'] === 'element-ui' ? '^2.4.7' : '^3.1.1'
+      [opts['ui-framework']]: opts['ui-framework'] === 'element-ui' ? '^2.7.2' : '^3.3.3'
     }
   })
 
     // 添加 postcss 插件
     api.extendPackage({
       devDependencies: {
-        'postcss-px-to-viewport': '0.0.3'
+        'postcss-px-to-viewport': '1.1.0'
       }
     })
   
     api.extendPackage({
       postcss: {
         'plugins': {
-          'autoprefixer': {},
-          'postcss-px-to-viewport': {
-            'viewportWidth': 750,
-            'viewportHeight': 1334,
-            'unitPrecision': 3,
-            'viewportUnit': 'vw',
-            'selectorBlackList': [
-              'ignore'
-            ],
-            'minPixelValue': 1,
-            'mediaQuery': false
-          }
+          'autoprefixer': {}
+          // 'postcss-px-to-viewport': {
+          //   'viewportWidth': 750,
+          //   'viewportHeight': 1334,
+          //   'unitPrecision': 3,
+          //   'viewportUnit': 'vw',
+          //   'selectorBlackList': [
+          //     'ignore'
+          //   ],
+          //   'minPixelValue': 1,
+          //   'mediaQuery': false
+          // }
         }
       }
     })
@@ -72,8 +71,8 @@ module.exports = (api, opts, rootOpts) => {
   if (opts['cssPreprocessor'] === 'less') {
     api.extendPackage({
       devDependencies: {
-        "less": "^2.7.2",
-        "less-loader": "^3.0.0"
+        "less": "^3.9.0",
+        "less-loader": "^4.1.0"
       }
     })
   }
@@ -82,7 +81,7 @@ module.exports = (api, opts, rootOpts) => {
   if (opts['cssPreprocessor'] === 'sass' || opts['cssPreprocessor'] === 'scss') {
     api.extendPackage({
       devDependencies: {
-        "node-sass": "^4.9.3",
+        "node-sass": "^4.11.0",
         "sass-loader": "^7.1.0"
       }
     })
@@ -146,11 +145,11 @@ module.exports = (api, opts, rootOpts) => {
   if (opts.pwa) {
     api.extendPackage({
       dependencies: {
-        "register-service-worker": "^1.0.0",
+        "register-service-worker": "^1.6.2",
         "sass-loader": "^7.1.0"
       },
       devDependencies: {
-        "@vue/cli-plugin-pwa": "^3.0.3"
+        "@vue/cli-plugin-pwa": "^3.5.1"
       }
     })
   }
