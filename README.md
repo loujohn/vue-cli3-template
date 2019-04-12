@@ -136,6 +136,7 @@ npm run lint
 │   │   │   └── index.js
 │   │   ├── mutation-type.js           #store常量
 │   │   └── plugins.js                 #store日志插件
+│   └── mixins                         #混入
 │   └── utils                          #工具函数
 │       ├── directives.js               
 │       ├── filters.js
