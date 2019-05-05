@@ -5,7 +5,7 @@
 功能列表：
  多页面多入口打包
 + vue全家桶
-+  elment ui/iview可选(新项目建议使用ivew，更新比较快，组件比较多)
++  elment ui/iview可选
 + css预处理器(less/sass/scss可选)，全局变量自动引入
 + postcss集成(autoprefixer)
 +  eslint和prettier规范格式化代码
@@ -196,3 +196,4 @@ npm run lint
 - [x] elemnet/iview可选
 - [x] eslint配置
 - [x] babel配置
+- [ ] TS支持
