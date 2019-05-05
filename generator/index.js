@@ -37,7 +37,7 @@ module.exports = (api, opts, rootOpts) => {
       'nprogress': '^0.2.0',
       'vue-i18n': '^8.10.0',
       "echarts": "^4.2.0-rc.1",
-      [opts['ui-framework']]: opts['ui-framework'] === 'element-ui' ? '^2.7.2' : '^3.3.3'
+      [opts['ui-framework']]: opts['ui-framework'] === 'element-ui' ? '^2.8.2' : '^3.3.3'
     }
   })
 
