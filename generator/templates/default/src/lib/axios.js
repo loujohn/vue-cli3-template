@@ -117,7 +117,7 @@ api.interceptors.response.use(
     //       return Promise.resolve(response.data.data)
     //     }
     //   }
-    return Promise.resolve(response.data.data);
+    return Promise.resolve(response.data);
   },
   error => {
     if (error.response.status == 401) {

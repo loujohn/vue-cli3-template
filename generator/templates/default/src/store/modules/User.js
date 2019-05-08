@@ -7,7 +7,7 @@ const actions = {
   userSignIn({ commit }, user) {
     return api.common.login(user)
       .then(data => {
-        commit(types.USER_SIGN_IN, data);
+        commit(types.USER_SIGN_IN, data.data);
       });
   },
   userSignOut({ commit }) {
