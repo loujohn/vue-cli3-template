@@ -1,7 +1,7 @@
 const fs = require('fs')
 
 module.exports = (api, opts, rootOpts) => {
-  
+
   // 添加 npm 命令
   api.extendPackage({
     scripts: {
@@ -18,7 +18,7 @@ module.exports = (api, opts, rootOpts) => {
   api.extendPackage({
     devDependencies: {
       'serve': '^11.0.0',
-      'style-resources-loader': '1.2.1'
+      'style-resources-loader': '1.2.1',
     }
   })
 
@@ -40,33 +40,38 @@ module.exports = (api, opts, rootOpts) => {
       [opts['ui-framework']]: opts['ui-framework'] === 'element-ui' ? '^2.8.2' : '^3.3.3'
     }
   })
+  // add svg
+  api.extendPackage({
+    devDependencies: {
+      "svg-sprite-loader": "^4.1.6",
+    }
+  })
+  // 添加 postcss 插件
+  api.extendPackage({
+    devDependencies: {
+      'postcss-px-to-viewport': '1.1.0'
+    }
+  })
 
-    // 添加 postcss 插件
-    api.extendPackage({
-      devDependencies: {
-        'postcss-px-to-viewport': '1.1.0'
+  api.extendPackage({
+    postcss: {
+      'plugins': {
+        'autoprefixer': {}
+        //  移动端
+        // 'postcss-px-to-viewport': {
+        //   'viewportWidth': 750,
+        //   'viewportHeight': 1334,
+        //   'unitPrecision': 3,
+        //   'viewportUnit': 'vw',
+        //   'selectorBlackList': [
+        //     'ignore'
+        //   ],
+        //   'minPixelValue': 1,
+        //   'mediaQuery': false
+        // }
       }
-    })
-  
-    api.extendPackage({
-      postcss: {
-        'plugins': {
-          'autoprefixer': {}
-          //  移动端
-          // 'postcss-px-to-viewport': {
-          //   'viewportWidth': 750,
-          //   'viewportHeight': 1334,
-          //   'unitPrecision': 3,
-          //   'viewportUnit': 'vw',
-          //   'selectorBlackList': [
-          //     'ignore'
-          //   ],
-          //   'minPixelValue': 1,
-          //   'mediaQuery': false
-          // }
-        }
-      }
-    })
+    }
+  })
 
   // # less
   if (opts['cssPreprocessor'] === 'less') {
@@ -114,8 +119,8 @@ module.exports = (api, opts, rootOpts) => {
   // 删除多余的模板
   api.render(files => {
     Object.keys(files)
-          .filter(path => path.startsWith('src/') || path.startsWith('public/'))
-          .forEach(path => delete files[path])
+      .filter(path => path.startsWith('src/') || path.startsWith('public/'))
+      .forEach(path => delete files[path])
   })
 
 
@@ -124,10 +129,10 @@ module.exports = (api, opts, rootOpts) => {
   // if (opts.Typescript) {
   //   api.render("./templates/ts")
   // } else 
-  if(opts.SSR === 'nuxt') {
+  if (opts.SSR === 'nuxt') {
     api.render("./templates/nuxt")
-  // } else if (opts.SSR === 'egg') {
-  //   api.render("./templates/egg")
+    // } else if (opts.SSR === 'egg') {
+    //   api.render("./templates/egg")
   } else {
     api.render("./templates/default")
   }
@@ -157,15 +162,15 @@ module.exports = (api, opts, rootOpts) => {
 
   api.render(files => {
     Object.keys(files)
-            .filter(path => path.includes(`/${(opts.cssPreprocessor === 'sass' || opts.cssPreprocessor === 'scss') ? 'less' : 'sass' }/`))
-            .forEach(path => delete files[path])
-    
+      .filter(path => path.includes(`/${(opts.cssPreprocessor === 'sass' || opts.cssPreprocessor === 'scss') ? 'less' : 'sass'}/`))
+      .forEach(path => delete files[path])
+
     if (!opts.pwa) {
       Object.keys(files)
-            .filter(path => {
-                return pwaFiles.find(file => path.includes(file))
-            })
-            .forEach(path => delete files[path])
+        .filter(path => {
+          return pwaFiles.find(file => path.includes(file))
+        })
+        .forEach(path => delete files[path])
     }
   })
 }
