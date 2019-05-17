@@ -22,7 +22,7 @@ function getPagesConfig(entry) {
         // 浏览器中直接访问/news,省去/news.html
         fileName: `${pageName === 'index' ? '' : pageName + '/'}index.html`,
         template: path.dirname(filePath) + '/index.html',
-        chunks: ['vue-common', '<%= options['ui - framework'] %>', 'echarts', 'vendors', 'manifest', pageName]
+        chunks: ['vue-common', '<%= options['ui-framework'] %>', 'echarts', 'vendors', 'manifest', pageName]
       }
     })
   return pages
@@ -80,8 +80,8 @@ module.exports = {
             chunks: 'initial',
             priority: 10
           },
-          '<%= options['ui - framework'] %>': {
-            name: '<%= options['ui- framework'] %>',
+          '<%= options['ui-framework'] %>': {
+            name: '<%= options['ui-framework'] %>',
           test: module => /<%= options['ui-framework'] %>/g.test(module.context),
           chunks: 'initial',
           priority: 10
