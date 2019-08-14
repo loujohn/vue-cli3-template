@@ -8,6 +8,7 @@ module.exports = {
       .set('assets', 'src/assets/')
       .set('components', 'src/components/')
       .set('views', 'src/views')
-      .set('api', 'src/api');
+      .set('api', 'src/api')
+      .set('utils', 'src/utils/');
   },
 };
