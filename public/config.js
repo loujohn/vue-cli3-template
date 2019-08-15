@@ -1,4 +1,4 @@
 window.config = {
-  title: '地理调查笔记',
+  title: '地理空间调查笔记',
   baseUrl: '',
 };

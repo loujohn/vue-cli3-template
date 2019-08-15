@@ -1,9 +1,17 @@
 <template>
-  <div class="head"></div>
+  <div class="head">
+    <span class="title">{{ title }}</span>
+  </div>
 </template>
 <script>
+import { title } from 'config';
 export default {
   name: 'v-header',
+  data() {
+    return {
+      title,
+    };
+  },
 };
 </script>
 <style lang="scss">
@@ -11,5 +19,13 @@ export default {
   height: 70px;
   padding: 0 40px;
   background-color: $header-bg-color;
+  .title {
+    display: inline-block;
+    height: $head-height;
+    line-height: $head-height;
+    color: $base-color;
+    font-size: $font-xl;
+    font-weight: bold;
+  }
 }
 </style>
