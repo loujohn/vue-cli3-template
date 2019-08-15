@@ -23,18 +23,25 @@ export default {
   height: 70px;
   padding: 0 40px;
   background-color: $header-bg-color;
-  .title {
+  display: flex;
+  justify-content: space-between;
+  .title,
+  .user {
     display: inline-block;
     height: $head-height;
     line-height: $head-height;
+  }
+  .title {
     color: $base-color;
     font-size: $font-xl;
     font-weight: bold;
   }
   .user {
-    display: inline-block;
     color: $user-color;
     font-size: $font-sm;
+    span {
+      padding-left: 5px;
+    }
   }
 }
 </style>

@@ -24,7 +24,7 @@ module.exports = {
     svgRule
       .test(/\.svg$/)
       .use('svg-sprite-loader')
-      .loader('svg-sprite-load')
+      .loader('svg-sprite-loader')
       .options({
         symbolId: 'icon-[name]',
       });
