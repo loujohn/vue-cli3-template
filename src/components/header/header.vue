@@ -1,6 +1,10 @@
 <template>
   <div class="head">
     <span class="title">{{ title }}</span>
+    <div class="user">
+      <svg-icon iconClass="user"></svg-icon>
+      <span>李明</span>
+    </div>
   </div>
 </template>
 <script>
@@ -26,6 +30,11 @@ export default {
     color: $base-color;
     font-size: $font-xl;
     font-weight: bold;
+  }
+  .user {
+    display: inline-block;
+    color: $user-color;
+    font-size: $font-sm;
   }
 }
 </style>

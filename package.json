@@ -33,6 +33,7 @@
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0",
     "style-resources-loader": "^1.2.1",
+    "svg-sprite-loader": "^4.1.6",
     "vue-template-compiler": "^2.6.10"
   }
 }
