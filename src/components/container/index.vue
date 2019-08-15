@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <v-header />
+    <router-view class="view"></router-view>
   </div>
 </template>
 <script>
@@ -12,4 +13,13 @@ export default {
   },
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.container {
+  height: 100%;
+  .view {
+    height: calc(100% - 70px);
+    overflow: auto;
+    background-color: $bg-color;
+  }
+}
+</style>
