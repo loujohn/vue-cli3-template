@@ -1,6 +1,8 @@
 <template>
   <div class="custom-card">
-    <div class="data"></div>
+    <div class="data">
+      <p>{{ data.name || 'Title' }}</p>
+    </div>
     <div class="icon"></div>
   </div>
 </template>
@@ -14,4 +16,8 @@ export default {
   },
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.custom-card {
+  display: flex;
+}
+</style>
