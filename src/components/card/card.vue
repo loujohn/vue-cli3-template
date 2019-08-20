@@ -40,12 +40,20 @@ export default {
         已开展任务数: '已开展任务',
         总完成进度: '完成',
         即将到期任务数: '到期',
+        总图斑数: '图斑',
+        已完成: '完成',
+        待审核: '审核',
+        调查中: '调查中',
       },
       colorMap: {
         总任务数: '#0e67f2',
         已开展任务数: '#fcb852',
         总完成进度: '#00ca89',
         即将到期任务数: '#ff5757',
+        总图斑数: '#0e67f2',
+        已完成: '#00ca89',
+        待审核: '#fcb852',
+        调查中: '#ff5757',
       },
     };
   },
@@ -60,6 +68,7 @@ export default {
   box-shadow: 0 0 1px $shadow-color;
   background-color: $base-color;
   border-radius: 3px;
+  box-sizing: border-box;
   .data {
     p {
       margin: 0;

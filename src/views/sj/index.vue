@@ -10,4 +10,12 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.sj-container {
+  .cards {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 30px;
+  }
+}
+</style>

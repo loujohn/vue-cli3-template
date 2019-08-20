@@ -23,13 +23,13 @@ export default new Router({
             },
             {
               path: 'task',
-              name: 'task',
+              name: 'sj-task',
               component: () => import('views/sj/task'),
               props: route => ({ ...route.query }),
             },
             {
               path: 'detail',
-              name: 'detail',
+              name: 'sj-detail',
               component: () => import('views/sj/detail'),
               props: route => ({ ...route.query }),
             },
