@@ -18,8 +18,16 @@
         <el-table-column label="备注" prop="bz"></el-table-column>
         <el-table-column label="调查人员" prop="dcry"></el-table-column>
         <el-table-column label="调查事件" prop="dcsj"></el-table-column>
-        <el-table-column label="调查状态" prop="dczt"></el-table-column>
-        <el-table-column label="审核状态" prop="shzt"></el-table-column>
+        <el-table-column label="调查状态">
+          <template>
+            <span>区县已审核</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核状态">
+          <template>
+            <el-button type="text" size="mini">审核</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination
