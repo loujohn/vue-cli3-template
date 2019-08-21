@@ -1,8 +1,10 @@
-import url from '../config';
+// import url from '../config';
 import http from 'utils/http';
+import { baseMapUrl } from 'config';
 const common = {
-  test: params => {
-    return http.get(url.test, { params });
+  async getMapConfig() {
+    let res = await http.get(baseMapUrl);
+    return res.data;
   },
 };
 

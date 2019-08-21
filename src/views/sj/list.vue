@@ -10,7 +10,12 @@
     </div>
     <div class="list">
       <div class="operation">
-        <el-button type="primary" size="small" icon="el-icon-plus">
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-plus"
+          @click="$router.push({ name: 'sj-task' })"
+        >
           新增任务
         </el-button>
       </div>
