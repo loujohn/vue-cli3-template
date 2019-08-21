@@ -63,9 +63,35 @@
             </el-col>
           </el-row>
         </div>
-        <div class="review"></div>
-        <div class="people"></div>
-        <div class="action"></div>
+        <div class="suggestion">
+          <el-row>
+            <el-col :span="4">
+              <span class="label">审核意见:</span>
+            </el-col>
+            <el-col :span="18">
+              <el-input type="textarea" :rows="4"></el-input>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="people">
+          <span>调查人员: 侯良月</span>
+          <span>调查日期: 2019-07-15</span>
+          <span>图斑状态: 已审核</span>
+        </div>
+        <div class="action">
+          <div class="toggle">
+            <span>上一条</span>
+            <span>下一条</span>
+          </div>
+          <div class="operation">
+            <span>审核:</span>
+            <el-radio-group class="radio-group" v-model="form.isPass">
+              <el-radio :label="1">通过</el-radio>
+              <el-radio :label="0">不通过</el-radio>
+            </el-radio-group>
+            <el-button size="mini">提交</el-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -84,6 +110,10 @@ export default {
       imgTest,
       tabs: [{ name: '文字' }, { name: '照片' }, { name: '视频' }],
       activeTabIndex: 0,
+      form: {
+        suggestion: '',
+        isPass: 1,
+      },
     };
   },
   methods: {
@@ -174,17 +204,46 @@ export default {
         text-align: left;
       }
     }
-    .review {
+    .suggestion {
+      padding: 30px 20px;
       height: 170px;
       box-sizing: border-box;
+      .el-textarea__inner {
+        background-color: #f8f8f8;
+      }
     }
     .people {
       height: 50px;
+      padding: 0 20px;
       background-color: #e8f2f2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .action {
       height: 80px;
       background-color: #0e67f2;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: $base-color;
+      .toggle {
+        span {
+          cursor: pointer;
+        }
+        span:first-child {
+          padding-right: 20px;
+        }
+      }
+      .operation {
+        .radio-group {
+          padding: 0 15px;
+          .el-radio {
+            color: #fff;
+          }
+        }
+      }
     }
   }
 }

@@ -38,6 +38,19 @@ export default new Router({
         {
           path: 'qx',
           component: () => import('views/qx/index'),
+          redirect: 'qx/list',
+          children: [
+            {
+              path: 'list',
+              component: () => import('views/qx/list'),
+            },
+            {
+              path: 'detail',
+              name: 'qx-detail',
+              component: () => import('views/qx/detail'),
+              props: route => ({ ...route.query }),
+            },
+          ],
         },
       ],
     },

@@ -29,9 +29,9 @@
             <v-progress :percent="scope.row.percent" />
           </template>
         </el-table-column>
+        <el-table-column label="截止日期" prop="endTime"></el-table-column>
         <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
-            <el-button type="text" size="mini">追加</el-button>
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
               >详情</el-button
             >
@@ -75,6 +75,7 @@ export default {
           totalCount: 100,
           finishCount: 20,
           percent: 20,
+          endTime: '2019-05-06 12:00',
         },
         {
           id: 1,
@@ -83,6 +84,7 @@ export default {
           totalCount: 390,
           finishCount: 70,
           percent: 50,
+          endTime: '2019-05-06 12:00',
         },
         {
           id: 2,
@@ -91,6 +93,7 @@ export default {
           totalCount: 300,
           finishCount: 50,
           percent: 70,
+          endTime: '2019-05-06 12:00',
         },
         {
           id: 3,
@@ -99,13 +102,14 @@ export default {
           totalCount: 150,
           finishCount: 50,
           percent: 100,
+          endTime: '2019-05-06 12:00',
         },
       ],
     };
   },
   methods: {
     toDetail(id) {
-      this.$router.push({ name: 'sj-detail', query: { id } });
+      this.$router.push({ name: 'qx-detail', query: { id } });
     },
   },
 };
