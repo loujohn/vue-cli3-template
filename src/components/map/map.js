@@ -46,6 +46,12 @@ export default {
         },
       };
       this.map = new this.D2c.Map(options);
+      this.map.on('load', () => {
+        const control = new this.D2c.NavigationControl({
+          showCompass: false,
+        });
+        this.map.addControl(control, 'bottom-left');
+      });
     },
   },
   render(h) {

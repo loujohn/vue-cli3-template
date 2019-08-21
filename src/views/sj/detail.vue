@@ -43,33 +43,21 @@
       :visible="showDialog"
       :show-close="false"
       custom-class="my-dialog"
+      width="60%"
     >
-      <div class="content">
-        <div class="left">
-          <div class="map-container">
-            <v-map v-if="showDialog" />
-            <span class="title">空间查看</span>
-          </div>
-          <div class="img-container">
-            <img :src="imgTest" alt="test" />
-            <span class="title">影像截图</span>
-          </div>
-        </div>
-        <div class="right"></div>
-      </div>
+      <sj-review @close="close" />
     </el-dialog>
   </div>
 </template>
 
 <script>
 import customerCard from 'components/card/card';
-import vMap from 'components/map/map';
-import imgTest from 'assets/images/sj/test.png';
+import sjReview from 'components/review/review';
 export default {
   name: 'detail',
   components: {
     customerCard,
-    vMap,
+    sjReview,
   },
   props: {
     id: {
@@ -79,7 +67,6 @@ export default {
   data() {
     return {
       showDialog: false,
-      imgTest,
       data: [
         { name: '总图斑数', num: 300 },
         { name: '已完成', num: 200 },
@@ -104,6 +91,9 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
+    },
+    close() {
+      this.showDialog = false;
     },
   },
 };
@@ -134,36 +124,6 @@ export default {
     }
     .el-dialog__body {
       padding: 0;
-    }
-    .content {
-      display: flex;
-      .left,
-      .right {
-        width: 50%;
-        flex-shrink: 0;
-      }
-      .map-container,
-      .img-container {
-        height: 250px;
-        position: relative;
-        .title {
-          font-size: $font-xs;
-          display: block;
-          background-color: rgba(255, 255, 255, 0.8);
-          padding: 5px 8px;
-          position: absolute;
-          top: 0;
-          left: 0;
-        }
-      }
-      .img-container {
-        border-top: 1px solid $base-color;
-        box-sizing: border-box;
-        img {
-          height: 100%;
-          width: 100%;
-        }
-      }
     }
   }
 }
