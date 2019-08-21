@@ -50,6 +50,17 @@ export default new Router({
               component: () => import('views/qx/detail'),
               props: route => ({ ...route.query }),
             },
+            {
+              path: 'taskAllocation',
+              name: 'task-allocation',
+              component: () => import('views/qx/task-allocation'),
+              props: route => ({ ...route.query }),
+            },
+            {
+              path: 'investigatorManage',
+              name: 'investigator-manage',
+              component: () => import('views/qx/investigator-manage'),
+            },
           ],
         },
       ],

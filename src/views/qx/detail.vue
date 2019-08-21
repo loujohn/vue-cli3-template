@@ -46,19 +46,19 @@
       custom-class="my-dialog"
       width="60%"
     >
-      <sj-review @close="close" />
+      <v-review @close="close" />
     </el-dialog>
   </div>
 </template>
 
 <script>
 import customerCard from 'components/card/card';
-import sjReview from 'components/review/review';
+import vReview from 'components/review/review';
 export default {
   name: 'detail',
   components: {
     customerCard,
-    sjReview,
+    vReview,
   },
   props: {
     id: {
