@@ -10,7 +10,7 @@ export default new Router({
     {
       path: '/',
       component: layout,
-      redirect: '/sj',
+      redirect: '/login',
       children: [
         {
           path: 'sj',
@@ -64,6 +64,10 @@ export default new Router({
           ],
         },
       ],
+    },
+    {
+      path: '/login',
+      component: () => import('views/user/login'),
     },
   ],
 });

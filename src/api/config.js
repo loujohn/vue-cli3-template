@@ -1,6 +1,7 @@
 import { baseUrl } from 'config';
 const url = {
-  test: baseUrl + '/user',
+  // user
+  login: baseUrl + 'auth/login.do',
 };
 
 export default url;
