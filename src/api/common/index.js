@@ -1,10 +1,11 @@
+import axios from 'axios';
 import http from 'utils/http';
 import { baseMapUrl } from 'config';
 import url from '../config';
 
 const common = {
   async getMapConfig() {
-    const res = await http.get(baseMapUrl);
+    const res = await axios.create().get(baseMapUrl);
     return res.data;
   },
   async login(params) {
