@@ -1,3 +1,3 @@
 import common from './common';
-
-export { common };
+import task from './task';
+export { common, task };

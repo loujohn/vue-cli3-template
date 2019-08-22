@@ -32,4 +32,7 @@ export default new Vuex.Store({
       });
     },
   },
+  getters: {
+    xzqh: state => state.userInfo.xzqh,
+  },
 });

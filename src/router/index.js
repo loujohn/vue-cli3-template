@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-
 import layout from 'components/container';
+import store from '../store';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -71,3 +71,12 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach(({ path }, from, next) => {
+  const isLogin = Boolean(store.state.token);
+  if (!isLogin && path !== '/login') return next({ path: '/login' });
+  if (isLogin && path === '/login') return next({ path: '/' });
+  next();
+});
+
+export default router;
