@@ -13,3 +13,13 @@ $font-md: 16px;
 $font-lg: 18px;
 $font-xl: 24px;
 $font-xx: 32px;
+
+.customer-table-header,
+.customer-table-header th {
+  background-color: #f1f1f1;
+  color: #000;
+}
+.pagination {
+  padding: 30px 10px;
+  text-align: right;
+}

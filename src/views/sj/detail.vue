@@ -108,15 +108,6 @@ export default {
       padding: 13px 20px;
       background-color: $base-color;
     }
-    .customer-table-header,
-    .customer-table-header th {
-      background-color: #f1f1f1;
-      color: #000;
-    }
-    .pagination {
-      padding: 30px 10px;
-      text-align: right;
-    }
   }
   .my-dialog {
     .el-dialog__header {

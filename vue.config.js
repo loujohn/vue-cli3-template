@@ -7,7 +7,7 @@ function addStyleResource(rule) {
     .use('style-resource')
     .loader('style-resources-loader')
     .options({
-      patterns: [resolve('./src/assets/style/variable.scss')],
+      patterns: [resolve('./src/assets/style/common.scss')],
     });
 }
 
