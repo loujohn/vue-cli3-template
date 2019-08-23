@@ -1,5 +1,12 @@
 <template>
   <div class="sj-task">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item>市级</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'sj-list' }"
+        >任务列表</el-breadcrumb-item
+      >
+      <el-breadcrumb-item>新增任务</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="panel">
       <div class="form-container">
         <p class="title">数据导入</p>
@@ -90,6 +97,7 @@ export default {
 <style lang="scss">
 .sj-task {
   padding: 30px 40px;
+  padding-top: 0;
   .panel {
     display: flex;
     background-color: #fff;

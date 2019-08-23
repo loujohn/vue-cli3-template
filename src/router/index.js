@@ -19,6 +19,7 @@ const router = new Router({
           children: [
             {
               path: 'list',
+              name: 'sj-list',
               component: () => import('views/sj/list'),
             },
             {
@@ -42,6 +43,7 @@ const router = new Router({
           children: [
             {
               path: 'list',
+              name: 'qx-list',
               component: () => import('views/qx/list'),
             },
             {

@@ -12,6 +12,9 @@ export default {
 
 <style lang="scss">
 .sj-container {
+  .el-breadcrumb {
+    padding: 10px 0;
+  }
   .cards {
     display: flex;
     justify-content: space-between;

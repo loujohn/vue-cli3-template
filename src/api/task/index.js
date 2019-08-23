@@ -23,4 +23,20 @@ export default {
     const res = await http.get(url.taskDynamicField, { params });
     return res.data;
   },
+
+  /**
+   * params { id }
+   */
+  async getTaskDetail(params) {
+    const res = await http.get(url.taskDetail, { params });
+    return res.data;
+  },
+
+  /**
+   * params { taskReocrdId, suggestion, status }
+   */
+  async taskCheck(params) {
+    const res = await http.get(url.taskCheck, { params });
+    return res;
+  },
 };

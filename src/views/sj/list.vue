@@ -1,5 +1,9 @@
 <template>
   <div class="progress-list">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item>市级</el-breadcrumb-item>
+      <el-breadcrumb-item>任务列表</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="cards">
       <customer-card
         width="24%"
@@ -107,6 +111,7 @@ export default {
 <style lang="scss">
 .progress-list {
   padding: 30px 40px;
+  padding-top: 0;
   .list {
     background-color: $base-color;
     .operation {

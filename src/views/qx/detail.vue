@@ -1,5 +1,12 @@
 <template>
   <div class="qx-detail">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item>区县</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'qx-list' }"
+        >任务列表</el-breadcrumb-item
+      >
+      <el-breadcrumb-item>任务详情</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="cards">
       <customer-card
         v-for="(item, index) in data"
@@ -104,6 +111,7 @@ export default {
 <style lang="scss">
 .qx-detail {
   padding: 30px 40px;
+  padding-top: 0;
   .list {
     background-color: $base-color;
     .operation {

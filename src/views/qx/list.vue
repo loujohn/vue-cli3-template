@@ -1,5 +1,9 @@
 <template>
   <div class="progress-list">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item>区县</el-breadcrumb-item>
+      <el-breadcrumb-item>任务列表</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="cards">
       <customer-card
         width="24%"
@@ -9,7 +13,7 @@
       />
     </div>
     <div class="list">
-      <div class="operation">
+      <!-- <div class="operation">
         <el-button
           type="primary"
           size="small"
@@ -18,7 +22,7 @@
         >
           新增任务
         </el-button>
-      </div>
+      </div> -->
       <el-table :data="tableData" header-row-class-name="customer-table-header">
         <el-table-column type="index"></el-table-column>
         <el-table-column label="任务名称" prop="name"></el-table-column>
@@ -117,6 +121,7 @@ export default {
 <style lang="scss">
 .progress-list {
   padding: 30px 40px;
+  padding-top: 0;
   .list {
     background-color: $base-color;
     .operation {

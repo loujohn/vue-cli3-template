@@ -11,6 +11,9 @@ export default {
 </script>
 <style lang="scss">
 .qx-container {
+  .el-breadcrumb {
+    padding: 10px 0;
+  }
   .cards {
     display: flex;
     justify-content: space-between;

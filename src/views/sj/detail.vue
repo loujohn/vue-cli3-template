@@ -1,5 +1,12 @@
 <template>
   <div class="sj-detail">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item>市级</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'sj-list' }"
+        >任务列表</el-breadcrumb-item
+      >
+      <el-breadcrumb-item>任务详情</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="cards">
       <customer-card
         v-for="(item, index) in data"
@@ -25,8 +32,13 @@
           </template>
         </el-table-column>
         <el-table-column label="审核状态">
-          <template>
-            <el-button type="text" size="mini" @click="open()">审核</el-button>
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="mini"
+              @click="getTaskDetail(scope.row.id)"
+              >审核</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -111,6 +123,10 @@ export default {
       this.list = dataList;
       this.totalCount = totalCount;
     },
+    async getTaskDetail(id) {
+      const data = await task.getTaskDetail({ id });
+      console.log(data);
+    },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
       this.getTaskRecordList();
@@ -122,6 +138,7 @@ export default {
 <style lang="scss">
 .sj-detail {
   padding: 30px 40px;
+  padding-top: 0;
   .list {
     background-color: $base-color;
     .operation {
