@@ -15,6 +15,12 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   response => {
     const { data } = response;
+    const { meta } = data;
+    if (meta && meta.code.toString() === '401') {
+      sessionStorage.clear();
+      window.location.reload();
+      return;
+    }
     return Promise.resolve(data);
   },
   error => {
