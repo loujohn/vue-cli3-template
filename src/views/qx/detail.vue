@@ -16,7 +16,30 @@
       />
     </div>
     <div class="list">
-      <div class="operation"></div>
+      <div class="filter">
+        <el-row :gutter="30">
+          <el-col :span="4">
+            <span class="label">调查人员:</span>
+            <el-select v-model="form.dcry" :size="size"></el-select>
+          </el-col>
+          <el-col :span="4">
+            <span class="label">图斑编号:</span>
+            <el-select v-model="form.tbbh" :size="size"></el-select>
+          </el-col>
+          <el-col :span="4">
+            <span class="label">调查时间:</span>
+            <el-select v-model="form.dcsj" :size="size"></el-select>
+          </el-col>
+          <el-col :span="4">
+            <span class="label">审核结果:</span>
+            <el-select v-model="form.shjg" :size="size"></el-select>
+          </el-col>
+          <el-col :span="4">
+            <span class="label">到期时间:</span>
+            <el-select v-model="form.dqsj" :size="size"></el-select>
+          </el-col>
+        </el-row>
+      </div>
       <el-table header-row-class-name="customer-table-header" :data="tableData">
         <el-table-column label="图斑编号" prop="tbbh"></el-table-column>
         <el-table-column label="图斑名称" prop="tbmc"></el-table-column>
@@ -81,20 +104,14 @@ export default {
         { name: '待审核', num: 50 },
         { name: '调查中', num: 50 },
       ],
-      tableData: [
-        {
-          tbbh: '010071',
-          tbmc: '洛阳村',
-          tblx: '300',
-          msxx: '200',
-          endTime: '2019-07-19 12:30',
-          bz: '已经废弃',
-          dcry: '侯良月',
-          dcsj: '2019-05-06 12:56',
-          dczt: 0,
-          shzt: 0,
-        },
-      ],
+      form: {
+        dcry: '',
+        tbbh: '',
+        dcsj: '',
+        scjg: '',
+        dqsj: '',
+      },
+      size: 'small',
     };
   },
   methods: {
@@ -114,9 +131,19 @@ export default {
   padding-top: 0;
   .list {
     background-color: $base-color;
-    .operation {
-      padding: 13px 20px;
-      background-color: $base-color;
+    .filter {
+      padding: 15px 20px;
+      .label {
+        width: 60px;
+        font-size: $font-sm;
+        padding-right: 8px;
+      }
+      .el-select {
+        width: calc(100% - 68px);
+        .el-input__inner {
+          background-color: #f8f8f8;
+        }
+      }
     }
   }
   .my-dialog {
