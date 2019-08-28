@@ -46,9 +46,9 @@
           </el-row>
         </div>
         <div class="people">
-          <span>调查人员: 侯良月</span>
-          <span>调查日期: 2019-07-15</span>
-          <span>图斑状态: 已审核</span>
+          <span>调查人员: {{ data.surveyUserId }}</span>
+          <span>调查日期: {{ data.surveyTime }}</span>
+          <span>图斑状态: {{ data.surveyStatus ? '已审核' : '未审核' }}</span>
         </div>
         <div class="action">
           <div class="toggle">
