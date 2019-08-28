@@ -60,6 +60,7 @@ export default {
         center,
         bearing,
         pitch,
+        attributionControl: false,
         style: {
           version,
           glyphs,
