@@ -61,11 +61,11 @@
           </div>
           <div class="operation">
             <span>审核:</span>
-            <el-radio-group class="radio-group" v-model="form.isPass">
+            <el-radio-group class="radio-group" v-model="form.status">
               <el-radio :label="1">通过</el-radio>
               <el-radio :label="0">不通过</el-radio>
             </el-radio-group>
-            <el-button size="mini">提交</el-button>
+            <el-button size="mini" @click="check()">提交</el-button>
           </div>
         </div>
       </div>
@@ -78,6 +78,7 @@
 import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import imgTest from 'assets/images/sj/test.png';
+import { task } from 'api';
 export default {
   name: 'sj-inpect',
   components: {
@@ -96,7 +97,7 @@ export default {
       activeTabIndex: 0,
       form: {
         suggestion: '',
-        isPass: 1,
+        status: 1,
       },
       fieldList: [],
       imagesList: [],
@@ -137,6 +138,20 @@ export default {
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
+    },
+    check() {
+      const params = {
+        ...this.form,
+        taskRecordId: this.$route.query.id,
+      };
+      task.taskCheck(params).then(res => {
+        if (res.code.toString() === '200' && res.message === 'ok') {
+          this.$message({
+            type: 'success',
+            message: '提交成功',
+          });
+        }
+      });
     },
   },
 };
