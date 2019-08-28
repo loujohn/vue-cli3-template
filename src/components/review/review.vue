@@ -80,7 +80,7 @@ import vImage from 'components/image/image';
 import imgTest from 'assets/images/sj/test.png';
 import { task } from 'api';
 export default {
-  name: 'sj-inpect',
+  name: 'review',
   components: {
     vMap,
     vImage,
