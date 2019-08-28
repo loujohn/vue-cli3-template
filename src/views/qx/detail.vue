@@ -40,23 +40,28 @@
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header" :data="tableData">
-        <el-table-column label="图斑编号" prop="tbbh"></el-table-column>
-        <el-table-column label="图斑名称" prop="tbmc"></el-table-column>
-        <el-table-column label="图斑类型" prop="tblx"></el-table-column>
-        <el-table-column label="截止日期" prop="endTime"></el-table-column>
-        <el-table-column label="描述信息" prop="msxx"></el-table-column>
-        <el-table-column label="备注" prop="bz"></el-table-column>
-        <el-table-column label="调查人员" prop="dcry"></el-table-column>
-        <el-table-column label="调查事件" prop="dcsj"></el-table-column>
+      <el-table header-row-class-name="customer-table-header" :data="list">
+        <el-table-column
+          v-for="(item, index) in fields"
+          :key="index"
+          :label="item.fieldAlias"
+          :prop="`referenceInfo.fields[${item.fieldName}]`"
+        ></el-table-column>
+        <el-table-column label="调查人员" prop="surveyUserId"></el-table-column>
+        <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
         <el-table-column label="调查状态">
           <template>
-            <span>已完成</span>
+            <span>区县已审核</span>
           </template>
         </el-table-column>
         <el-table-column label="审核状态">
-          <template>
-            <el-button type="text" size="mini" @click="open()">审核</el-button>
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="mini"
+              @click="getTaskDetail(scope.row.id)"
+              >审核</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -76,7 +81,7 @@
       custom-class="my-dialog"
       width="60%"
     >
-      <v-review @close="close" />
+      <v-review @close="close" :data="detail" />
     </el-dialog>
   </div>
 </template>
@@ -84,6 +89,8 @@
 <script>
 import customerCard from 'components/card/card';
 import vReview from 'components/review/review';
+import list from 'mixins/list';
+import { task } from 'api';
 export default {
   name: 'detail',
   components: {
@@ -95,6 +102,7 @@ export default {
       type: [Number, String],
     },
   },
+  mixins: [list],
   data() {
     return {
       showDialog: false,
@@ -112,7 +120,17 @@ export default {
         dqsj: '',
       },
       size: 'small',
+      fields: [],
+      detail: {},
     };
+  },
+  created() {
+    this.getTaskField();
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.getList();
+    });
   },
   methods: {
     open() {
@@ -120,6 +138,30 @@ export default {
     },
     close() {
       this.showDialog = false;
+    },
+    async getTaskField() {
+      const params = { taskId: this.id };
+      const fields = await task.getTaskField(params);
+      this.fields = fields.filter(e => !e.isSpace);
+    },
+    async getList() {
+      const params = {
+        ...this.params,
+        taskId: this.id,
+      };
+      const data = await task.getTaskRecordList(params);
+      const { dataList, totalCount } = data;
+      this.list = dataList;
+      this.totalCount = totalCount;
+    },
+    async getTaskDetail(id) {
+      const data = await task.getTaskDetail({ id });
+      this.detail = data;
+      this.showDialog = true;
+    },
+    handleCurrentPageChange(val) {
+      this.params.pageIndex = val;
+      this.getTaskRecordList();
     },
   },
 };

@@ -13,27 +13,23 @@
       />
     </div>
     <div class="list">
-      <!-- <div class="operation">
-        <el-button
-          type="primary"
-          size="small"
-          icon="el-icon-plus"
-          @click="$router.push({ name: 'sj-task' })"
-        >
-          新增任务
-        </el-button>
-      </div> -->
-      <el-table :data="tableData" header-row-class-name="customer-table-header">
+      <el-table :data="list" header-row-class-name="customer-table-header">
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="任务名称" prop="name"></el-table-column>
-        <el-table-column label="总数" prop="totalCount"></el-table-column>
-        <el-table-column label="完成数" prop="finishCount"></el-table-column>
+        <el-table-column label="任务名称" prop="taskName"></el-table-column>
+        <el-table-column
+          label="总数"
+          prop="referenceInfo.totalRecord"
+        ></el-table-column>
+        <el-table-column
+          label="完成数"
+          prop="referenceInfo.completedRecord"
+        ></el-table-column>
         <el-table-column label="进度">
           <template slot-scope="scope">
             <v-progress :percent="scope.row.percent" />
           </template>
         </el-table-column>
-        <el-table-column label="截止日期" prop="endTime"></el-table-column>
+        <el-table-column label="截止日期" prop="completeTime"></el-table-column>
         <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
@@ -50,11 +46,12 @@
       </el-table>
       <div class="pagination">
         <el-pagination
-          :total="100"
+          :total="totalCount"
           layout="total, prev, pager, next"
           :small="true"
           :pager-count="5"
           background
+          @current-change="handleCurrentPageChange"
         ></el-pagination>
       </div>
     </div>
@@ -63,12 +60,15 @@
 <script>
 import customerCard from 'components/card/card';
 import vProgress from 'components/progress/progress';
+import { task } from 'api';
+import list from 'mixins/list';
 export default {
-  name: 'sj-list',
+  name: 'qx-list',
   components: {
     customerCard,
     vProgress,
   },
+  mixins: [list],
   data() {
     return {
       data: [
@@ -77,45 +77,10 @@ export default {
         { name: '总完成进度', num: '30%' },
         { name: '即将到期任务数', num: 2 },
       ],
-      tableData: [
-        {
-          id: 0,
-          num: 0,
-          name: '测试',
-          totalCount: 100,
-          finishCount: 20,
-          percent: 20,
-          endTime: '2019-05-06 12:00',
-        },
-        {
-          id: 1,
-          num: 1,
-          name: '测试1',
-          totalCount: 390,
-          finishCount: 70,
-          percent: 50,
-          endTime: '2019-05-06 12:00',
-        },
-        {
-          id: 2,
-          num: 2,
-          name: '测试2',
-          totalCount: 300,
-          finishCount: 50,
-          percent: 70,
-          endTime: '2019-05-06 12:00',
-        },
-        {
-          id: 3,
-          num: 3,
-          name: '测试3',
-          totalCount: 150,
-          finishCount: 50,
-          percent: 100,
-          endTime: '2019-05-06 12:00',
-        },
-      ],
     };
+  },
+  mounted() {
+    this.getList();
   },
   methods: {
     toDetail(id) {
@@ -123,6 +88,16 @@ export default {
     },
     toAllocation(id) {
       this.$router.push({ name: 'task-allocation', query: { id } });
+    },
+    async getList() {
+      const data = await task.getTaskList(this.params);
+      const { dataList, totalCount } = data;
+      this.list = dataList;
+      this.totalCount = totalCount;
+    },
+    handleCurrentPageChange(val) {
+      this.params.pageIndex = val;
+      this.getList();
     },
   },
 };

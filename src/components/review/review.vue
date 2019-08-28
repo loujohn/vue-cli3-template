@@ -41,7 +41,11 @@
               <span class="label">审核意见:</span>
             </el-col>
             <el-col :span="18">
-              <el-input type="textarea" :rows="4"></el-input>
+              <el-input
+                type="textarea"
+                :rows="4"
+                v-model="form.suggestion"
+              ></el-input>
             </el-col>
           </el-row>
         </div>
