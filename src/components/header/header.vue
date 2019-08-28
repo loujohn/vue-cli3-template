@@ -1,10 +1,19 @@
 <template>
   <div class="head">
     <span class="title">{{ title }}</span>
-    <div class="user">
+    <el-dropdown @command="handleCommand">
+      <div class="user">
+        <svg-icon iconClass="user"></svg-icon>
+        <span>李明</span>
+      </div>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <!-- <div class="user">
       <svg-icon iconClass="user"></svg-icon>
       <span>李明</span>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -15,6 +24,18 @@ export default {
     return {
       title,
     };
+  },
+  methods: {
+    handleCommand(command) {
+      switch (command) {
+        case 'logout':
+          sessionStorage.clear();
+          window.location.reload();
+          break;
+        default:
+          break;
+      }
+    },
   },
 };
 </script>

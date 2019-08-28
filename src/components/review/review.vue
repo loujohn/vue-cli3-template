@@ -2,7 +2,7 @@
   <div class="sj-review">
     <div class="left">
       <div class="map-container">
-        <v-map />
+        <v-map :geojson="geojson" />
         <span class="title">空间查看</span>
       </div>
       <div class="img-container">
@@ -29,37 +29,9 @@
       <div class="review-box" v-show="activeTabIndex === 0">
         <div class="base-info">
           <el-row :gutter="10">
-            <el-col :span="12">
-              <span class="label">矿山名称:</span>
-              <span class="content">重庆赤松建材有限公司</span>
-            </el-col>
-            <el-col :span="12">
-              <span class="label">矿山类型:</span>
-              <span class="content">关闭矿山</span>
-            </el-col>
-            <el-col :span="12">
-              <span class="label">所在行政区划:</span>
-              <span class="content">北碚区</span>
-            </el-col>
-            <el-col :span="12">
-              <span class="label">损毁面积(公顷):</span>
-              <span class="content">5.2</span>
-            </el-col>
-            <el-col :span="12">
-              <span class="label">中心点X坐标:</span>
-              <span class="content">369328.3</span>
-            </el-col>
-            <el-col :span="12">
-              <span class="label">中心点Y坐标:</span>
-              <span class="content">37837285.2</span>
-            </el-col>
-            <el-col :span="12">
-              <span class="label">治理阶段:</span>
-              <span class="content">关闭未治理</span>
-            </el-col>
-            <el-col :span="12">
-              <span class="label">土地权属:</span>
-              <span class="content">水江镇大龙村</span>
+            <el-col :span="12" v-for="item in fieldList" :key="item.id">
+              <span class="label">{{ item.fieldAlias }}:</span>
+              <span class="content">{{ item.fieldValue }}</span>
             </el-col>
           </el-row>
         </div>
@@ -93,17 +65,25 @@
           </div>
         </div>
       </div>
+      <v-image v-if="activeTabIndex === 1" />
     </div>
   </div>
 </template>
 
 <script>
 import vMap from 'components/map/map';
+import vImage from 'components/image/image';
 import imgTest from 'assets/images/sj/test.png';
 export default {
   name: 'sj-inpect',
   components: {
     vMap,
+    vImage,
+  },
+  props: {
+    data: {
+      type: Object,
+    },
   },
   data() {
     return {
@@ -114,7 +94,36 @@ export default {
         suggestion: '',
         isPass: 1,
       },
+      fieldList: [],
+      geojson: '',
     };
+  },
+  watch: {
+    data: {
+      handler: function(val) {
+        if (val) {
+          if (!val.referenceInfo) return false;
+          let {
+            referenceInfo: { fieldsList },
+          } = val;
+          fieldsList = fieldsList.map(e => {
+            if (e.fieldName === 'centerPoint') {
+              const { fieldValue } = e;
+              return {
+                ...e,
+                fieldValue: JSON.parse(fieldValue).coordinates,
+              };
+            } else {
+              return e;
+            }
+          });
+          this.fieldList = fieldsList.filter(e => !e.isSpace);
+          this.geojson = fieldsList.find(e => e.isSpace).fieldValue;
+        }
+      },
+      immediate: true,
+      deep: true,
+    },
   },
   methods: {
     close() {

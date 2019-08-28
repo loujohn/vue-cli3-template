@@ -83,7 +83,7 @@
       custom-class="my-dialog"
       width="60%"
     >
-      <v-review @close="close" />
+      <v-review @close="close" :data="detail" />
     </el-dialog>
   </div>
 </template>
@@ -123,6 +123,7 @@ export default {
         ssqx: '',
       },
       size: 'small',
+      detail: {},
     };
   },
   created() {
@@ -142,7 +143,8 @@ export default {
     },
     async getTaskField() {
       const params = { taskId: this.id };
-      this.fields = await task.getTaskField(params);
+      const fields = await task.getTaskField(params);
+      this.fields = fields.filter(e => !e.isSpace);
     },
     async getList() {
       const params = {
@@ -156,7 +158,8 @@ export default {
     },
     async getTaskDetail(id) {
       const data = await task.getTaskDetail({ id });
-      console.log(data);
+      this.detail = data;
+      this.showDialog = true;
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;

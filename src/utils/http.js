@@ -1,5 +1,6 @@
 import axios from 'axios';
 const http = axios.create();
+import { Message } from 'element-ui';
 
 http.interceptors.request.use(
   config => {
@@ -15,13 +16,18 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   response => {
     const { data } = response;
-    const { meta } = data;
-    if (meta && meta.code.toString() === '401') {
+    const { code, message } = data;
+    if (code && code.toString() === '401') {
       sessionStorage.clear();
       window.location.reload();
       return;
     }
-    return Promise.resolve(data);
+    if (code && code.toString() === '200' && message && message === 'ok') {
+      return Promise.resolve(data);
+    } else {
+      Message.error(message);
+      return Promise.reject();
+    }
   },
   error => {
     console.log(error);
