@@ -2,7 +2,7 @@
   <div class="image">
     <el-row :gutter="10">
       <el-col :span="8" v-for="image in images" :key="image.id">
-        <el-image :src="`${staticUrl}`"></el-image>
+        <el-image :src="`${staticUrl}${image.fileName}`"></el-image>
       </el-col>
     </el-row>
   </div>

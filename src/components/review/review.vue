@@ -65,7 +65,7 @@
           </div>
         </div>
       </div>
-      <v-image v-if="activeTabIndex === 1" />
+      <v-image v-if="activeTabIndex === 1" :images="imagesList" />
     </div>
   </div>
 </template>
@@ -95,6 +95,7 @@ export default {
         isPass: 1,
       },
       fieldList: [],
+      imagesList: [],
       geojson: '',
     };
   },
@@ -104,8 +105,9 @@ export default {
         if (val) {
           if (!val.referenceInfo) return false;
           let {
-            referenceInfo: { fieldsList },
+            referenceInfo: { fieldsList, imageFiles },
           } = val;
+          this.imagesList = imageFiles;
           fieldsList = fieldsList.map(e => {
             if (e.fieldName === 'centerPoint') {
               const { fieldValue } = e;
