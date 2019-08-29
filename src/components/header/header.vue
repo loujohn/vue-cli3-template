@@ -4,26 +4,26 @@
     <el-dropdown @command="handleCommand">
       <div class="user">
         <svg-icon iconClass="user"></svg-icon>
-        <span>李明</span>
+        <span>{{ userName }}</span>
       </div>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="logout">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <!-- <div class="user">
-      <svg-icon iconClass="user"></svg-icon>
-      <span>李明</span>
-    </div> -->
   </div>
 </template>
 <script>
 import { title } from 'config';
+import { mapGetters } from 'vuex';
 export default {
   name: 'v-header',
   data() {
     return {
       title,
     };
+  },
+  computed: {
+    ...mapGetters(['userName']),
   },
   methods: {
     handleCommand(command) {
@@ -51,6 +51,7 @@ export default {
     display: inline-block;
     height: $head-height;
     line-height: $head-height;
+    cursor: pointer;
   }
   .title {
     color: $base-color;
