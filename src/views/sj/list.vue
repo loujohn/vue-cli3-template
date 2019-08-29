@@ -45,7 +45,9 @@
         </el-table-column>
         <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
-            <el-button type="text" size="mini">追加</el-button>
+            <el-button type="text" size="mini" @click="$router.push('/sj/task')"
+              >追加</el-button
+            >
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
               >详情</el-button
             >

@@ -8,7 +8,7 @@
       auto-complete="on"
       label-position="left"
     >
-      <h3 class="title">地理空间调查笔记</h3>
+      <h3 class="title">{{ title }}</h3>
       <el-form-item prop="userName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -49,10 +49,12 @@
   </div>
 </template>
 <script>
+import { title } from 'config';
 export default {
   name: 'Login',
   data() {
     return {
+      title,
       loginForm: {
         username: '',
         password: '',
