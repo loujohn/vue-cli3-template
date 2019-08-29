@@ -11,16 +11,24 @@
           >
         </div>
         <div class="search">
-          <el-input :size="size" suffix-icon="el-icon-search"></el-input>
+          <el-input
+            :size="size"
+            suffix-icon="el-icon-search"
+            clearable
+            v-model="params.keyword"
+            @keyup.native="search"
+            @clear="search"
+          ></el-input>
         </div>
       </div>
-      <el-table header-row-class-name="customer-table-header" :data="data">
-        <el-table-column label="用户名" prop="name"></el-table-column>
-        <el-table-column label="姓名" prop="username"></el-table-column>
-        <el-table-column label="电话" prop="tel"></el-table-column>
-        <el-table-column label="区域" prop="area"></el-table-column>
-        <el-table-column label="部门" prop="depat"></el-table-column>
-        <el-table-column label="设备型号" prop="device"></el-table-column>
+      <el-table header-row-class-name="customer-table-header" :data="list">
+        <el-table-column label="用户名" prop="userName"></el-table-column>
+        <el-table-column label="姓名" prop="realName"></el-table-column>
+        <el-table-column label="电话" prop="telephone"></el-table-column>
+        <el-table-column label="邮箱" prop="email"></el-table-column>
+        <el-table-column label="区域" prop="xzqh"></el-table-column>
+        <el-table-column label="部门" prop="department"></el-table-column>
+        <!-- <el-table-column label="设备型号" prop=""></el-table-column> -->
         <el-table-column label="操作">
           <template>
             <el-button type="text">编辑</el-button>
@@ -28,35 +36,47 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="pagination">
+      <!-- <div class="pagination">
         <el-pagination
           :pager-count="5"
           background
           layout="total, prev, pager, next"
           :total="100"
         ></el-pagination>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
+import { survey } from 'api';
 export default {
   name: 'investigator-manage',
   data() {
     return {
       size: 'small',
-      data: [
-        {
-          name: 'fja',
-          username: 'fasfaj',
-          tel: '47823',
-          area: '78r7849',
-          depat: 'ru8ur4q',
-          device: '482389723895',
-        },
-      ],
+      list: [],
+      totalCount: 0,
+      params: {
+        pageIndex: 1,
+        pageSize: 10,
+        keyword: '',
+      },
     };
+  },
+  mounted() {
+    this.getList();
+  },
+  methods: {
+    async getList() {
+      const res = await survey.getSurveyUserList(this.params);
+      if (res.code.toString() === '200') {
+        this.list = res.data;
+      }
+    },
+    search() {
+      this.getList();
+    },
   },
 };
 </script>

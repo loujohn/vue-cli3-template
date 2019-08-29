@@ -1,3 +1,4 @@
 import common from './common';
 import task from './task';
-export { common, task };
+import survey from './survey';
+export { common, task, survey };

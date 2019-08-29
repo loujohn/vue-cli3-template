@@ -58,21 +58,29 @@
       </el-table>
     </div>
     <div class="map-container">
-      <v-map />
+      <v-map @load="handleMapLoad" />
     </div>
   </div>
 </template>
 
 <script>
+import { task } from 'api';
+import turf from 'turf';
 import vMap from 'components/map/map';
 export default {
   name: 'task-allocation',
   components: {
     vMap,
   },
+  props: {
+    id: {
+      type: String,
+    },
+  },
   data() {
     return {
       size: 'small',
+      map: null,
       cards: [
         { name: '总图斑数', icon: '图斑', value: 300 },
         { name: '未分发', icon: '未分发', value: 300 },
@@ -84,6 +92,43 @@ export default {
         tbbh: '',
       },
     };
+  },
+  methods: {
+    async handleMapLoad(map) {
+      this.map = map;
+      const res = await task.getGeojson({ id: this.id });
+      if (res.code.toString() === '200') {
+        this.addGeoLayer(res.data);
+      }
+    },
+    addGeoLayer(geojson) {
+      if (!geojson) return false;
+      if (this.map.getSource('geo-task')) {
+        this.map.getSource('geo-task').setData(geojson);
+        return false;
+      } else {
+        this.map.addSource('geo-task', {
+          type: 'geojson',
+          data: geojson,
+        });
+      }
+      !this.map.getLayer('geo-task') &&
+        this.map.addLayer({
+          id: 'task-layer',
+          type: 'fill',
+          source: 'geo-task',
+          paint: {
+            'fill-color': 'green',
+            'fill-opacity': 0.6,
+          },
+        });
+      const bbox = turf.bbox(geojson);
+      this.map.fitBounds(bbox);
+    },
+  },
+  beforeDestroy() {
+    this.map.getLayer('task-layer') && this.map.removeLayer('task-layer');
+    this.map.getSource('geo-task') && this.map.removeSource('geo-task');
   },
 };
 </script>

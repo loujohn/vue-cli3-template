@@ -1,5 +1,6 @@
 import http from 'utils/http';
 import url from '../config';
+import qs from 'querystring';
 export default {
   /**
    * params { pageSize, pageIndex }
@@ -37,6 +38,22 @@ export default {
    */
   async taskCheck(params) {
     const res = await http.get(url.taskCheck, { params });
+    return res;
+  },
+
+  /**
+   * params { ids, status, surveyUserId }
+   */
+  async taskDistribute(params) {
+    const res = await http.post(url.taskDistribute, qs.stringify(params));
+    return res;
+  },
+
+  /**
+   * params { taskId }
+   */
+  async getGeojson(params) {
+    const res = await http.get(url.initMap, { params });
     return res;
   },
 };

@@ -71,6 +71,10 @@ const router = new Router({
       path: '/login',
       component: () => import('views/user/login'),
     },
+    {
+      path: '*',
+      component: () => import('views/404'),
+    },
   ],
 });
 

@@ -75,8 +75,9 @@ export default {
           showCompass: false,
         });
         this.map.addControl(control, 'bottom-left');
-        this.addGeoLayer();
-        this.addSymbol();
+        this.$emit('load', this.map);
+        // this.addGeoLayer();
+        // this.addSymbol();
       });
     },
     addGeoLayer() {
@@ -148,6 +149,14 @@ export default {
           },
         });
     },
+  },
+  beforeDestroy() {
+    this.map.hasImage('location') && this.map.removeImage('location');
+    this.map.getLayer('location-symbol') &&
+      this.map.removeLayer('location-symbol');
+    this.map.getLayer('geo-line') && this.map.removeLayer('geo-line');
+    this.map.getLayer('geo-fill') && this.map.removeLayer('geo-fill');
+    this.map.getSource('geo-source') && this.map.removeSource('geo-source');
   },
   render(h) {
     return h('div', {
