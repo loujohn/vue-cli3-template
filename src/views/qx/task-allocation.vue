@@ -22,15 +22,22 @@
         <el-row :gutter="10">
           <el-col :span="5">
             <span class="label">调查人员:</span>
-            <el-select v-model="form.dcry" :size="size"></el-select>
+            <el-select v-model="form.dcry" :size="size" clearable>
+              <el-option
+                v-for="item in surveyUserList"
+                :key="item.id"
+                :label="item.realName"
+                :value="item.id"
+              ></el-option>
+            </el-select>
           </el-col>
           <el-col :span="5">
             <span class="label">分发状态:</span>
-            <el-select v-model="form.status" :size="size"></el-select>
+            <el-select v-model="form.status" :size="size" clearable></el-select>
           </el-col>
           <el-col :span="5">
             <span class="label">图斑编号:</span>
-            <el-select v-model="form.tbbh" :size="size"></el-select>
+            <el-select v-model="form.tbbh" :size="size" clearable></el-select>
           </el-col>
           <el-col :span="9">
             <div class="operation">
@@ -47,14 +54,32 @@
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header">
+      <el-table header-row-class-name="customer-table-header" :data="list">
         <el-table-column type="selection"></el-table-column>
-        <el-table-column label="图斑预编号"></el-table-column>
-        <el-table-column label="图斑面积(亩)"></el-table-column>
-        <el-table-column label="图斑类型"></el-table-column>
-        <el-table-column label="调查人员"></el-table-column>
-        <el-table-column label="分发状态"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column
+          v-for="(item, index) in fields"
+          :key="index"
+          :label="item.fieldAlias"
+          :prop="`referenceInfo.fields[${item.fieldName}]`"
+        >
+        </el-table-column>
+        <el-table-column label="调查人员">
+          <template
+            >王二小</template
+          >
+        </el-table-column>
+        <el-table-column label="分发状态">
+          <template slot-scope="scope">
+            {{ scope.row.distributionStatus | distributionStatus }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" size="mini">
+              {{ scope.row.distributionStatus | distribution }}
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="map-container">
@@ -64,9 +89,11 @@
 </template>
 
 <script>
-import { task } from 'api';
+import { task, survey } from 'api';
 import turf from 'turf';
 import vMap from 'components/map/map';
+import list from 'mixins/list';
+import { distributionStatus, distribution } from 'filters';
 export default {
   name: 'task-allocation',
   components: {
@@ -77,6 +104,7 @@ export default {
       type: String,
     },
   },
+  mixins: [list],
   data() {
     return {
       size: 'small',
@@ -91,7 +119,18 @@ export default {
         status: '',
         tbbh: '',
       },
+      surveyUserList: [],
+      fields: [],
     };
+  },
+  mounted() {
+    this.getSurveyUserList();
+    this.getTaskField();
+    this.getList();
+  },
+  filters: {
+    distributionStatus,
+    distribution,
   },
   methods: {
     async handleMapLoad(e) {
@@ -102,6 +141,27 @@ export default {
         this.addGeoLayer(res.data);
       }
     },
+    async getSurveyUserList() {
+      const res = await survey.getSurveyUserList({ id: this.id });
+      if (res.code.toString() === '200') {
+        this.surveyUserList = res.data;
+      }
+    },
+    async getTaskField() {
+      const params = { taskId: this.id };
+      const fields = await task.getTaskField(params);
+      this.fields = fields.filter(e => !e.isSpace);
+    },
+    async getList() {
+      const params = {
+        ...this.params,
+        taskId: this.id,
+      };
+      const data = await task.getTaskRecordList(params);
+      const { dataList, totalCount } = data;
+      this.list = dataList;
+      this.totalCount = totalCount;
+    },
     addGeoLayer(geojson) {
       if (!geojson) return false;
       this.map.addSource('geo-task', {
@@ -109,12 +169,20 @@ export default {
         data: geojson,
       });
       this.map.addLayer({
-        id: 'task-layer',
+        id: 'task-fill',
         type: 'fill',
         source: 'geo-task',
         paint: {
-          'fill-color': 'green',
-          'fill-opacity': 0.6,
+          'fill-color': '#888',
+          'fill-opacity': 0.7,
+        },
+      });
+      this.map.addLayer({
+        id: 'task-line',
+        type: 'line',
+        source: 'geo-task',
+        paint: {
+          'line-color': 'red',
         },
       });
       const bbox = turf.bbox(geojson);
@@ -122,7 +190,8 @@ export default {
     },
   },
   beforeDestroy() {
-    this.map.getLayer('task-layer') && this.map.removeLayer('task-layer');
+    this.map.getLayer('task-fill') && this.map.removeLayer('task-fill');
+    this.map.getLayer('task-line') && this.map.removeLayer('task-line');
     this.map.getSource('geo-task') && this.map.removeSource('geo-task');
   },
 };

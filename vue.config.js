@@ -37,7 +37,8 @@ module.exports = {
       .set('views', resolve('src/views'))
       .set('api', resolve('src/api'))
       .set('utils', resolve('src/utils'))
-      .set('mixins', resolve('src/mixins'));
+      .set('mixins', resolve('src/mixins'))
+      .set('filters', resolve('src/filters'));
 
     const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
     types.forEach(type =>
