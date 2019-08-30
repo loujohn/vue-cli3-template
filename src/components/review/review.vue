@@ -133,19 +133,18 @@ export default {
           });
           this.fieldList = fieldsList.filter(e => !e.isSpace);
           this.geojson = fieldsList.find(e => e.isSpace).fieldValue;
-          if (this.map) {
-            const geojson = JSON.parse(this.geojson);
-            const data = {
-              type: 'Feature',
-              geometry: geojson,
-            };
-            this.setGeojson('geo-source', data);
-            const center = turf.center(geojson);
-            this.setGeojson('geo-symbol', center);
-
-            const bbox = turf.bbox(geojson);
-            this.map.fitBounds(bbox);
-          }
+          // if (this.map) {
+          //   const geojson = JSON.parse(this.geojson);
+          //   const data = {
+          //     type: 'Feature',
+          //     geometry: geojson,
+          //   };
+          //   this.setGeojson('geo-source', data);
+          //   const center = turf.center(geojson);
+          //   this.setGeojson('geo-symbol', center);
+          //   const bbox = turf.bbox(geojson);
+          //   this.map.fitBounds(bbox);
+          // }
         }
       },
       immediate: true,
@@ -176,81 +175,72 @@ export default {
     },
     handleMapLoad(map) {
       this.map = map;
-      window.$map = map;
-      this.addGeoLayer();
-      this.addSymbolLayer();
+      this.addGeoLayer(map);
+      this.addSymbolLayer(map);
+
+      if (this.geojson) {
+        const bbox = turf.bbox(JSON.parse(this.geojson));
+        this.map.fitBounds(bbox);
+      }
     },
-    addGeoLayer() {
-      let data;
-      let bbox;
+    addGeoLayer(map) {
+      map.addSource('geo-source', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [],
+        },
+      });
+      map.addLayer({
+        id: 'geo-fill',
+        type: 'fill',
+        source: 'geo-source',
+        paint: {
+          'fill-color': 'red',
+          'fill-opacity': 0.5,
+        },
+      });
+      this.map.addLayer({
+        id: 'geo-line',
+        type: 'line',
+        source: 'geo-source',
+        paint: {
+          'line-color': 'yellow',
+          'line-width': 2,
+        },
+      });
+
       if (this.geojson) {
         const geojson = JSON.parse(this.geojson);
-        data = {
+        map.getSource('geo-source').setData({
           type: 'Feature',
           geometry: geojson,
-        };
-        bbox = turf.bbox(geojson);
-      } else {
-        data = {
-          type: 'FeatureCollection',
-          features: [],
-        };
+        });
       }
-      !this.map.getSource('geo-source') &&
-        this.map.addSource('geo-source', {
-          type: 'geojson',
-          data,
-        });
-      !this.map.getLayer('geo-fill') &&
-        this.map.addLayer({
-          id: 'geo-fill',
-          type: 'fill',
-          source: 'geo-source',
-          paint: {
-            'fill-color': 'red',
-            'fill-opacity': 0.3,
-          },
-        });
-      !this.map.getLayer('geo-line') &&
-        this.map.addLayer({
-          id: 'geo-line',
-          type: 'line',
-          source: 'geo-source',
-          paint: {
-            'line-color': 'red',
-            'line-width': 2,
-          },
-        });
-
-      bbox && this.map.fitBounds(bbox);
     },
-    addSymbolLayer() {
-      let data;
-      if (this.geojson) {
-        const center = turf.center(JSON.parse(this.geojson));
-        data = center;
-      } else {
-        data = {
+    addSymbolLayer(map) {
+      map.addImage('icon-location', img);
+      map.addSource('geo-symbol', {
+        type: 'geojson',
+        data: {
           type: 'FeatureCollection',
           features: [],
-        };
+        },
+      });
+      map.addLayer({
+        id: 'location-symbol',
+        type: 'symbol',
+        source: 'geo-symbol',
+        layout: {
+          'icon-image': 'icon-location',
+          'icon-size': 0.15,
+        },
+      });
+      if (this.geojson) {
+        const geojson = JSON.parse(this.geojson);
+        const center = turf.center(geojson);
+        map.getSource('geo-symbol').setData(center);
       }
-      !this.map.hasImage('location') && this.map.addImage('location', img);
-      !this.map.getSource('geo-symbol') &&
-        this.map.addSource('geo-symbol', {
-          type: 'geojson',
-          data,
-        });
-      !this.map.getLayer('location-symbol') &&
-        this.map.addLayer({
-          id: 'location-symbol',
-          type: 'symbol',
-          source: 'geo-symbol',
-          layout: {
-            'icon-image': 'location',
-            'icon-size': 0.15,
-          },
-        });
     },
     setGeojson(sourceId, geojson) {
       this.map &&
@@ -259,7 +249,7 @@ export default {
     },
   },
   beforeDestroy() {
-    this.map.hasImage('location') && this.map.removeImage('location');
+    this.map.hasImage('icon-location') && this.map.removeImage('icon-location');
     this.map.getLayer('location-symbol') &&
       this.map.removeLayer('location-symbol');
     this.map.getLayer('geo-line') && this.map.removeLayer('geo-line');

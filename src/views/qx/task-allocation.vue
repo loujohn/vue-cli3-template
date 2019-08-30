@@ -58,7 +58,7 @@
       </el-table>
     </div>
     <div class="map-container">
-      <v-map @load="handleMapLoad" />
+      <v-map />
     </div>
   </div>
 </template>

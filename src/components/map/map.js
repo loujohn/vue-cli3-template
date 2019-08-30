@@ -1,5 +1,5 @@
 import common from 'api/common';
-import { d2c } from 'd2c';
+import d2c from 'd2c';
 export default {
   name: 'v-map',
   props: {
@@ -12,7 +12,6 @@ export default {
     return {
       id: `map-${new Date().getTime()}`,
       D2c: d2c || window.d2c,
-      marker: null,
     };
   },
   mounted() {
@@ -49,10 +48,6 @@ export default {
       };
       this.map = new this.D2c.map(options);
       this.map.on('load', () => {
-        const control = new this.D2c.NavigationControl({
-          showCompass: false,
-        });
-        this.map.addControl(control, 'bottom-left');
         this.$emit('load', this.map);
       });
     },
