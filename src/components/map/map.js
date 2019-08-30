@@ -12,6 +12,7 @@ export default {
     return {
       id: `map-${new Date().getTime()}`,
       D2c: d2c || window.d2c,
+      map: null,
     };
   },
   mounted() {
@@ -29,11 +30,10 @@ export default {
         sources,
         sprite,
         version,
-        zoom,
       } = config;
       const options = {
         container: this.container || this.id,
-        zoom,
+        zoom: 7,
         center,
         bearing,
         pitch,
@@ -47,9 +47,10 @@ export default {
         },
       };
       this.map = new this.D2c.map(options);
-      this.map.on('load', () => {
-        this.$emit('load', this.map);
-      });
+      this.map.once('load', this.handleLoad);
+    },
+    handleLoad(e) {
+      this.$emit('load', e);
     },
   },
   render(h) {

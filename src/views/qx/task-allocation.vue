@@ -58,7 +58,7 @@
       </el-table>
     </div>
     <div class="map-container">
-      <v-map />
+      <v-map @load="handleMapLoad" />
     </div>
   </div>
 </template>
@@ -94,8 +94,9 @@ export default {
     };
   },
   methods: {
-    async handleMapLoad(map) {
-      this.map = map;
+    async handleMapLoad(e) {
+      this.map = e.target;
+      window.$map = e.target;
       const res = await task.getGeojson({ id: this.id });
       if (res.code.toString() === '200') {
         this.addGeoLayer(res.data);
@@ -103,25 +104,19 @@ export default {
     },
     addGeoLayer(geojson) {
       if (!geojson) return false;
-      if (this.map.getSource('geo-task')) {
-        this.map.getSource('geo-task').setData(geojson);
-        return false;
-      } else {
-        this.map.addSource('geo-task', {
-          type: 'geojson',
-          data: geojson,
-        });
-      }
-      !this.map.getLayer('geo-task') &&
-        this.map.addLayer({
-          id: 'task-layer',
-          type: 'fill',
-          source: 'geo-task',
-          paint: {
-            'fill-color': 'green',
-            'fill-opacity': 0.6,
-          },
-        });
+      this.map.addSource('geo-task', {
+        type: 'geojson',
+        data: geojson,
+      });
+      this.map.addLayer({
+        id: 'task-layer',
+        type: 'fill',
+        source: 'geo-task',
+        paint: {
+          'fill-color': 'green',
+          'fill-opacity': 0.6,
+        },
+      });
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox);
     },

@@ -133,18 +133,18 @@ export default {
           });
           this.fieldList = fieldsList.filter(e => !e.isSpace);
           this.geojson = fieldsList.find(e => e.isSpace).fieldValue;
-          // if (this.map) {
-          //   const geojson = JSON.parse(this.geojson);
-          //   const data = {
-          //     type: 'Feature',
-          //     geometry: geojson,
-          //   };
-          //   this.setGeojson('geo-source', data);
-          //   const center = turf.center(geojson);
-          //   this.setGeojson('geo-symbol', center);
-          //   const bbox = turf.bbox(geojson);
-          //   this.map.fitBounds(bbox);
-          // }
+          if (this.map) {
+            const geojson = JSON.parse(this.geojson);
+            const data = {
+              type: 'Feature',
+              geometry: geojson,
+            };
+            this.setGeojson('geo-source', data);
+            const center = turf.center(geojson);
+            this.setGeojson('geo-symbol', center);
+            const bbox = turf.bbox(geojson);
+            this.map.fitBounds(bbox);
+          }
         }
       },
       immediate: true,
@@ -173,7 +173,8 @@ export default {
         }
       });
     },
-    handleMapLoad(map) {
+    handleMapLoad(e) {
+      const map = e.target;
       this.map = map;
       this.addGeoLayer(map);
       this.addSymbolLayer(map);
@@ -196,8 +197,7 @@ export default {
         type: 'fill',
         source: 'geo-source',
         paint: {
-          'fill-color': 'red',
-          'fill-opacity': 0.5,
+          'fill-opacity': 0.3,
         },
       });
       this.map.addLayer({
@@ -205,7 +205,7 @@ export default {
         type: 'line',
         source: 'geo-source',
         paint: {
-          'line-color': 'yellow',
+          'line-color': '#c08f01',
           'line-width': 2,
         },
       });
