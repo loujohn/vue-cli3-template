@@ -1,5 +1,5 @@
 const distributionStatus = val => {
-  return val ? '未分发' : '已分发';
+  return val ? '已分发' : '未分发';
 };
 
 const distribution = val => {

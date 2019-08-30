@@ -70,7 +70,9 @@
         </el-table-column>
         <el-table-column label="分发状态">
           <template slot-scope="scope">
-            {{ scope.row.distributionStatus | distributionStatus }}
+            <span :class="{ not: !scope.row.distributionStatus }">
+              {{ scope.row.distributionStatus | distributionStatus }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -81,6 +83,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="pagination">
+        <el-pagination
+          layout="total, prev, pager, next"
+          :total="totalCount"
+          background
+          :small="true"
+          :page-count="5"
+          @current-change="handleCurrentPageChange"
+        ></el-pagination>
+      </div>
     </div>
     <div class="map-container">
       <v-map @load="handleMapLoad" />
@@ -162,6 +174,10 @@ export default {
       this.list = dataList;
       this.totalCount = totalCount;
     },
+    handleCurrentPageChange(val) {
+      this.params.pageIndex = val;
+      this.getTaskRecordList();
+    },
     addGeoLayer(geojson) {
       if (!geojson) return false;
       this.map.addSource('geo-task', {
@@ -202,6 +218,9 @@ export default {
   display: flex;
   height: 100%;
   overflow: hidden;
+  .not {
+    color: red;
+  }
   .data {
     width: 50%;
     background-color: #fff;
