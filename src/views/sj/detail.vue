@@ -20,23 +20,23 @@
         <el-row :gutter="30">
           <el-col :span="4">
             <span class="label">调查人员:</span>
-            <el-select v-model="form.dcry" :size="size"></el-select>
+            <el-select v-model="form.dcry" :size="size" value=""></el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">图斑编号:</span>
-            <el-select v-model="form.tbbh" :size="size"></el-select>
+            <el-select v-model="form.tbbh" :size="size" value=""></el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">调查时间:</span>
-            <el-select v-model="form.dcsj" :size="size"></el-select>
+            <el-select v-model="form.dcsj" :size="size" value=""></el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">审核结果:</span>
-            <el-select v-model="form.shjg" :size="size"></el-select>
+            <el-select v-model="form.shjg" :size="size" value=""></el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">所属区县:</span>
-            <el-select v-model="form.ssqx" :size="size"></el-select>
+            <el-select v-model="form.ssqx" :size="size" value=""></el-select>
           </el-col>
         </el-row>
       </div>

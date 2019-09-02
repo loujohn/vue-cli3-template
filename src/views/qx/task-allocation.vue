@@ -1,6 +1,13 @@
 <template>
   <div class="task-allocation">
     <div class="data">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>区县</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'qx-list' }"
+          >任务列表</el-breadcrumb-item
+        >
+        <el-breadcrumb-item>任务分派</el-breadcrumb-item>
+      </el-breadcrumb>
       <div class="cards">
         <div class="card" v-for="card in cards" :key="card.name">
           <span class="name">
@@ -20,9 +27,9 @@
       </div>
       <div class="filter">
         <el-row :gutter="10">
-          <el-col :span="5">
+          <el-col :span="6">
             <span class="label">调查人员:</span>
-            <el-select v-model="form.dcry" :size="size" clearable>
+            <el-select v-model="form.surveyUserId" :size="size" clearable>
               <el-option
                 v-for="item in surveyUserList"
                 :key="item.id"
@@ -31,15 +38,22 @@
               ></el-option>
             </el-select>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <span class="label">分发状态:</span>
-            <el-select v-model="form.status" :size="size" clearable></el-select>
+            <el-select v-model="form.distributionStatus" :size="size" clearable>
+              <el-option
+                v-for="item in distributionStatusList"
+                :key="item.name"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-col>
-          <el-col :span="5">
-            <span class="label">图斑编号:</span>
-            <el-select v-model="form.tbbh" :size="size" clearable></el-select>
-          </el-col>
-          <el-col :span="9">
+          <!--          <el-col :span="5">-->
+          <!--            <span class="label">图斑编号:</span>-->
+          <!--            <el-select v-model="form.tbbh" :size="size" clearable></el-select>-->
+          <!--          </el-col>-->
+          <el-col :span="12">
             <div class="operation">
               <span class="select">
                 已选择38个
@@ -119,6 +133,10 @@ export default {
   mixins: [list],
   data() {
     return {
+      distributionStatusList: [
+        { name: '已分发', value: 1 },
+        { name: '未分发', value: 0 },
+      ],
       size: 'small',
       map: null,
       cards: [
@@ -127,8 +145,8 @@ export default {
         { name: '已分发', icon: '已分发', value: 300 },
       ],
       form: {
-        dcry: '',
-        status: '',
+        surveyUserId: '',
+        distributionStatus: '',
         tbbh: '',
       },
       surveyUserList: [],
@@ -224,11 +242,15 @@ export default {
   .data {
     width: 50%;
     background-color: #fff;
+    .el-breadcrumb {
+      padding: 10px 20px;
+    }
     .cards {
       display: flex;
       justify-content: space-between;
       padding: 16px 20px;
       border-bottom: 1px solid #e6e6e6;
+      padding-top: 0;
       .card {
         width: 30%;
         background-color: #0e67f2;
