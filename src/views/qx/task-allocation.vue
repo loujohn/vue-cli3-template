@@ -78,9 +78,9 @@
         >
         </el-table-column>
         <el-table-column label="调查人员">
-          <template
-            >王二小</template
-          >
+          <template>
+            王二小
+          </template>
         </el-table-column>
         <el-table-column label="分发状态">
           <template slot-scope="scope">
