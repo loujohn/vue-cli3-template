@@ -9,9 +9,9 @@
     </el-breadcrumb>
     <div class="cards">
       <customer-card
-        v-for="(item, index) in data"
-        :key="index"
         :data="item"
+        :key="index"
+        v-for="(item, index) in data"
         width="24%"
       />
     </div>
@@ -20,37 +20,37 @@
         <el-row :gutter="30">
           <el-col :span="4">
             <span class="label">调查人员:</span>
-            <el-select v-model="form.dcry" :size="size" value=""></el-select>
+            <el-select :size="size" v-model="form.dcry" value></el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">图斑编号:</span>
-            <el-select v-model="form.tbbh" :size="size" value=""></el-select>
+            <el-select :size="size" v-model="form.tbbh" value></el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">调查时间:</span>
-            <el-select v-model="form.dcsj" :size="size" value=""></el-select>
+            <el-select :size="size" v-model="form.dcsj" value></el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">审核结果:</span>
-            <el-select v-model="form.shjg" :size="size" value=""></el-select>
+            <el-select :size="size" v-model="form.shjg" value></el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">所属区县:</span>
-            <el-select v-model="form.ssqx" :size="size" value=""></el-select>
+            <el-select :size="size" v-model="form.ssqx" value></el-select>
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header" :data="list">
+      <el-table :data="list" header-row-class-name="customer-table-header">
         <el-table-column
-          v-for="(item, index) in fields"
           :key="index"
           :label="item.fieldAlias"
           :prop="`referenceInfo.fields[${item.fieldName}]`"
+          v-for="(item, index) in fields"
         ></el-table-column>
         <el-table-column label="调查人员">
-          <template
-            >王二小</template
-          >
+          <template>
+            王二小
+          </template>
         </el-table-column>
         <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
         <el-table-column label="调查状态">
@@ -61,37 +61,37 @@
         <el-table-column label="审核状态">
           <template slot-scope="scope">
             <el-button
-              type="text"
-              size="mini"
               @click="getTaskDetail(scope.row.id)"
-              >审核</el-button
+              size="mini"
+              type="text"
             >
+              审核
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination
-          layout="total, prev, pager, next"
-          :total="totalCount"
-          :small="true"
-          background
           :page-count="params.pageIndex"
           :pager-count="5"
+          :small="true"
+          :total="totalCount"
           @current-change="handleCurrentPageChange"
+          background
+          layout="total, prev, pager, next"
         ></el-pagination>
       </div>
     </div>
     <el-dialog
-      :visible="showDialog"
       :show-close="false"
+      :visible="showDialog"
       custom-class="my-dialog"
       width="60%"
     >
-      <v-review @close="close" :data="detail" />
+      <v-review :data="detail" @close="close" />
     </el-dialog>
   </div>
 </template>
-
 <script>
 import customerCard from 'components/card/card';
 import vReview from 'components/review/review';

@@ -14,13 +14,13 @@
             <svg-icon
               :style="{ fill: '#fff', width: '1.5em', height: '1.5em' }"
               :iconClass="card.icon"
-            ></svg-icon
-            >&nbsp;
+            ></svg-icon>
+            &nbsp;
             {{ card.name }}
           </span>
           <span class="value">
-            <svg-icon iconClass="icon" :style="{ fill: '#fff' }"></svg-icon
-            >&nbsp;
+            <svg-icon iconClass="icon" :style="{ fill: '#fff' }"></svg-icon>
+            &nbsp;
             {{ card.value }}
           </span>
         </div>
@@ -57,13 +57,13 @@
             <div class="operation">
               <span class="select">
                 已选择38个
-                <el-button size="small"
-                  ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
-                >
+                <el-button size="small">
+                  <svg-icon iconClass="分发"></svg-icon>全部分发
+                </el-button>
               </span>
-              <el-button size="small" style="margin-left: 8px;"
-                ><svg-icon iconClass="撤销"></svg-icon> 全部撤回</el-button
-              >
+              <el-button size="small" style="margin-left: 8px;">
+                <svg-icon iconClass="撤销"></svg-icon>全部撤回
+              </el-button>
             </div>
           </el-col>
         </el-row>
@@ -75,8 +75,7 @@
           :key="index"
           :label="item.fieldAlias"
           :prop="`referenceInfo.fields[${item.fieldName}]`"
-        >
-        </el-table-column>
+        ></el-table-column>
         <el-table-column label="调查人员">
           <template>
             王二小
@@ -84,16 +83,16 @@
         </el-table-column>
         <el-table-column label="分发状态">
           <template slot-scope="scope">
-            <span :class="{ not: !scope.row.distributionStatus }">
-              {{ scope.row.distributionStatus | distributionStatus }}
-            </span>
+            <span :class="{ not: !scope.row.distributionStatus }">{{
+              scope.row.distributionStatus | distributionStatus
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="mini">
-              {{ scope.row.distributionStatus | distribution }}
-            </el-button>
+            <el-button type="text" size="mini">{{
+              scope.row.distributionStatus | distribution
+            }}</el-button>
           </template>
         </el-table-column>
       </el-table>
