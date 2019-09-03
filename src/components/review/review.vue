@@ -132,7 +132,12 @@ export default {
             }
           });
           this.fieldList = fieldsList.filter(e => !e.isSpace);
-          this.geojson = fieldsList.find(e => e.isSpace).fieldValue;
+          try {
+            this.geojson = fieldsList.find(e => e.isSpace).fieldValue;
+          } catch (error) {
+            console.error(error);
+          }
+          if (!this.geojson) return false;
           if (this.map) {
             const geojson = JSON.parse(this.geojson);
             const data = {
@@ -324,6 +329,7 @@ export default {
       padding: 30px 20px;
       color: #000;
       height: 250px;
+      overflow: auto;
       box-sizing: border-box;
       border-bottom: 1px solid #e6e6e6;
       .label,
