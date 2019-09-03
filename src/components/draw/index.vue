@@ -86,8 +86,8 @@ export default {
               },
               paint: {
                 'line-color': '#D20C0C',
-                'line-dasharray': [0.2, 2],
-                'line-width': 2,
+                // 'line-dasharray': [0.2, 2],
+                // 'line-width': 2,
               },
             },
             // vertex point halos

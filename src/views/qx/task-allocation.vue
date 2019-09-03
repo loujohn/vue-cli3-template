@@ -205,6 +205,22 @@ export default {
       this.params.pageIndex = val;
       this.getTaskRecordList();
     },
+    handleTaskSelect(selection, row) {
+      const existed = this.selectedTasks.find(e => e.id === row.id);
+      if (existed) {
+        this.selectedTasks = this.selectedTasks.filter(e => e.id !== row.id);
+      } else {
+        this.existed.push(row);
+      }
+    },
+    defaultSelected() {
+      this.selectedKsList.forEach(row => {
+        this.$refs['table'].toggleRowSelection(row, true);
+      });
+    },
+    handleTaskSelectAll(selection) {
+      this.selectedTasks = selection;
+    },
     addGeoLayer(geojson) {
       if (!geojson) return false;
       this.map.addSource('geo-task', {

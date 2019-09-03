@@ -54,8 +54,8 @@
         </el-table-column>
         <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
         <el-table-column label="调查状态">
-          <template>
-            <span>区县已审核</span>
+          <template slot-scope="scope">
+            <span>{{ scope.row.surveyStatus | sjSurveyStatus }}</span>
           </template>
         </el-table-column>
         <el-table-column label="审核状态">
@@ -97,6 +97,7 @@ import customerCard from 'components/card/card';
 import vReview from 'components/review/review';
 import list from 'mixins/list';
 import { task } from 'api';
+import { sjSurveyStatus } from 'filters';
 export default {
   name: 'detail',
   components: {
@@ -129,6 +130,9 @@ export default {
       size: 'small',
       detail: {},
     };
+  },
+  filters: {
+    sjSurveyStatus,
   },
   created() {
     this.getTaskField();
