@@ -203,7 +203,7 @@ export default {
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
-      this.getTaskRecordList();
+      this.getList();
     },
     handleTaskSelect(selection, row) {
       const existed = this.selectedTasks.find(e => e.id === row.id);
@@ -267,6 +267,7 @@ export default {
   .data {
     width: 50%;
     background-color: #fff;
+    overflow: auto;
     .el-breadcrumb {
       padding: 10px 20px;
     }
