@@ -40,7 +40,7 @@
           </el-col>
           <el-col :span="6">
             <span class="label">分发状态:</span>
-            <el-select v-model="form.distributionStatus" :size="size" clearable>
+            <el-select v-model="form.status" :size="size" clearable>
               <el-option
                 v-for="item in distributionStatusList"
                 :key="item.name"
@@ -57,7 +57,7 @@
             <div class="operation">
               <span class="select">
                 已选择{{ count }}个
-                <el-button size="small"
+                <el-button size="small" @click="handleTaskDistribute()"
                   ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
                 >
               </span>
@@ -68,7 +68,13 @@
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header" :data="list">
+      <el-table
+        ref="table"
+        header-row-class-name="customer-table-header"
+        :data="list"
+        @select="handleTaskSelect"
+        @select-all="handleTaskSelectAll"
+      >
         <el-table-column type="selection"></el-table-column>
         <el-table-column
           v-for="(item, index) in fields"
@@ -149,8 +155,8 @@ export default {
       ],
       form: {
         surveyUserId: '',
-        distributionStatus: '',
-        tbbh: '',
+        status: '',
+        ids: '',
       },
       surveyUserList: [],
       fields: [],
@@ -172,12 +178,30 @@ export default {
     distribution,
   },
   methods: {
+    async handleTaskDistribute() {
+      const ids = this.selectedTasks.map(e => e.id);
+      const params = {
+        ...this.form,
+        ids: ids.toString(),
+      };
+      const res = await task.taskDistribute(params);
+      if (res.code.toString() === '200') {
+        this.$message({
+          type: 'success',
+          message: '分派成功',
+        });
+        this.selectedTasks = [];
+        this.params.pageIndex = 1;
+        this.getList();
+      }
+    },
     async handleMapLoad(e) {
       this.map = e.target;
-      window.$map = e.target;
       const res = await task.getGeojson({ id: this.id });
-      if (res.code.toString() === '200') {
+      if (res.code && res.code.toString() === '200') {
         this.addGeoLayer(res.data);
+      } else {
+        return false;
       }
     },
     async getSurveyUserList() {
@@ -210,7 +234,7 @@ export default {
       if (existed) {
         this.selectedTasks = this.selectedTasks.filter(e => e.id !== row.id);
       } else {
-        this.existed.push(row);
+        this.selectedTasks.push(row);
       }
     },
     defaultSelected() {
