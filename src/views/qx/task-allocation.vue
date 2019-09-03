@@ -83,11 +83,10 @@
           :prop="`referenceInfo.fields[${item.fieldName}]`"
         >
         </el-table-column>
-        <el-table-column label="调查人员">
-          <template>
-            王二小
-          </template>
-        </el-table-column>
+        <el-table-column
+          label="调查人员"
+          prop="referenceInfo.surverUserName"
+        ></el-table-column>
         <el-table-column label="分发状态">
           <template slot-scope="scope">
             <span :class="{ not: !scope.row.distributionStatus }">
@@ -188,7 +187,7 @@ export default {
       if (res.code.toString() === '200') {
         this.$message({
           type: 'success',
-          message: '分派成功',
+          message: '分发成功',
         });
         this.selectedTasks = [];
         this.params.pageIndex = 1;
