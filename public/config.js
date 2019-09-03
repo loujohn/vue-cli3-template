@@ -1,5 +1,5 @@
-var common = 'http://192.168.11.160:8083';
-// var common = 'http://172.16.4.195:8083';
+// var common = 'http://192.168.11.160:8083';
+var common = 'http://172.16.4.195:8083';
 window.config = {
   title: '地理空间调查笔记',
   baseMapUrl:

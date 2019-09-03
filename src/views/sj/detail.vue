@@ -167,7 +167,7 @@ export default {
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
-      this.getTaskRecordList();
+      this.getList();
     },
   },
 };
