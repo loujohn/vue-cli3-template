@@ -5,5 +5,5 @@ window.config = {
   baseMapUrl:
     'http://zhsq.digitalcq.com/D2CJsonV2/zhsqdt/ZHSQDT_IMAGE_New.json',
   baseUrl: common + '/dc-core/',
-  staticUrl: common + '/dc-core/static/Media/',
+  staticUrl: common + '/dc-core/static',
 };
