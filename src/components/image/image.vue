@@ -1,8 +1,12 @@
 <template>
   <div class="image">
     <el-row :gutter="10">
-      <el-col :span="8" v-for="image in images" :key="image.id">
-        <el-image :src="`${staticUrl}${image.fileName}`"></el-image>
+      <el-col :span="8" v-for="image in images" :key="image.fileName">
+        <el-image fit="fill" :src="`${staticUrl}${image.filePath}`">
+          <div slot="error">
+            <i class="el-icon-picture-outline"></i>
+          </div>
+        </el-image>
       </el-col>
     </el-row>
   </div>
@@ -26,4 +30,12 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.image {
+  padding: 10px;
+  overflow: auto;
+  height: 550px;
+  overflow: auto;
+  box-sizing: border-box;
+}
+</style>

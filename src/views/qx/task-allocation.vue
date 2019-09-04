@@ -1,6 +1,13 @@
 <template>
   <div class="task-allocation">
     <div class="data">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>区县</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'qx-list' }"
+          >任务列表</el-breadcrumb-item
+        >
+        <el-breadcrumb-item>任务分派</el-breadcrumb-item>
+      </el-breadcrumb>
       <div class="cards">
         <div class="card" v-for="card in cards" :key="card.name">
           <span class="name">
@@ -20,9 +27,9 @@
       </div>
       <div class="filter">
         <el-row :gutter="10">
-          <el-col :span="5">
+          <el-col :span="6">
             <span class="label">调查人员:</span>
-            <el-select v-model="form.dcry" :size="size" clearable>
+            <el-select v-model="form.surveyUserId" :size="size" clearable>
               <el-option
                 v-for="item in surveyUserList"
                 :key="item.id"
@@ -31,19 +38,26 @@
               ></el-option>
             </el-select>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <span class="label">分发状态:</span>
-            <el-select v-model="form.status" :size="size" clearable></el-select>
+            <el-select v-model="form.status" :size="size" clearable>
+              <el-option
+                v-for="item in distributionStatusList"
+                :key="item.name"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-col>
-          <el-col :span="5">
-            <span class="label">图斑编号:</span>
-            <el-select v-model="form.tbbh" :size="size" clearable></el-select>
-          </el-col>
-          <el-col :span="9">
+          <!--          <el-col :span="5">-->
+          <!--            <span class="label">图斑编号:</span>-->
+          <!--            <el-select v-model="form.tbbh" :size="size" clearable></el-select>-->
+          <!--          </el-col>-->
+          <el-col :span="12">
             <div class="operation">
               <span class="select">
-                已选择38个
-                <el-button size="small"
+                已选择{{ count }}个
+                <el-button size="small" @click="handleTaskDistribute()"
                   ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
                 >
               </span>
@@ -54,7 +68,13 @@
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header" :data="list">
+      <el-table
+        ref="table"
+        header-row-class-name="customer-table-header"
+        :data="list"
+        @select="handleTaskSelect"
+        @select-all="handleTaskSelectAll"
+      >
         <el-table-column type="selection"></el-table-column>
         <el-table-column
           v-for="(item, index) in fields"
@@ -63,11 +83,10 @@
           :prop="`referenceInfo.fields[${item.fieldName}]`"
         >
         </el-table-column>
-        <el-table-column label="调查人员">
-          <template
-            >王二小</template
-          >
-        </el-table-column>
+        <el-table-column
+          label="调查人员"
+          prop="referenceInfo.surverUserName"
+        ></el-table-column>
         <el-table-column label="分发状态">
           <template slot-scope="scope">
             <span :class="{ not: !scope.row.distributionStatus }">
@@ -75,7 +94,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="60px">
           <template slot-scope="scope">
             <el-button type="text" size="mini">
               {{ scope.row.distributionStatus | distribution }}
@@ -96,6 +115,7 @@
     </div>
     <div class="map-container">
       <v-map @load="handleMapLoad" />
+      <v-draw v-if="map" :map="map" />
     </div>
   </div>
 </template>
@@ -104,12 +124,14 @@
 import { task, survey } from 'api';
 import turf from 'turf';
 import vMap from 'components/map/map';
+import vDraw from 'components/draw';
 import list from 'mixins/list';
 import { distributionStatus, distribution } from 'filters';
 export default {
   name: 'task-allocation',
   components: {
     vMap,
+    vDraw,
   },
   props: {
     id: {
@@ -119,6 +141,10 @@ export default {
   mixins: [list],
   data() {
     return {
+      distributionStatusList: [
+        { name: '已分发', value: 1 },
+        { name: '未分发', value: 0 },
+      ],
       size: 'small',
       map: null,
       cards: [
@@ -127,13 +153,19 @@ export default {
         { name: '已分发', icon: '已分发', value: 300 },
       ],
       form: {
-        dcry: '',
+        surveyUserId: '',
         status: '',
-        tbbh: '',
+        ids: '',
       },
       surveyUserList: [],
       fields: [],
+      selectedTasks: [],
     };
+  },
+  computed: {
+    count() {
+      return this.selectedTasks.length;
+    },
   },
   mounted() {
     this.getSurveyUserList();
@@ -145,12 +177,30 @@ export default {
     distribution,
   },
   methods: {
+    async handleTaskDistribute() {
+      const ids = this.selectedTasks.map(e => e.id);
+      const params = {
+        ...this.form,
+        ids: ids.toString(),
+      };
+      const res = await task.taskDistribute(params);
+      if (res.code.toString() === '200') {
+        this.$message({
+          type: 'success',
+          message: '分发成功',
+        });
+        this.selectedTasks = [];
+        this.params.pageIndex = 1;
+        this.getList();
+      }
+    },
     async handleMapLoad(e) {
       this.map = e.target;
-      window.$map = e.target;
       const res = await task.getGeojson({ id: this.id });
-      if (res.code.toString() === '200') {
+      if (res.code && res.code.toString() === '200') {
         this.addGeoLayer(res.data);
+      } else {
+        return false;
       }
     },
     async getSurveyUserList() {
@@ -176,7 +226,23 @@ export default {
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
-      this.getTaskRecordList();
+      this.getList();
+    },
+    handleTaskSelect(selection, row) {
+      const existed = this.selectedTasks.find(e => e.id === row.id);
+      if (existed) {
+        this.selectedTasks = this.selectedTasks.filter(e => e.id !== row.id);
+      } else {
+        this.selectedTasks.push(row);
+      }
+    },
+    defaultSelected() {
+      this.selectedKsList.forEach(row => {
+        this.$refs['table'].toggleRowSelection(row, true);
+      });
+    },
+    handleTaskSelectAll(selection) {
+      this.selectedTasks = selection;
     },
     addGeoLayer(geojson) {
       if (!geojson) return false;
@@ -224,11 +290,16 @@ export default {
   .data {
     width: 50%;
     background-color: #fff;
+    overflow: auto;
+    .el-breadcrumb {
+      padding: 10px 20px;
+    }
     .cards {
       display: flex;
       justify-content: space-between;
       padding: 16px 20px;
       border-bottom: 1px solid #e6e6e6;
+      padding-top: 0;
       .card {
         width: 30%;
         background-color: #0e67f2;
@@ -283,6 +354,7 @@ export default {
     width: 50%;
     flex-shrink: 0;
     height: 100%;
+    position: relative;
   }
 }
 </style>

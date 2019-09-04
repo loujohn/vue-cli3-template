@@ -48,9 +48,9 @@
           :prop="`referenceInfo.fields[${item.fieldName}]`"
         ></el-table-column>
         <el-table-column label="调查人员">
-          <template
-            >王二小</template
-          >
+          <template>
+            王二小
+          </template>
         </el-table-column>
         <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
         <el-table-column label="调查状态">
@@ -72,10 +72,12 @@
       <div class="pagination">
         <el-pagination
           layout="total, prev, pager, next"
-          :total="100"
+          :total="totalCount"
+          :page-count="params.pageIndex"
           :small="true"
           background
           :pager-count="5"
+          @current-change="handleCurrentPageChange"
         ></el-pagination>
       </div>
     </div>
@@ -165,7 +167,7 @@ export default {
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
-      this.getTaskRecordList();
+      this.getList();
     },
   },
 };

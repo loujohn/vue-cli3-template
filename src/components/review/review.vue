@@ -5,10 +5,6 @@
         <v-map @load="handleMapLoad" />
         <span class="title">空间查看</span>
       </div>
-      <div class="img-container">
-        <img :src="imgTest" alt="test" />
-        <span class="title">影像截图</span>
-      </div>
     </div>
     <div class="right">
       <div class="head">
@@ -69,7 +65,7 @@
           </div>
         </div>
       </div>
-      <v-image v-if="activeTabIndex === 1" :images="imagesList" />
+      <v-image v-show="activeTabIndex === 1" :images="imagesList" />
     </div>
   </div>
 </template>
@@ -132,7 +128,12 @@ export default {
             }
           });
           this.fieldList = fieldsList.filter(e => !e.isSpace);
-          this.geojson = fieldsList.find(e => e.isSpace).fieldValue;
+          try {
+            this.geojson = fieldsList.find(e => e.isSpace).fieldValue;
+          } catch (error) {
+            console.error(error);
+          }
+          if (!this.geojson) return false;
           if (this.map) {
             const geojson = JSON.parse(this.geojson);
             const data = {
@@ -267,9 +268,8 @@ export default {
     width: 50%;
     flex-shrink: 0;
   }
-  .map-container,
-  .img-container {
-    height: 300px;
+  .map-container {
+    height: 600px;
     position: relative;
     .title {
       font-size: $font-xs;
@@ -279,16 +279,6 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
-    }
-  }
-  .map-container {
-    border-bottom: 1px solid $base-color;
-    box-sizing: border-box;
-  }
-  .img-container {
-    img {
-      height: 100%;
-      width: 100%;
     }
   }
   .right {
@@ -324,6 +314,7 @@ export default {
       padding: 30px 20px;
       color: #000;
       height: 250px;
+      overflow: auto;
       box-sizing: border-box;
       border-bottom: 1px solid #e6e6e6;
       .label,
