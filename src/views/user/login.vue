@@ -31,10 +31,21 @@
           placeholder="密码"
           @keyup.enter.native="handleLogin"
         />
-        <span class="show-pwd" @click="showPwd">
+        <span
+          class="show-pwd"
+          @click="showPwd"
+        >
           <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
+      <Verify
+        style="margin-bottom:20px;"
+        @success="verify('success')"
+        @error="verify('error')"
+        :barSize="{ width: '100%', height: '40px' }"
+        :type="3"
+        :showButton="false"
+      ></Verify>
       <el-form-item>
         <el-button
           :loading="loading"
@@ -50,8 +61,13 @@
 </template>
 <script>
 import { title } from 'config';
+import Verify from 'vue2-verify';
+
 export default {
   name: 'Login',
+  components: {
+    Verify,
+  },
   data() {
     return {
       title,
@@ -59,6 +75,7 @@ export default {
         username: '',
         password: '',
       },
+      verifyStatus: false,
       loginRules: {
         username: [
           { required: true, trigger: 'blur', message: '请输入用户名' },
@@ -79,6 +96,21 @@ export default {
     },
   },
   methods: {
+    verify(text) {
+      if (text === 'success') {
+        this.verifyStatus = true;
+        // this.$message({
+        //   message:"验证成功",
+        //   type:"success"
+        // })
+      } else {
+        this.verifyStatus = false;
+        // this.$message({
+        //   message:"验证失败",
+        //   type:"error"
+        // })
+      }
+    },
     showPwd() {
       if (this.pwdType === 'password') {
         this.pwdType = '';
@@ -87,6 +119,13 @@ export default {
       }
     },
     handleLogin() {
+       if (!this.verifyStatus) {
+        this.$message({
+          message: '请先完成验证',
+          type: 'error',
+        });
+        return;
+      }
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
