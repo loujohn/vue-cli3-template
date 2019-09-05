@@ -47,11 +47,10 @@
           :label="item.fieldAlias"
           :prop="`referenceInfo.fields[${item.fieldName}]`"
         ></el-table-column>
-        <el-table-column label="调查人员">
-          <template>
-            王二小
-          </template>
-        </el-table-column>
+        <el-table-column
+          label="调查人员"
+          prop="referenceInfo.surverUserName"
+        ></el-table-column>
         <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
         <el-table-column label="调查状态">
           <template>

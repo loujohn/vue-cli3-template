@@ -49,10 +49,6 @@
               ></el-option>
             </el-select>
           </el-col>
-          <!--          <el-col :span="5">-->
-          <!--            <span class="label">图斑编号:</span>-->
-          <!--            <el-select v-model="form.tbbh" :size="size" clearable></el-select>-->
-          <!--          </el-col>-->
           <el-col :span="12">
             <div class="operation">
               <span class="select">
@@ -197,6 +193,7 @@ export default {
     async handleMapLoad(e) {
       this.map = e.target;
       const res = await task.getGeojson({ id: this.id });
+      console.log(res);
       if (res.code && res.code.toString() === '200') {
         this.addGeoLayer(res.data);
       } else {
