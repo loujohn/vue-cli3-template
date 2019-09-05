@@ -11,6 +11,15 @@ Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.mixin(mWindow);
 
+//使用ramda
+import * as R from 'ramda';
+Object.defineProperties(Vue.prototype, {
+  $R: {
+    get() {
+      return R;
+    },
+  },
+});
 new Vue({
   router,
   store,

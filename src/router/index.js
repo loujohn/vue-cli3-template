@@ -65,6 +65,18 @@ const router = new Router({
             },
           ],
         },
+        {
+          path: 'xt',
+          component: () => import('views/xt/index'),
+          redirect: 'xt/list',
+          children: [
+            {
+              path: 'list',
+              name: 'xt-list',
+              component: () => import('views/xt/list'),
+            },
+          ],
+        },
       ],
     },
     {

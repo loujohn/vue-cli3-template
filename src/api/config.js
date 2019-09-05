@@ -9,7 +9,8 @@ const url = {
   taskDistribute: baseUrl + 'manage/taskRecord/distribution.do',
   taskImport: baseUrl + 'manage/tasl/import.do',
   initMap: baseUrl + 'manage/taskRecord/initMap.do',
-  templateList: baseUrl + 'manage/surveyTemplate/list.do',
+  templateList: baseUrl + 'manage/surveyTemplate/page.do',
+  templateAdd: baseUrl + 'manage/surveyTemplate/save.do',
   tempalteDetail: baseUrl + 'manage/surveyTemplate/getTemplateFields.do',
   surveyUserList: baseUrl + 'manage/surveyUser/list.do',
 };
