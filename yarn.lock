@@ -9241,7 +9241,7 @@ vue-template-es2015-compiler@^1.9.0:
 
 vue2-verify@^1.1.5:
   version "1.1.5"
-  resolved "https://registry.yarnpkg.com/vue2-verify/-/vue2-verify-1.1.5.tgz#d26e01c266b09e55de79274e95ff568892220b4c"
+  resolved "https://registry.npmjs.org/vue2-verify/-/vue2-verify-1.1.5.tgz#d26e01c266b09e55de79274e95ff568892220b4c"
   integrity sha512-jsp1elCWzYS+GGTzbwoeQJaH5FbADj5truRXM2U0bLgjkiZwWOZUJfMDhpmDNFDowtYy2moemU5Dm/ss2nem9A==
   dependencies:
     vue "^2.5.2"
