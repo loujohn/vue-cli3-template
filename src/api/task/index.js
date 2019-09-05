@@ -66,9 +66,16 @@ export default {
   /**
    * 获取模板列表
    */
-  async getTemplateList() {
-    const res = await http.get(url.templateList);
-    return res;
+  async getTemplateList(params) {
+    const res = await http.get(url.templateList, { params });
+    return res.data;
+  },
+  /**
+   * 添加模版
+   */
+  async addTemplate(params) {
+    const res = await http.post(url.templateAdd, params);
+    return res.data;
   },
   /**
    * 获取模板详情
