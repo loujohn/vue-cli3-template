@@ -34,10 +34,18 @@
           <el-table :data="form.referenceInfo.fields">
             <el-table-column label="别名" prop="fieldAlias"></el-table-column>
             <el-table-column label="字段名称" prop="fieldName"></el-table-column>
-            <el-table-column label="是否行政区划"><template slot-scope="scope">{{scope.row.isXzqh === 1 ? '是' : '否'}}</template></el-table-column>
-            <el-table-column label="是否可编辑"><template slot-scope="scope">{{scope.row.isEdit === 1 ? '是' : '否'}}</template></el-table-column>
-            <el-table-column label="是否在PC展示"><template slot-scope="scope">{{scope.row.isPcShow === 1 ? '是' : '否'}}</template></el-table-column>
-            <el-table-column label="是否在APP展示"><template slot-scope="scope">{{scope.row.isAppShow === 1 ? '是' : '否'}}</template></el-table-column>
+            <el-table-column label="是否行政区划">
+              <template slot-scope="scope">{{scope.row.isXzqh === 1 ? '是' : '否'}}</template>
+            </el-table-column>
+            <el-table-column label="是否可编辑">
+              <template slot-scope="scope">{{scope.row.isEdit === 1 ? '是' : '否'}}</template>
+            </el-table-column>
+            <el-table-column label="是否在PC展示">
+              <template slot-scope="scope">{{scope.row.isPcShow === 1 ? '是' : '否'}}</template>
+            </el-table-column>
+            <el-table-column label="是否在APP展示">
+              <template slot-scope="scope">{{scope.row.isAppShow === 1 ? '是' : '否'}}</template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -120,6 +128,22 @@ export default {
   }
   .form-content {
     margin: 25px 30px;
+    .item {
+      display: flex;
+      margin: 0 0 10px 0;
+      justify-content: flex-start;
+      font-size: 14px;
+      .label {
+        width: 120px;
+        padding: 5px 0;
+        text-align: left;
+        color: rgb(103, 105, 105);
+      }
+      .content {
+        width: 50%;
+        padding: 5px 0 5px 8px;
+      }
+    }
   }
 }
 </style>
