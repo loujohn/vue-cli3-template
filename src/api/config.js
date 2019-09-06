@@ -10,9 +10,7 @@ const url = {
   initMap: baseUrl + 'manage/taskRecord/initMap.do',
   templateList: baseUrl + 'manage/surveyTemplate/page.do',
   templateAdd: baseUrl + 'manage/surveyTemplate/save.do',
-  tempalteDetail: baseUrl + 'manage/surveyTemplate/getTemplateFields.do',
-  gdbUpload: baseUrl + 'manage/task/uploadGDB.do',
-  taskImport: baseUrl + 'manage/task/import.do',
+  tempalteDetail: baseUrl + 'manage/surveyTemplate/get.do',
   surveyUserList: baseUrl + 'manage/surveyUser/list.do',
 };
 

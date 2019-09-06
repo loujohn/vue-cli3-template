@@ -5,8 +5,8 @@
       <el-breadcrumb-item>模版列表</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="list">
-       <div class="operation">
-        <edit-template @add-success="getList"></edit-template>
+      <div class="operation">
+        <edit-template @add-success="getList" btnText="新增模版"></edit-template>
       </div>
       <el-table
         :data="list"
@@ -23,19 +23,18 @@
         ></el-table-column>
         <el-table-column
           label="操作"
-          width="100px"
+          width="130px"
         >
           <template slot-scope="scope">
-            <el-button
-              type="text"
-              size="mini"
-              @click="toDetail(scope.row.id)"
-            >详情</el-button>
-            <el-button
-              type="text"
-              size="mini"
-              @click="toAllocation(scope.row.id)"
-            >删除</el-button>
+            <div style="display: flex; justify-content: space-around">
+              <qx-detail :id="scope.row.id"></qx-detail>
+              <edit-template @add-success="getList" btnText="编辑" :id="scope.row.id"></edit-template>
+              <el-button
+                type="text"
+                size="mini"
+                @click="toAllocation(scope.row.id)"
+              >删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -55,16 +54,17 @@
 <script>
 import { task } from 'api';
 import list from 'mixins/list';
-import editTemplate from './editTemplate'
+import editTemplate from './editTemplate';
+import qxDetail from './qxDetail';
 export default {
   name: 'template-list',
   components: {
-    editTemplate
+    editTemplate,
+    qxDetail,
   },
   mixins: [list],
   data() {
     return {
-     
     };
   },
   mounted() {
@@ -72,7 +72,9 @@ export default {
   },
   methods: {
     toDetail(id) {
-      this.$router.push({ name: 'qx-detail', query: { id } });
+      // this.$router.push({ name: 'qx-detail', query: { id } });
+      // this.centerDialogVisible = true;
+      // this.id = id;
     },
     toAllocation(id) {
       this.$router.push({ name: 'task-allocation', query: { id } });
