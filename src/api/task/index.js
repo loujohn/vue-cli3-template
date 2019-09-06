@@ -82,7 +82,14 @@ export default {
    * params { id }
    */
   async getTemplateDetail(params) {
-    const res = await http.get(url.tempalteDetail, { params });
+    const res = await http.get(url.templateDetail, { params });
+    return res;
+  },
+  /**
+   * 添加删除
+   */
+  async deleteTemplate(params) {
+    const res = await http.get(url.templateDelete, { params });
     return res;
   },
   /**
