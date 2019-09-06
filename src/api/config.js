@@ -12,6 +12,8 @@ const url = {
   templateAdd: baseUrl + 'manage/surveyTemplate/save.do',
   tempalteDetail: baseUrl + 'manage/surveyTemplate/get.do',
   surveyUserList: baseUrl + 'manage/surveyUser/list.do',
+  gdbUpload: baseUrl + 'manage/task/uploadGDB.do',
+  taskImport: baseUrl + 'manage/task/import.do',
 };
 
 export default url;

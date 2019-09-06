@@ -79,7 +79,7 @@ export default {
   },
   /**
    * 获取模板详情
-   * params { templateId }
+   * params { id }
    */
   async getTemplateDetail(params) {
     const res = await http.get(url.tempalteDetail, { params });
@@ -87,7 +87,7 @@ export default {
   },
   /**
    * 数据导入
-   * params { templateId, taskName, completeTime, importType, file }
+   * params { templateId, gdbFilepath, extraFieldStr, taskName, taskDataTypeId, completeTime, importType }
    */
   async taskImport(params) {
     const res = await http.post(url.taskImport, qs.stringify(params));

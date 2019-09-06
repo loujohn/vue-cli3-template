@@ -1,17 +1,67 @@
 <template>
-  <div class="upload"></div>
+  <div class="upload">
+    <el-upload
+      class="upload-demo"
+      :action="url"
+      :headers="requestHeader"
+      ref="upload"
+      :on-preview="handlePreview"
+      :before-upload="progress"
+      :on-success="onSuccess"
+      :list-type="listType"
+      :file-list="files"
+      :auto-upload="true"
+      :before-remove="removeFile"
+      :multiple="true"
+    >
+      <el-button
+        slot="trigger"
+        size="mini"
+        icon="el-icon-upload"
+        type="primary"
+        class="my-button"
+        >添加文件</el-button
+      >
+    </el-upload>
+  </div>
 </template>
+
 <script>
+import url from 'api/config';
 export default {
   name: 'upload',
-  data() {
-    return {
-      toUpdateNum: 0,
-      files: [],
-      cancel: [],
-      url: '',
-      tempList: [],
-    };
+  methods: {
+    handlePreview() {
+      return true;
+    },
+    removeFile(file) {
+      let files = this.$R.reject(item => {
+        return item.uid === file.uid;
+      }, this.tempList);
+      this.tempList = files;
+      this.$emit('update:fileList', this.tempList);
+      return true;
+    },
+    onSuccess(res, file) {
+      this.toUpdateNum--;
+      if (res.code.toString() === '200') {
+        this.tempList = this.tempList.concat([file]);
+        const { data } = res;
+        this.$emit('upload-success', data);
+      }
+    },
+    progress(file) {
+      if (file.size > 1024 * 1024 * 100) {
+        this.$message({
+          message: '上传文件请不要大于100M',
+          type: 'error',
+        });
+        return false;
+      } else {
+        this.toUpdateNum++;
+        return true;
+      }
+    },
   },
   computed: {
     requestHeader: () => {
@@ -19,6 +69,15 @@ export default {
         return { 'X-Token': sessionStorage.getItem('token') };
       }
     },
+  },
+  data() {
+    return {
+      toUpdateNum: 0,
+      files: [],
+      cancel: [],
+      url: url.gdbUpload,
+      tempList: [],
+    };
   },
   props: {
     fileList: {
