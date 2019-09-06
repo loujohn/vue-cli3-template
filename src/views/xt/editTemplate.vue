@@ -54,7 +54,7 @@
                 <tr v-for="(item, index) in form.params" :key="index">
                   <td>
                     <el-form-item>
-                      <el-input v-model="item.fieldAlias"></el-input>
+                      <el-input v-model="item.fieldAlias" @change="updateFieldName(index)"></el-input>
                     </el-form-item>
                   </td>
                   <td>
@@ -206,6 +206,9 @@ export default {
     },
     removeParam(index) {
       this.form.params = this.$R.remove(index, 1)(this.form.params);
+    },
+    updateFieldName(index){
+      this.form.params[index].fieldName = this.form.params[index].fieldAlias
     },
     async addTemplate() {
       this.centerDialogVisible = false;
