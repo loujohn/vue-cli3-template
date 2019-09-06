@@ -5,19 +5,12 @@
       size="small"
       icon="el-icon-plus"
       @click="centerDialogVisible = true"
+      v-if="btnText === '新增模版'"
     >{{btnText}}</el-button>
+    <el-button type="text" size="small" @click="getTemplate" v-else>{{btnText}}</el-button>
 
-    <el-dialog
-      :title="btnText"
-      :visible.sync="centerDialogVisible"
-      width="720px"
-      center
-    >
-      <el-form
-        :model="form"
-        :label-width="formLabelWidth"
-        ref="template"
-      >
+    <el-dialog :title="btnText" :visible.sync="centerDialogVisible" width="1000px" center>
+      <el-form :model="form" :label-width="formLabelWidth" ref="template">
         <div class="form-card">
           <div class="form-title">
             <div class="form-rectangle">
@@ -28,20 +21,9 @@
           </div>
           <div class="form-content">
             <el-row :gutter="0">
-              <el-col
-                :md="24"
-                :lg="24"
-                :xl="24"
-              >
-                <el-form-item
-                  label="模版名称："
-                  :rules="rules.tempName"
-                  prop="name"
-                >
-                  <el-input
-                    v-model="form.name"
-                    autocomplete="off"
-                  ></el-input>
+              <el-col :md="24" :lg="24" :xl="24">
+                <el-form-item label="模版名称：" :rules="rules.tempName" prop="name">
+                  <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -59,32 +41,54 @@
             <table>
               <thead>
                 <tr>
+                  <th style="width: 20%">别名</th>
                   <th style="width: 20%">字段名称</th>
-                  <th style="width: 35%">是否在pc展示</th>
-                  <th style="width: 35%">是否在app展示</th>
+                  <th style="width: 15%">是否是行政区划</th>
+                  <th style="width: 15%">是否可编辑</th>
+                  <th style="width: 15%">是否在pc展示</th>
+                  <th style="width: 15%">是否在app展示</th>
                   <th style="width: 10%">操作</th>
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="(item, index) in form.params"
-                  :key="index"
-                >
+                <tr v-for="(item, index) in form.params" :key="index">
                   <td>
-                    <el-form-item
-                      :prop="'params.' + index + '.name'"
-                      :rules="rules.name"
-                    >
-                      <el-input v-model="item.name"></el-input>
+                    <el-form-item>
+                      <el-input v-model="item.fieldAlias"></el-input>
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item :prop="'params.' + index + '.fieldName'" :rules="rules.name">
+                      <el-input v-model="item.fieldName"></el-input>
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item :prop="'params.' + index + '.isXzqh'">
+                      <el-select v-model="item.isXzqh" placeholder="请选择" style="width:100%">
+                        <el-option
+                          v-for="item in showList"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item :prop="'params.' + index + '.isEdit'">
+                      <el-select v-model="item.isEdit" placeholder="请选择" style="width:100%">
+                        <el-option
+                          v-for="item in showList"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
                     </el-form-item>
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isPcShow'">
-                      <el-select
-                        v-model="item.isPcShow"
-                        placeholder="请选择"
-                        style="width:100%"
-                      >
+                      <el-select v-model="item.isPcShow" placeholder="请选择" style="width:100%">
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -96,11 +100,7 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isAppShow'">
-                      <el-select
-                        v-model="item.isAppShow"
-                        placeholder="请选择"
-                        style="width:100%"
-                      >
+                      <el-select v-model="item.isAppShow" placeholder="请选择" style="width:100%">
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -111,11 +111,7 @@
                     </el-form-item>
                   </td>
                   <td>
-                    <el-button
-                      type="text"
-                      style="color: #F56C6C;"
-                      @click="removeParam(index)"
-                    >
+                    <el-button type="text" style="color: #F56C6C;" @click="removeParam(index)">
                       <i class="el-icon-remove"></i> 删除
                     </el-button>
                   </td>
@@ -123,23 +119,14 @@
               </tbody>
             </table>
             <div class="table-add-fk">
-              <el-button
-                @click="addParma"
-                icon="el-icon-plus"
-              >新增字段</el-button>
+              <el-button @click="addParma" icon="el-icon-plus">新增字段</el-button>
             </div>
           </div>
         </div>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="addTemplate"
-        >保存</el-button>
+        <el-button type="primary" @click="addTemplate">保存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -187,31 +174,72 @@ export default {
   props: {
     btnText: {
       type: String,
-      default: '新增模版',
     },
+    id: {
+      type: [Number, String],
+    }
+  },
+  watch: {
+    // 'form.params.fieldName': {
+    //   handler: function() {
+    //     this.form.params.forEach(item => {
+    //       if (!item.fieldAlias) {
+    //         item.fieldAlias = item.fieldName;
+    //       }
+    //     });
+    //   },
+    //   deep: true,
+    // }
   },
   methods: {
     addParma() {
-      let param = { fieldName: '', isPcShow: 0, isAppShow: 0 };
+      let param = {
+        fieldName: '',
+        isPcShow: 0,
+        isAppShow: 0,
+        fieldType: 0,
+        fieldAlias: '',
+        isXzqh: 0,
+        isEdit: 0,
+      };
       this.form.params.push(param);
     },
     removeParam(index) {
       this.form.params = this.$R.remove(index, 1)(this.form.params);
     },
     async addTemplate() {
-      this.centerDialogVisible = false
+      this.centerDialogVisible = false;
       this.$refs['template'].validate(async valid => {
         if (valid) {
-          let params = {
-            templateName: this.form.name,
-            referenceInfo: { fields: this.form.params },
-          };
+          let params;
+          if (this.btnText === '新增模版') {
+            params = {
+              templateName: this.form.name,
+              referenceInfo: { fields: this.form.params },
+            };
+          } else {
+            params = {
+              id: this.form.id,
+              templateName: this.form.name,
+              referenceInfo: { fields: this.form.params },
+            };
+          }
           let res = await task.addTemplate(params);
-          this.$emit("add-success")
+          this.$emit('add-success');
         } else {
           return false;
         }
       });
+    },
+    async getTemplate() {
+      let data = {
+        id: this.id,
+      };
+      let res = await task.getTemplateDetail(data);
+      this.form.id = res.data.id;
+      this.form.name = res.data.templateName;
+      this.form.params = Object.assign([], this.form.params, res.data.referenceInfo.fields);
+      this.centerDialogVisible = true;
     },
   },
 };
