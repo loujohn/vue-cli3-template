@@ -381,7 +381,7 @@ export default {
         }
         td {
           border: none;
-          padding: 10px 2% 0 0;
+          padding: 10px 5px 0 0;
           font-size: 14px;
           .el-button.is-circle {
             padding: 6px;
