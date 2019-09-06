@@ -7,10 +7,24 @@
       @click="centerDialogVisible = true"
       v-if="btnText === '新增模版'"
     >{{btnText}}</el-button>
-    <el-button type="text" size="small" @click="getTemplate" v-else>{{btnText}}</el-button>
+    <el-button
+      type="text"
+      size="small"
+      @click="getTemplate"
+      v-else
+    >{{btnText}}</el-button>
 
-    <el-dialog :title="btnText" :visible.sync="centerDialogVisible" width="1000px" center>
-      <el-form :model="form" :label-width="formLabelWidth" ref="template">
+    <el-dialog
+      :title="btnText"
+      :visible.sync="centerDialogVisible"
+      width="1000px"
+      center
+    >
+      <el-form
+        :model="form"
+        :label-width="formLabelWidth"
+        ref="template"
+      >
         <div class="form-card">
           <div class="form-title">
             <div class="form-rectangle">
@@ -21,9 +35,20 @@
           </div>
           <div class="form-content">
             <el-row :gutter="0">
-              <el-col :md="24" :lg="24" :xl="24">
-                <el-form-item label="模版名称：" :rules="rules.tempName" prop="name">
-                  <el-input v-model="form.name" autocomplete="off"></el-input>
+              <el-col
+                :md="24"
+                :lg="24"
+                :xl="24"
+              >
+                <el-form-item
+                  label="模版名称："
+                  :rules="rules.tempName"
+                  prop="name"
+                >
+                  <el-input
+                    v-model="form.name"
+                    autocomplete="off"
+                  ></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -51,20 +76,33 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in form.params" :key="index">
+                <tr
+                  v-for="(item, index) in form.params"
+                  :key="index"
+                >
                   <td>
                     <el-form-item>
-                      <el-input v-model="item.fieldAlias"></el-input>
+                      <el-input
+                        v-model="item.fieldAlias"
+                        @change="updateFieldName(index)"
+                      ></el-input>
                     </el-form-item>
                   </td>
                   <td>
-                    <el-form-item :prop="'params.' + index + '.fieldName'" :rules="rules.name">
+                    <el-form-item
+                      :prop="'params.' + index + '.fieldName'"
+                      :rules="rules.name"
+                    >
                       <el-input v-model="item.fieldName"></el-input>
                     </el-form-item>
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isXzqh'">
-                      <el-select v-model="item.isXzqh" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isXzqh"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -76,7 +114,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isEdit'">
-                      <el-select v-model="item.isEdit" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isEdit"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -88,7 +130,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isPcShow'">
-                      <el-select v-model="item.isPcShow" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isPcShow"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -100,7 +146,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isAppShow'">
-                      <el-select v-model="item.isAppShow" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isAppShow"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -111,7 +161,11 @@
                     </el-form-item>
                   </td>
                   <td>
-                    <el-button type="text" style="color: #F56C6C;" @click="removeParam(index)">
+                    <el-button
+                      type="text"
+                      style="color: #F56C6C;"
+                      @click="removeParam(index)"
+                    >
                       <i class="el-icon-remove"></i> 删除
                     </el-button>
                   </td>
@@ -119,14 +173,23 @@
               </tbody>
             </table>
             <div class="table-add-fk">
-              <el-button @click="addParma" icon="el-icon-plus">新增字段</el-button>
+              <el-button
+                @click="addParma"
+                icon="el-icon-plus"
+              >新增字段</el-button>
             </div>
           </div>
         </div>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addTemplate">保存</el-button>
+        <el-button
+          type="primary"
+          @click="addTemplate"
+        >保存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -206,6 +269,11 @@ export default {
     },
     removeParam(index) {
       this.form.params = this.$R.remove(index, 1)(this.form.params);
+    },
+    updateFieldName(index) {
+      if (!this.form.params[index].fieldName) {
+        this.form.params[index].fieldName = this.form.params[index].fieldAlias;
+      }
     },
     async addTemplate() {
       this.centerDialogVisible = false;

@@ -2,7 +2,9 @@
   <div class="sj-task">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>市级</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'sj-list' }">任务列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'sj-list' }"
+        >任务列表</el-breadcrumb-item
+      >
       <el-breadcrumb-item>新增任务</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
@@ -10,10 +12,7 @@
         <p class="title">数据导入</p>
         <el-form label-width="80px">
           <el-form-item label="任务名称:">
-            <el-select
-              v-model="form.taskName"
-              :style="style"
-            ></el-select>
+            <el-select v-model="form.taskName" :style="style"></el-select>
           </el-form-item>
           <el-form-item label="调查模板:">
             <el-select
@@ -36,15 +35,9 @@
           <el-form-item label="字段:">
             <template>
               <div class="field">
-                <el-button
-                  type="text"
-                  icon="el-icon-plus"
-                >添加字段</el-button>
+                <el-button type="text" icon="el-icon-plus">添加字段</el-button>
                 <span>
-                  <svg-icon
-                    iconClass="导入"
-                    :style="{ fill: '#0e67f2' }"
-                  />
+                  <svg-icon iconClass="导入" :style="{ fill: '#0e67f2' }" />
                 </span>
               </div>
             </template>
@@ -56,18 +49,13 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="导入方式">
-            <el-select
-              v-model="form.drfs"
-              :style="style"
-            ></el-select>
+            <el-select v-model="form.drfs" :style="style"></el-select>
           </el-form-item>
           <el-form-item label="数据选择">
             <el-input></el-input>
             <span class="import">
-              <svg-icon
-                iconClass="导入"
-                :style="{ fill: '#0e67f2' }"
-              ></svg-icon>导入
+              <svg-icon iconClass="导入" :style="{ fill: '#0e67f2' }"></svg-icon
+              >导入
             </span>
           </el-form-item>
           <div class="confirm">
@@ -77,10 +65,7 @@
       </div>
       <div class="guide">
         <p class="title">
-          <svg-icon
-            iconClass="提示"
-            :style="{ fill: '#0e67f2' }"
-          ></svg-icon>
+          <svg-icon iconClass="提示" :style="{ fill: '#0e67f2' }"></svg-icon>
           <span>使用提示</span>
         </p>
         <p>
@@ -126,7 +111,7 @@ export default {
     };
   },
   mounted() {
-    this.remoteMethod('')
+    this.remoteMethod('');
   },
   methods: {
     async remoteMethod(query) {
