@@ -32,7 +32,7 @@
               <el-button
                 type="text"
                 size="mini"
-                @click="toAllocation(scope.row.id)"
+                @click="toDeleteTemplate(scope.row.id)"
               >删除</el-button>
             </div>
           </template>
@@ -71,13 +71,23 @@ export default {
     this.getList();
   },
   methods: {
-    toDetail(id) {
-      // this.$router.push({ name: 'qx-detail', query: { id } });
-      // this.centerDialogVisible = true;
-      // this.id = id;
-    },
-    toAllocation(id) {
-      this.$router.push({ name: 'task-allocation', query: { id } });
+    async toDeleteTemplate(id) {
+      let params = {
+        id: id,
+      }
+      let res = await task.deleteTemplate(params);
+      if (res.code === 200 && res.message === 'ok') {
+        this.$message({
+          message: '删除成功',
+          type: 'success',
+        });
+        this.getList();
+      } else {
+        this.$message({
+          message: '删除失败',
+          type: 'error',
+        });
+      }
     },
     async getList() {
       const data = await task.getTemplateList(this.params);
