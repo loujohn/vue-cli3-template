@@ -7,7 +7,6 @@ const url = {
   taskDetail: baseUrl + 'manage/taskRecord/get.do',
   taskCheck: baseUrl + 'manage/taskRecord/check.do',
   taskDistribute: baseUrl + 'manage/taskRecord/distribution.do',
-  taskImport: baseUrl + 'manage/tasl/import.do',
   initMap: baseUrl + 'manage/taskRecord/initMap.do',
   templateList: baseUrl + 'manage/surveyTemplate/page.do',
   templateAdd: baseUrl + 'manage/surveyTemplate/save.do',
