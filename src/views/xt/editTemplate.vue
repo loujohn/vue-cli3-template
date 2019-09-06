@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="template-edit">
     <el-button
       type="primary"
       size="small"
@@ -41,13 +41,13 @@
             <table>
               <thead>
                 <tr>
-                  <th style="width: 20%">别名</th>
-                  <th style="width: 20%">字段名称</th>
-                  <th style="width: 15%">是否是行政区划</th>
-                  <th style="width: 15%">是否可编辑</th>
-                  <th style="width: 15%">是否在pc展示</th>
-                  <th style="width: 15%">是否在app展示</th>
-                  <th style="width: 10%">操作</th>
+                  <th style="width: 25%">别名</th>
+                  <th style="width: 25%">字段名称</th>
+                  <th style="width: 12%">是否是行政区划</th>
+                  <th style="width: 10%">是否可编辑</th>
+                  <th style="width: 10%">是否在pc展示</th>
+                  <th style="width: 12%">是否在app展示</th>
+                  <th style="width: 6%">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -177,7 +177,7 @@ export default {
     },
     id: {
       type: [Number, String],
-    }
+    },
   },
   watch: {
     // 'form.params.fieldName': {
@@ -238,134 +238,102 @@ export default {
       let res = await task.getTemplateDetail(data);
       this.form.id = res.data.id;
       this.form.name = res.data.templateName;
-      this.form.params = Object.assign([], this.form.params, res.data.referenceInfo.fields);
+      this.form.params = Object.assign(
+        [],
+        this.form.params,
+        res.data.referenceInfo.fields,
+      );
       this.centerDialogVisible = true;
     },
   },
 };
 </script>
 <style lang="scss">
-.form-card {
-  margin: 20px 0;
-  .form-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 16px;
-    line-height: 42px;
-    letter-spacing: 0px;
-    color: #fff;
-    margin-bottom: 10px;
-    background-color: #eef2f7;
-    .form-rectangle {
-      display: inline-block;
+.template-edit {
+  .form-card {
+    margin: 20px 0;
+    .form-title {
+      display: flex;
       align-items: center;
-      height: 42px;
-      background-color: #0094ec;
-      .form-prefix {
-        float: left;
-        height: 14px;
-        border-right: 4px solid #fff;
-        margin: 14px 0px 14px 30px;
-      }
-      a {
-        margin: 0 30px 0 10px;
-      }
-      .form-triangle {
-        float: right;
-        width: 0px;
-        height: 0px;
-        border-top: 21px solid #eef2f7;
-        border-right: 21px solid #eef2f7;
-        border-bottom: 21px solid #0094ec;
-        border-left: 21px solid #0094ec;
-      }
-    }
-    .form-button {
-      margin-right: 10px;
-      background-color: #0094ec;
+      justify-content: space-between;
+      font-size: 16px;
+      line-height: 42px;
+      letter-spacing: 0px;
       color: #fff;
-      border-color: #0094ec;
-    }
-  }
-  .form-table-title-qx {
-    width: 66%;
-  }
-  .form-table-total {
-    color: #f56c6c;
-    float: right;
-  }
-  .form-table {
-    table {
-      border: none;
-      width: 100%;
-      float: left;
-      text-align: left;
-      color: #606266;
-      .el-form-item {
-        margin-bottom: 0;
-      }
-      .el-form-item__content {
-        margin-left: 0 !important;
-      }
-      th {
-        border: none;
-        background: none;
-        font-weight: inherit;
-      }
-      td {
-        border: none;
-        padding: 10px 2% 0 0;
-        font-size: 14px;
-        .el-button.is-circle {
-          padding: 6px;
+      margin-bottom: 10px;
+      background-color: #eef2f7;
+      .form-rectangle {
+        display: inline-block;
+        align-items: center;
+        height: 42px;
+        background-color: #0094ec;
+        .form-prefix {
+          float: left;
+          height: 14px;
+          border-right: 4px solid #fff;
+          margin: 14px 0px 14px 30px;
+        }
+        a {
+          margin: 0 30px 0 10px;
+        }
+        .form-triangle {
+          float: right;
+          width: 0px;
+          height: 0px;
+          border-top: 21px solid #eef2f7;
+          border-right: 21px solid #eef2f7;
+          border-bottom: 21px solid #0094ec;
+          border-left: 21px solid #0094ec;
         }
       }
+      .form-button {
+        margin-right: 10px;
+        background-color: #0094ec;
+        color: #fff;
+        border-color: #0094ec;
+      }
     }
-  }
-  .form-content {
-    margin: 25px 30px;
-    .el-form-item {
-      margin-bottom: 10px;
-    }
-    .el-form--label-top .el-form-item__label {
-      padding-bottom: 0;
-    }
-    .upload-card {
-      display: flex;
-      flex-direction: column;
-      .upload-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #e9f0fa;
-        border-radius: 5px 5px 0 0;
-        padding: 0 10px;
-        height: 40px;
-        .title {
+    .form-table {
+      table {
+        border: none;
+        width: 100%;
+        float: left;
+        text-align: left;
+        color: #606266;
+        .el-form-item {
+          margin-bottom: 0;
+        }
+        .el-form-item__content {
+          margin-left: 0 !important;
+        }
+        th {
+          border: none;
+          background: none;
+          font-weight: inherit;
+        }
+        td {
+          border: none;
+          padding: 10px 2% 0 0;
           font-size: 14px;
-          .title-icon {
-            color: #f56c6c;
-            margin-right: 4px;
+          .el-button.is-circle {
+            padding: 6px;
           }
         }
       }
-      .upload-content {
-        background: #f3f8fe;
-        padding: 10px 10px;
-        border-radius: 0 0 5px 5px;
+    }
+    .form-content {
+      margin: 25px 0px;
+      .el-form-item {
+        margin-bottom: 0;
       }
     }
-    table td .el-input__inner {
-      height: auto;
-    }
-  }
-  .table-add-fk {
-    width: 100%;
-    .el-button {
-      margin-top: 20px;
+    .table-add-fk {
       width: 100%;
-      background-color: #f3f8fe;
+      .el-button {
+        margin-top: 20px;
+        width: 100%;
+        background-color: #f3f8fe;
+      }
     }
   }
 }
