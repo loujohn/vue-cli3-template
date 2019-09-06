@@ -2,9 +2,7 @@
   <div class="sj-task">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>市级</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'sj-list' }"
-        >任务列表</el-breadcrumb-item
-      >
+      <el-breadcrumb-item :to="{ name: 'sj-list' }">任务列表</el-breadcrumb-item>
       <el-breadcrumb-item>新增任务</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
@@ -12,17 +10,41 @@
         <p class="title">数据导入</p>
         <el-form label-width="80px">
           <el-form-item label="任务名称:">
-            <el-select v-model="form.taskName" :style="style"></el-select>
+            <el-select
+              v-model="form.taskName"
+              :style="style"
+            ></el-select>
           </el-form-item>
           <el-form-item label="调查模板:">
-            <el-select v-model="form.dcmb" :style="style"></el-select>
+            <el-select
+              v-model="form.dcmb"
+              filterable
+              remote
+              placeholder="请输入关键词"
+              :remote-method="remoteMethod"
+              :loading="loading"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.templateName"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="字段:">
             <template>
               <div class="field">
-                <el-button type="text" icon="el-icon-plus">添加字段</el-button>
+                <el-button
+                  type="text"
+                  icon="el-icon-plus"
+                >添加字段</el-button>
                 <span>
-                  <svg-icon iconClass="导入" :style="{ fill: '#0e67f2' }" />
+                  <svg-icon
+                    iconClass="导入"
+                    :style="{ fill: '#0e67f2' }"
+                  />
                 </span>
               </div>
             </template>
@@ -34,13 +56,18 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="导入方式">
-            <el-select v-model="form.drfs" :style="style"></el-select>
+            <el-select
+              v-model="form.drfs"
+              :style="style"
+            ></el-select>
           </el-form-item>
           <el-form-item label="数据选择">
             <el-input></el-input>
             <span class="import">
-              <svg-icon iconClass="导入" :style="{ fill: '#0e67f2' }"></svg-icon
-              >导入
+              <svg-icon
+                iconClass="导入"
+                :style="{ fill: '#0e67f2' }"
+              ></svg-icon>导入
             </span>
           </el-form-item>
           <div class="confirm">
@@ -50,11 +77,14 @@
       </div>
       <div class="guide">
         <p class="title">
-          <svg-icon iconClass="提示" :style="{ fill: '#0e67f2' }"></svg-icon>
+          <svg-icon
+            iconClass="提示"
+            :style="{ fill: '#0e67f2' }"
+          ></svg-icon>
           <span>使用提示</span>
         </p>
         <p>
-          任务名称：对当前任务取一个名称。支持选择已建的任务名称和新建任务名称两种方式。选择已键的任务名称，其数据导入方式包括追加和覆盖两种，其中覆盖要求该任务还未开展调查。
+          任务名称：对当前任务取一个名称。支持选择已建的任务名称和新建任务名称两种方式。选择已建的任务名称，其数据导入方式包括追加和覆盖两种，其中覆盖要求该任务还未开展调查。
         </p>
         <p>
           调查模板：支持导入已有的模板和通过数据创建两种模式，用于调查指标的定义。
@@ -74,6 +104,8 @@
 </template>
 
 <script>
+import { task } from 'api';
+
 export default {
   name: 'task',
   data() {
@@ -86,10 +118,24 @@ export default {
         drfs: '',
         sjxz: '',
       },
+      loading: false,
+      options: [],
       style: {
         width: '100%',
       },
     };
+  },
+  mounted() {
+    this.remoteMethod('')
+  },
+  methods: {
+    async remoteMethod(query) {
+      this.loading = true;
+      const data = await task.getTemplateList({ keyword: query });
+      this.loading = false;
+      const { dataList, totalCount } = data;
+      this.options = dataList;
+    },
   },
 };
 </script>
