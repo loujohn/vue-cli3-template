@@ -3,6 +3,8 @@
     <span>
       <svg-icon iconClass="draw" style="height: 1.5em; width: 1.5em;" />空间选择
     </span>
+    <span v-show="show" class="confirm" @click="confirm()">确定</span>
+    <span v-show="show" class="clear" @click="clear()">清除</span>
   </div>
 </template>
 
@@ -18,6 +20,8 @@ export default {
       mode: 'draw_polygon',
       range: '',
       drawing: false,
+      data: '',
+      show: false,
     };
   },
   methods: {
@@ -187,8 +191,18 @@ export default {
       this.map.on('draw.modechange', this.handleMode);
     },
     handleDraw() {
-      const data = this.draw.getAll();
-      console.log(data);
+      this.data = this.draw.getAll();
+      this.show = true;
+    },
+    clear() {
+      this.draw.deleteAll();
+      this.draw.changeMode(this.mode);
+      this.show = false;
+    },
+    confirm() {
+      const { features } = this.data;
+      const feature = features[0];
+      this.$emit('finish-draw', feature.geometry);
     },
     handleMode(e) {
       if (e.mode !== this.mode) {
@@ -212,6 +226,7 @@ export default {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
   span {
     display: flex;
     align-items: center;
@@ -220,6 +235,14 @@ export default {
     font-size: 12px;
     padding: 6px;
     cursor: pointer;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  .confirm {
+    color: #67c23a;
+  }
+  .clear {
+    color: #409eff;
   }
 }
 </style>

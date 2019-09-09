@@ -124,7 +124,7 @@
     </div>
     <div class="map-container">
       <v-map @load="handleMapLoad" />
-      <v-draw v-if="map" :map="map" />
+      <v-draw v-if="map" :map="map" @finish-draw="getTasksByRange" />
     </div>
   </div>
 </template>
@@ -192,6 +192,22 @@ export default {
     distribution,
   },
   methods: {
+    async getTasksByRange(data) {
+      console.log(data);
+      const params = {
+        geojson: JSON.stringify(data),
+        taskId: this.id,
+      };
+      const res = await task.taskDistributeByRange(params);
+      if (res.code.toString() === '200' && res.message === 'ok') {
+        this.selectedTasks = res.data;
+        this.list.forEach(row => {
+          if (this.selectedTasks.find(e => e.id === row.id)) {
+            this.$refs['table'].toggleRowSelection(row, true);
+          }
+        });
+      }
+    },
     async handleTaskAll() {
       const ids = this.selectedTasks.map(e => e.id);
       const params = {
@@ -256,6 +272,13 @@ export default {
       const { dataList, totalCount } = data;
       this.list = dataList;
       this.totalCount = totalCount;
+      this.$nextTick(() => {
+        this.list.forEach(row => {
+          if (this.selectedTasks.find(e => e.id === row.id)) {
+            this.$refs['table'].toggleRowSelection(row, true);
+          }
+        });
+      });
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;

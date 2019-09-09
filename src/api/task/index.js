@@ -56,6 +56,18 @@ export default {
   },
 
   /**
+   * 通过空间选择分派
+   * params { geojson, taskId }
+   */
+  async taskDistributeByRange(params) {
+    const res = await http.post(
+      url.taskDistributeByRange,
+      qs.stringify(params),
+    );
+    return res;
+  },
+
+  /**
    * 获取geojson
    * params { taskId }
    */
