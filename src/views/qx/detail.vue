@@ -2,9 +2,7 @@
   <div class="qx-detail">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>区县</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'qx-list' }"
-        >任务列表</el-breadcrumb-item
-      >
+      <el-breadcrumb-item :to="{ name: 'qx-list' }">任务列表</el-breadcrumb-item>
       <el-breadcrumb-item>任务详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="cards">
@@ -20,27 +18,73 @@
         <el-row :gutter="30">
           <el-col :span="4">
             <span class="label">调查人员:</span>
-            <el-select v-model="form.dcry" :size="size"></el-select>
+            <el-select
+              v-model="form.surveyUserId"
+              :size="size"
+              @change="getList(form)"
+              clearable
+            >
+              <el-option
+                v-for="item in surveyUserList"
+                :key="item.id"
+                :label="item.realName"
+                :value="item.id"
+              ></el-option>
+            </el-select>
           </el-col>
-          <el-col :span="4">
+          <!-- <el-col :span="4">
             <span class="label">图斑编号:</span>
-            <el-select v-model="form.tbbh" :size="size"></el-select>
-          </el-col>
-          <el-col :span="4">
-            <span class="label">调查时间:</span>
-            <el-select v-model="form.dcsj" :size="size"></el-select>
-          </el-col>
+            <el-select
+              v-model="form.tbbh"
+              :size="size"
+            ></el-select>
+          </el-col> -->
           <el-col :span="4">
             <span class="label">审核结果:</span>
-            <el-select v-model="form.shjg" :size="size"></el-select>
+            <el-select
+              v-model="form.surveyStage"
+              @change="getList(form)"
+              :size="size"
+              clearable
+            >
+              <el-option
+                v-for="item in stageList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
+            <span class="label">调查时间:</span>
+            <el-date-picker
+              v-model="time"
+              type="daterange"
+              align="right"
+              @change="timeChange"
+              :size="size"
+              unlink-panels
+              value-format="yyyy-MM-dd HH:mm:ss"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+            >
+            </el-date-picker>
+          </el-col>
+          <!-- <el-col :span="4">
             <span class="label">到期时间:</span>
-            <el-select v-model="form.dqsj" :size="size"></el-select>
-          </el-col>
+            <el-select
+              v-model="form.dqsj"
+              :size="size"
+            ></el-select>
+          </el-col> -->
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header" :data="list">
+      <el-table
+        header-row-class-name="customer-table-header"
+        :data="list"
+      >
         <el-table-column
           v-for="(item, index) in fields"
           :key="index"
@@ -66,8 +110,7 @@
               type="text"
               size="mini"
               @click="getTaskDetail(scope.row.id)"
-              >审核</el-button
-            >
+            >审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -89,7 +132,10 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review @close="close" :data="detail" />
+      <v-review
+        @close="close"
+        :data="detail"
+      />
     </el-dialog>
   </div>
 </template>
@@ -98,8 +144,9 @@
 import customerCard from 'components/card/card';
 import vReview from 'components/review/review';
 import list from 'mixins/list';
-import { task } from 'api';
 import { checkStatus, getClass } from 'filters';
+import { task, survey } from 'api';
+import throttle from 'lodash.throttle';
 export default {
   name: 'detail',
   components: {
@@ -115,18 +162,76 @@ export default {
   data() {
     return {
       showDialog: false,
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            },
+          },
+          {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            },
+          },
+          {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            },
+          },
+        ],
+      },
+      stageList: [
+        {
+          label: '未调查',
+          value: 0,
+        },
+        {
+          label: '区县未审核',
+          value: 1,
+        },
+        {
+          label: '区县未通过',
+          value: 2,
+        },
+        {
+          label: '区县已通过',
+          value: 3,
+        },
+        {
+          label: '市级未通过',
+          value: 4,
+        },
+        {
+          label: '市级已通过',
+          value: 5,
+        },
+      ],
       data: [
         { name: '总图斑数', num: 300 },
         { name: '已完成', num: 200 },
         { name: '待审核', num: 50 },
         { name: '调查中', num: 50 },
       ],
+      time: null,
+      surveyUserList: [],
       form: {
-        dcry: '',
-        tbbh: '',
-        dcsj: '',
-        scjg: '',
-        dqsj: '',
+        surveyUserId: null,
+        surveyTimeMin: null,
+        surveyTimeMax: null,
+        surveyStage: null,
       },
       size: 'small',
       fields: [],
@@ -139,6 +244,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.getList();
+      this.getSurveyUserList();
     });
   },
   filters: {
@@ -157,8 +263,23 @@ export default {
       const fields = await task.getTaskField(params);
       this.fields = fields.filter(e => !e.isSpace);
     },
-    async getList() {
+    async getSurveyUserList() {
+      const res = await survey.getSurveyUserList({ id: this.id });
+      if (res.code.toString() === '200') {
+        this.surveyUserList = res.data;
+      }
+    },
+    async getList(searchParams) {
+      for (const key in searchParams) {
+        if (searchParams.hasOwnProperty(key)) {
+          let element = searchParams[key];
+          if (!element && element !== 0) {
+            searchParams[key] = null;
+          }
+        }
+      }
       const params = {
+        ...searchParams,
         ...this.params,
         taskId: this.id,
       };
@@ -174,7 +295,12 @@ export default {
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
-      this.getList();
+      this.getList(this.form);
+    },
+    timeChange(val) {
+      this.form.surveyTimeMin = val ? val[0] : null;
+      this.form.surveyTimeMax = val ? val[1] : null;
+      this.getList(this.form);
     },
   },
 };
