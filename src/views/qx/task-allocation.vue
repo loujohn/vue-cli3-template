@@ -51,15 +51,15 @@
           </el-col>
           <el-col :span="12">
             <div class="operation">
-              <span v-if="status" class="select">
+              <span v-if="!status" class="select">
                 已选择{{ count }}个
-                <el-button size="small" @click="handleTaskDistribute()"
+                <el-button size="small" @click="handleTaskAll()"
                   ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
                 >
               </span>
               <el-button
-                @click="handleTaskRevoke()"
-                v-if="!status"
+                @click="handleTaskAll()"
+                v-if="status"
                 size="small"
                 style="margin-left: 8px;"
                 ><svg-icon iconClass="撤销"></svg-icon> 全部撤回</el-button
@@ -101,7 +101,11 @@
         </el-table-column>
         <el-table-column label="操作" width="60px">
           <template slot-scope="scope">
-            <el-button type="text" size="mini">
+            <el-button
+              type="text"
+              size="mini"
+              @click="handleTaskOne(scope.row.id)"
+            >
               {{ scope.row.distributionStatus | distribution }}
             </el-button>
           </template>
@@ -188,35 +192,40 @@ export default {
     distribution,
   },
   methods: {
-    async handleTask(params) {
+    async handleTaskAll() {
+      const ids = this.selectedTasks.map(e => e.id);
+      const params = {
+        ...this.form,
+        status: this.status ? 0 : 1,
+        ids: ids.toString(),
+      };
       const res = await task.taskDistribute(params);
-      if (res.code.toString() === '200') {
+      if (res.code.toString() === '200' && res.message === 'ok') {
         this.$message({
           type: 'success',
-          message: this.status ? '分发成功' : '撤回成功',
+          message: !this.status ? '分发成功' : '撤回成功',
         });
         this.selectedTasks = [];
         this.params.pageIndex = 1;
         this.getList();
       }
     },
-    handleTaskDistribute() {
-      const ids = this.selectedTasks.map(e => e.id);
+    async handleTaskOne(id) {
       const params = {
         ...this.form,
-        status: 1,
-        ids: ids.toString(),
+        status: this.status ? 0 : 1,
+        ids: id,
       };
-      this.handleTask(params);
-    },
-    handleTaskRevoke() {
-      const ids = this.selectedTasks.map(e => e.id);
-      const params = {
-        ...this.form,
-        status: 0,
-        ids: ids.toString(),
-      };
-      this.handleTask(params);
+      const res = await task.taskDistribute(params);
+      if (res.code.toString() === '200' && res.message === 'ok') {
+        this.$message({
+          type: 'success',
+          message: !this.status ? '分发成功' : '撤回成功',
+        });
+        this.selectedTasks = [];
+        this.params.pageIndex = 1;
+        this.getList();
+      }
     },
     async handleMapLoad(e) {
       this.map = e.target;
