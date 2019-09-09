@@ -58,7 +58,7 @@ export default {
     fields() {
       return this.fieldList.map(e => {
         if (Object.prototype.toString.call(e) === '[object Object]') {
-          return e.fieldName;
+          return e.fieldAlias;
         } else {
           return e;
         }
