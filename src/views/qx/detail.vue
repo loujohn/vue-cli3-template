@@ -95,7 +95,7 @@
           prop="referenceInfo.surverUserName"
         ></el-table-column>
         <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
-        <el-table-column label="审核状态">
+        <el-table-column label="阶段">
           <template slot-scope="scope">
             <span :class="getClass(scope.row.checkFlowStage)">{{
               scope.row.checkFlowStage | checkStatus

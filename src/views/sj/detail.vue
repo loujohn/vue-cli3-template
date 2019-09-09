@@ -2,7 +2,9 @@
   <div class="sj-detail">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>市级</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'sj-list' }">任务列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'sj-list' }"
+        >任务列表</el-breadcrumb-item
+      >
       <el-breadcrumb-item>任务详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="cards">
@@ -81,10 +83,7 @@
           </el-col> -->
         </el-row>
       </div>
-      <el-table
-        :data="list"
-        header-row-class-name="customer-table-header"
-      >
+      <el-table :data="list" header-row-class-name="customer-table-header">
         <el-table-column
           :key="index"
           :label="item.fieldAlias"
@@ -95,21 +94,15 @@
           label="调查人员"
           prop="referenceInfo.surverUserName"
         ></el-table-column>
-        <el-table-column
-          label="调查时间"
-          prop="surveyTime"
-        ></el-table-column>
-        <el-table-column label="审核状态">
+        <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
+        <el-table-column label="阶段">
           <template slot-scope="scope">
             <span :class="getClass(scope.row.checkFlowStage)">{{
               scope.row.checkFlowStage | checkStatus
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="操作"
-          width="80px"
-        >
+        <el-table-column label="操作" width="80px">
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.checkFlowStage === 1"
@@ -149,10 +142,7 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review
-        :data="detail"
-        @close="close"
-      />
+      <v-review :data="detail" @close="close" />
     </el-dialog>
   </div>
 </template>

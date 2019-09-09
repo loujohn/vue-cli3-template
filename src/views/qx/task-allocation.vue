@@ -231,9 +231,6 @@ export default {
       this.map = e.target;
       const res = await task.getGeojson({ id: this.id });
       if (res.code && res.code.toString() === '200') {
-        // if (!this.map.hasImage('icon-dot')) {
-        //   this.map.addImage('icon-dot', img);
-        // }
         this.addGeoLayer(res.data);
       } else {
         return false;
@@ -303,16 +300,6 @@ export default {
           'line-color': 'red',
         },
       });
-      // this.map.addLayer({
-      //   id: 'task-symbol',
-      //   type: 'symbol',
-      //   source: 'geo-task',
-      //   layout: {
-      //     'symbol-placement': 'line-center',
-      //     'icon-image': 'icon-dot',
-      //     'icon-size': 0.25,
-      //   },
-      // });
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox);
     },
