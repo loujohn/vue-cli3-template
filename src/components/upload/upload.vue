@@ -44,10 +44,16 @@ export default {
     },
     onSuccess(res, file) {
       this.toUpdateNum--;
-      if (res.code.toString() === '200') {
+      if (res.code.toString() === '200' && res.message === 'ok') {
         this.tempList = this.tempList.concat([file]);
         const { data } = res;
         this.$emit('upload-success', data);
+      } else {
+        this.$message({
+          type: 'error',
+          message: res.message,
+        });
+        this.$refs['upload'].clearFiles();
       }
     },
     progress(file) {

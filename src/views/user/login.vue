@@ -31,10 +31,7 @@
           placeholder="密码"
           @keyup.enter.native="handleLogin"
         />
-        <span
-          class="show-pwd"
-          @click="showPwd"
-        >
+        <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
@@ -119,7 +116,7 @@ export default {
       }
     },
     handleLogin() {
-       if (!this.verifyStatus) {
+      if (!this.verifyStatus) {
         this.$message({
           message: '请先完成验证',
           type: 'error',

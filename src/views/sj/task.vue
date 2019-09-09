@@ -188,7 +188,7 @@ export default {
             this.$refs['form'].resetFields();
             this.fieldList = [];
             this.$refs['field'].extraFields = [];
-            this.$refs['uplaod'].$refs['upload'].clearFiles();
+            this.$refs['upload'].$refs['upload'].clearFiles();
           }
         }
       });
