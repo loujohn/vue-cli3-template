@@ -2,7 +2,9 @@
   <div class="qx-detail">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>区县</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'qx-list' }">任务列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'qx-list' }"
+        >任务列表</el-breadcrumb-item
+      >
       <el-breadcrumb-item>任务详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="cards">
@@ -81,10 +83,7 @@
           </el-col> -->
         </el-row>
       </div>
-      <el-table
-        header-row-class-name="customer-table-header"
-        :data="list"
-      >
+      <el-table header-row-class-name="customer-table-header" :data="list">
         <el-table-column
           v-for="(item, index) in fields"
           :key="index"
@@ -103,14 +102,15 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="80px">
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.checkFlowStage === 1"
               type="text"
               size="mini"
               @click="getTaskDetail(scope.row.id)"
-            >审核</el-button>
+              >审核</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -132,10 +132,7 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review
-        @close="close"
-        :data="detail"
-      />
+      <v-review @close="close" :data="detail" />
     </el-dialog>
   </div>
 </template>
