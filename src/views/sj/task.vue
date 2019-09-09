@@ -51,7 +51,7 @@
             />
           </el-form-item>
           <el-form-item label="数据选择:" prop="gdbFilePath">
-            <upload @upload-success="handleUploadSuccess" />
+            <upload ref="upload" @upload-success="handleUploadSuccess" />
             <field
               ref="field"
               :fieldList="fieldList"
@@ -68,7 +68,9 @@
             ></el-date-picker>
           </el-form-item>
           <div class="confirm">
-            <el-button type="primary" @click="submit()">确定</el-button>
+            <el-button type="primary" @click="submit()" v-loading="loading"
+              >确定</el-button
+            >
           </div>
         </el-form>
       </div>
@@ -150,7 +152,7 @@ export default {
       this.loading = true;
       const data = await task.getTemplateList({ keyword: query });
       this.loading = false;
-      const { dataList, totalCount } = data;
+      const { dataList } = data;
       this.options = dataList;
     },
     async handleSelectChange(val) {
@@ -186,6 +188,7 @@ export default {
             this.$refs['form'].resetFields();
             this.fieldList = [];
             this.$refs['field'].extraFields = [];
+            this.$refs['uplaod'].$refs['upload'].clearFiles();
           }
         }
       });
