@@ -40,7 +40,7 @@
           </el-col>
           <el-col :span="6">
             <span class="label">分发状态:</span>
-            <el-select v-model="form.status" :size="size" clearable>
+            <el-select v-model="status" :size="size" clearable>
               <el-option
                 v-for="item in distributionStatusList"
                 :key="item.name"
@@ -51,13 +51,17 @@
           </el-col>
           <el-col :span="12">
             <div class="operation">
-              <span class="select">
+              <span v-if="status" class="select">
                 已选择{{ count }}个
                 <el-button size="small" @click="handleTaskDistribute()"
                   ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
                 >
               </span>
-              <el-button size="small" style="margin-left: 8px;"
+              <el-button
+                @click="handleTaskRevoke()"
+                v-if="!status"
+                size="small"
+                style="margin-left: 8px;"
                 ><svg-icon iconClass="撤销"></svg-icon> 全部撤回</el-button
               >
             </div>
@@ -85,7 +89,12 @@
         ></el-table-column>
         <el-table-column label="分发状态">
           <template slot-scope="scope">
-            <span :class="{ not: !scope.row.distributionStatus }">
+            <span
+              :class="{
+                not: !scope.row.distributionStatus,
+                'has-dispatch': scope.row.distributionStatus,
+              }"
+            >
               {{ scope.row.distributionStatus | distributionStatus }}
             </span>
           </template>
@@ -123,6 +132,11 @@ import vMap from 'components/map/map';
 import vDraw from 'components/draw';
 import list from 'mixins/list';
 import { distributionStatus, distribution } from 'filters';
+const iconDot = require('assets/images/map/notDispatch.png');
+const img = new Image();
+img.src = iconDot;
+img.style.height = '20px';
+img.style.width = '20px';
 export default {
   name: 'task-allocation',
   components: {
@@ -148,6 +162,7 @@ export default {
         { name: '未分发', icon: '未分发', value: 300 },
         { name: '已分发', icon: '已分发', value: 300 },
       ],
+      status: 0,
       form: {
         surveyUserId: '',
         status: '',
@@ -173,28 +188,43 @@ export default {
     distribution,
   },
   methods: {
-    async handleTaskDistribute() {
-      const ids = this.selectedTasks.map(e => e.id);
-      const params = {
-        ...this.form,
-        ids: ids.toString(),
-      };
+    async handleTask(params) {
       const res = await task.taskDistribute(params);
       if (res.code.toString() === '200') {
         this.$message({
           type: 'success',
-          message: '分发成功',
+          message: this.status ? '分发成功' : '撤回成功',
         });
         this.selectedTasks = [];
         this.params.pageIndex = 1;
         this.getList();
       }
     },
+    handleTaskDistribute() {
+      const ids = this.selectedTasks.map(e => e.id);
+      const params = {
+        ...this.form,
+        status: 1,
+        ids: ids.toString(),
+      };
+      this.handleTask(params);
+    },
+    handleTaskRevoke() {
+      const ids = this.selectedTasks.map(e => e.id);
+      const params = {
+        ...this.form,
+        status: 0,
+        ids: ids.toString(),
+      };
+      this.handleTask(params);
+    },
     async handleMapLoad(e) {
       this.map = e.target;
       const res = await task.getGeojson({ id: this.id });
-      console.log(res);
       if (res.code && res.code.toString() === '200') {
+        // if (!this.map.hasImage('icon-dot')) {
+        //   this.map.addImage('icon-dot', img);
+        // }
         this.addGeoLayer(res.data);
       } else {
         return false;
@@ -264,6 +294,16 @@ export default {
           'line-color': 'red',
         },
       });
+      // this.map.addLayer({
+      //   id: 'task-symbol',
+      //   type: 'symbol',
+      //   source: 'geo-task',
+      //   layout: {
+      //     'symbol-placement': 'line-center',
+      //     'icon-image': 'icon-dot',
+      //     'icon-size': 0.25,
+      //   },
+      // });
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox);
     },
@@ -282,7 +322,10 @@ export default {
   height: 100%;
   overflow: hidden;
   .not {
-    color: red;
+    color: #f56c6c;
+  }
+  .has-dispatch {
+    color: #67c23a;
   }
   .data {
     width: 50%;
