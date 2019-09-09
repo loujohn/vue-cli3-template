@@ -8,120 +8,47 @@
     </div>
     <div class="right">
       <div class="head">
-        <el-steps
-          :active="activeTabIndex"
-          style="width:calc(100% - 10px)"
-          finish-status="success"
-          simple
-        >
-          <el-step
-            v-for="(tab, index) in tabs"
-            :key="index"
-            :title="tab.name"
-          ></el-step>
-        </el-steps>
-        <!-- <div class="tabs">
+        <div class="tabs">
           <span
             class="tab"
             v-for="(tab, index) in tabs"
             :key="tab.name"
             :class="{ active: index === activeTabIndex }"
             @click="setActiveTabIndex(index)"
-          >{{ tab.name }}</span>
-        </div> -->
-        <span
-          class="close"
-          @click="close()"
-        >
+            >{{ tab.name }}</span
+          >
+        </div>
+        <span class="close" @click="close()">
           <i class="el-icon-close"></i>
         </span>
       </div>
-      <div class="review-box">
-        <div
-          class="base-info"
-          v-show="activeTabIndex === 0"
-        >
+      <div class="review-box" v-show="activeTabIndex === 0">
+        <div class="base-info">
           <el-row :gutter="10">
-            <el-col
-              :span="12"
-              v-for="item in fieldList"
-              :key="item.id"
-            >
+            <el-col :span="12" v-for="item in fieldList" :key="item.id">
               <span class="label">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
             </el-col>
           </el-row>
         </div>
-        <v-image
-          v-show="activeTabIndex === 1"
-          :images="imagesList"
-        />
-        <div
-          class="viedeo"
-          style="height:470px"
-          v-show="activeTabIndex === 2"
-        >
-          视频
+        <div class="suggestion">
+          <el-row>
+            <el-col :span="4">
+              <span class="label">审核意见:</span>
+            </el-col>
+            <el-col :span="18">
+              <el-input
+                type="textarea"
+                :rows="4"
+                v-model="form.suggestion"
+              ></el-input>
+            </el-col>
+          </el-row>
         </div>
-        <div
-          class="approval"
-          style="height:470px"
-          v-show="activeTabIndex === 3"
-        >
-          <div class="suggestion">
-            <el-form
-              ref="form"
-              :model="form"
-              label-width="100px"
-              label-position="left"
-            >
-              <el-form-item label="审核：">
-                <el-radio-group
-                  class="radio-group"
-                  v-model="form.status"
-                >
-                  <el-radio :label="1">通过</el-radio>
-                  <el-radio :label="0">不通过</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="审核意见：">
-                <el-input
-                  type="textarea"
-                  :rows="4"
-                  v-model="form.suggestion"
-                ></el-input>
-              </el-form-item>
-            </el-form>
-            <!-- <el-row>
-                <el-col :span="6">
-                  <span class="label">审核:</span>
-                </el-col>
-                <el-col :span="18">
-                  <el-radio-group
-                    class="radio-group"
-                    v-model="form.status"
-                  >
-                    <el-radio :label="1">通过</el-radio>
-                    <el-radio :label="0">不通过</el-radio>
-                  </el-radio-group>
-                </el-col>
-                <el-col :span="6">
-                  <span class="label">审核意见:</span>
-                </el-col>
-                <el-col :span="18">
-                  <el-input
-                    type="textarea"
-                    :rows="4"
-                    v-model="form.suggestion"
-                  ></el-input>
-                </el-col>
-              </el-row> -->
-          </div>
-          <div class="people">
-            <span>调查人员: 王二小</span>
-            <span>调查日期: {{ data.surveyTime }}</span>
-            <span>图斑状态: {{ data.surveyStatus ? '已审核' : '未审核' }}</span>
-          </div>
+        <div class="people">
+          <span>调查人员: 王二小</span>
+          <span>调查日期: {{ data.surveyTime }}</span>
+          <span>图斑状态: {{ data.surveyStatus ? '已审核' : '未审核' }}</span>
         </div>
         <div class="action">
           <div class="toggle">
@@ -129,31 +56,16 @@
             <span>下一条</span>
           </div>
           <div class="operation">
-            <template v-if="activeTabIndex<3">
-              <el-button
-                size="mini"
-                @click="pre"
-                v-if="activeTabIndex > 0"
-              >上一步</el-button>
-              <el-button
-                size="mini"
-                @click="next"
-              >下一步</el-button>
-            </template>
-            <template v-else>
-              <el-button
-                size="mini"
-                @click="pre"
-                v-if="activeTabIndex > 0"
-              >上一步</el-button>
-              <el-button
-                size="mini"
-                @click="check()"
-              >提交</el-button>
-            </template>
+            <span>审核:</span>
+            <el-radio-group class="radio-group" v-model="form.status">
+              <el-radio :label="1">通过</el-radio>
+              <el-radio :label="0">不通过</el-radio>
+            </el-radio-group>
+            <el-button size="mini" @click="check()">提交</el-button>
           </div>
         </div>
       </div>
+      <v-image v-show="activeTabIndex === 1" :images="imagesList" />
     </div>
   </div>
 </template>
@@ -183,12 +95,7 @@ export default {
   data() {
     return {
       imgTest,
-      tabs: [
-        { name: '文字' },
-        { name: '照片' },
-        { name: '视频' },
-        { name: '意见' },
-      ],
+      tabs: [{ name: '文字' }, { name: '照片' }, { name: '视频' }],
       activeTabIndex: 0,
       form: {
         suggestion: '',
@@ -246,12 +153,6 @@ export default {
     },
   },
   methods: {
-    pre() {
-      this.activeTabIndex -= 1;
-    },
-    next() {
-      this.activeTabIndex += 1;
-    },
     close() {
       this.$emit('close');
     },
@@ -382,7 +283,7 @@ export default {
   }
   .right {
     .head {
-      padding: 0;
+      padding: 0 20px;
       height: 50px;
       background-color: #f1f1f1;
       line-height: 50px;
@@ -392,9 +293,6 @@ export default {
         font-size: $font-lg;
         position: absolute;
         right: 10px;
-      }
-      .el-step.is-simple .el-step__head {
-          line-height: 100%;
       }
       .tabs {
         height: 100%;
@@ -415,7 +313,7 @@ export default {
     .base-info {
       padding: 30px 20px;
       color: #000;
-      height: 470px;
+      height: 250px;
       overflow: auto;
       box-sizing: border-box;
       border-bottom: 1px solid #e6e6e6;
@@ -431,7 +329,7 @@ export default {
     }
     .suggestion {
       padding: 30px 20px;
-      height: 420px;
+      height: 170px;
       box-sizing: border-box;
       .el-textarea__inner {
         background-color: #f8f8f8;
