@@ -62,11 +62,21 @@
         <el-table-column label="操作" width="80px">
           <template slot-scope="scope">
             <el-button
+              v-if="scope.row.checkFlowStage === 1"
               @click="getTaskDetail(scope.row.id)"
               size="mini"
               type="text"
             >
               审核
+            </el-button>
+            <el-button
+              v-if="scope.row.checkFlowStage === 5"
+              @click="getTaskDetail(scope.row.id)"
+              size="mini"
+              type="text"
+              style="color: #909399;"
+            >
+              查看
             </el-button>
           </template>
         </el-table-column>

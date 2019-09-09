@@ -62,6 +62,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
+              v-if="scope.row.checkFlowStage === 1"
               type="text"
               size="mini"
               @click="getTaskDetail(scope.row.id)"
