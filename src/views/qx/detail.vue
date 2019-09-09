@@ -84,7 +84,7 @@
       :visible="showDialog"
       :show-close="false"
       custom-class="my-dialog"
-      width="60%"
+      width="1100px"
     >
       <v-review @close="close" :data="detail" />
     </el-dialog>

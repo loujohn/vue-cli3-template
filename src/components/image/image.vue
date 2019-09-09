@@ -34,7 +34,7 @@ export default {
 .image {
   padding: 10px;
   overflow: auto;
-  height: 550px;
+  height: 470px;
   overflow: auto;
   box-sizing: border-box;
 }
