@@ -29,38 +29,21 @@
             @click="setActiveTabIndex(index)"
           >{{ tab.name }}</span>
         </div> -->
-        <span
-          class="close"
-          @click="close()"
-        >
+        <span class="close" @click="close()">
           <i class="el-icon-close"></i>
         </span>
       </div>
       <div class="review-box">
-        <div
-          class="base-info"
-          v-show="activeTabIndex === 0"
-        >
+        <div class="base-info" v-show="activeTabIndex === 0">
           <el-row :gutter="10">
-            <el-col
-              :span="12"
-              v-for="item in fieldList"
-              :key="item.id"
-            >
+            <el-col :span="12" v-for="item in fieldList" :key="item.id">
               <span class="label">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
             </el-col>
           </el-row>
         </div>
-        <v-image
-          v-show="activeTabIndex === 1"
-          :images="imagesList"
-        />
-        <div
-          class="viedeo"
-          style="height:470px"
-          v-show="activeTabIndex === 2"
-        >
+        <v-image v-show="activeTabIndex === 1" :images="imagesList" />
+        <div class="viedeo" style="height:470px" v-show="activeTabIndex === 2">
           视频
         </div>
         <div
@@ -76,10 +59,7 @@
               label-position="left"
             >
               <el-form-item label="审核：">
-                <el-radio-group
-                  class="radio-group"
-                  v-model="form.status"
-                >
+                <el-radio-group class="radio-group" v-model="form.status">
                   <el-radio :label="1">通过</el-radio>
                   <el-radio :label="0">不通过</el-radio>
                 </el-radio-group>
@@ -129,27 +109,17 @@
             <span>下一条</span>
           </div>
           <div class="operation">
-            <template v-if="activeTabIndex<3">
-              <el-button
-                size="mini"
-                @click="pre"
-                v-if="activeTabIndex > 0"
-              >上一步</el-button>
-              <el-button
-                size="mini"
-                @click="next"
-              >下一步</el-button>
+            <template v-if="activeTabIndex < 3">
+              <el-button size="mini" @click="pre" v-if="activeTabIndex > 0"
+                >上一步</el-button
+              >
+              <el-button size="mini" @click="next">下一步</el-button>
             </template>
             <template v-else>
-              <el-button
-                size="mini"
-                @click="pre"
-                v-if="activeTabIndex > 0"
-              >上一步</el-button>
-              <el-button
-                size="mini"
-                @click="check()"
-              >提交</el-button>
+              <el-button size="mini" @click="pre" v-if="activeTabIndex > 0"
+                >上一步</el-button
+              >
+              <el-button size="mini" @click="check()">提交</el-button>
             </template>
           </div>
         </div>
@@ -191,6 +161,7 @@ export default {
       ],
       activeTabIndex: 0,
       form: {
+        taskRecordId: '',
         suggestion: '',
         status: 1,
       },
@@ -204,6 +175,7 @@ export default {
     data: {
       handler: function(val) {
         if (val) {
+          this.form.taskRecordId = val.id;
           if (!val.referenceInfo) return false;
           let {
             referenceInfo: { fieldsList, imageFiles },
@@ -261,7 +233,6 @@ export default {
     check() {
       const params = {
         ...this.form,
-        taskRecordId: this.$route.query.id,
       };
       task.taskCheck(params).then(res => {
         if (res.code.toString() === '200' && res.message === 'ok') {
@@ -394,7 +365,7 @@ export default {
         right: 10px;
       }
       .el-step.is-simple .el-step__head {
-          line-height: 100%;
+        line-height: 100%;
       }
       .tabs {
         height: 100%;

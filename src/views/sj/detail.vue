@@ -52,12 +52,14 @@
           prop="referenceInfo.surverUserName"
         ></el-table-column>
         <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
-        <el-table-column label="调查状态">
+        <el-table-column label="审核状态">
           <template slot-scope="scope">
-            <span>{{ scope.row.surveyStatus | sjSurveyStatus }}</span>
+            <span :class="getClass(scope.row.checkFlowStage)">{{
+              scope.row.checkFlowStage | checkStatus
+            }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态">
+        <el-table-column label="操作" width="80px">
           <template slot-scope="scope">
             <el-button
               @click="getTaskDetail(scope.row.id)"
@@ -96,7 +98,7 @@ import customerCard from 'components/card/card';
 import vReview from 'components/review/review';
 import list from 'mixins/list';
 import { task } from 'api';
-import { sjSurveyStatus } from 'filters';
+import { checkStatus, getClass } from 'filters';
 export default {
   name: 'detail',
   components: {
@@ -131,7 +133,7 @@ export default {
     };
   },
   filters: {
-    sjSurveyStatus,
+    checkStatus,
   },
   created() {
     this.getTaskField();
@@ -142,6 +144,7 @@ export default {
     });
   },
   methods: {
+    getClass,
     open() {
       this.showDialog = true;
     },
@@ -204,6 +207,24 @@ export default {
     .el-dialog__body {
       padding: 0;
     }
+  }
+  .no-survey {
+    color: #909399;
+  }
+  .qx-no-check {
+    color: #e6a23c;
+  }
+  .qx-no-pass {
+    color: #f56c6c;
+  }
+  .qx-has-passed {
+    color: #409eff;
+  }
+  .sj-no-pass {
+    color: #f56c6c;
+  }
+  .sj-has-passed {
+    color: #67c23a;
   }
 }
 </style>
