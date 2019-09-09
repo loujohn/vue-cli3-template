@@ -2,9 +2,7 @@
   <div class="sj-detail">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>市级</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'sj-list' }"
-        >任务列表</el-breadcrumb-item
-      >
+      <el-breadcrumb-item :to="{ name: 'sj-list' }">任务列表</el-breadcrumb-item>
       <el-breadcrumb-item>任务详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="cards">
@@ -20,27 +18,73 @@
         <el-row :gutter="30">
           <el-col :span="4">
             <span class="label">调查人员:</span>
-            <el-select :size="size" v-model="form.dcry" value></el-select>
+            <el-select
+              v-model="form.surveyUserId"
+              :size="size"
+              @change="getList(form)"
+              clearable
+            >
+              <el-option
+                v-for="item in surveyUserList"
+                :key="item.id"
+                :label="item.realName"
+                :value="item.id"
+              ></el-option>
+            </el-select>
           </el-col>
-          <el-col :span="4">
+          <!-- <el-col :span="4">
             <span class="label">图斑编号:</span>
-            <el-select :size="size" v-model="form.tbbh" value></el-select>
-          </el-col>
-          <el-col :span="4">
-            <span class="label">调查时间:</span>
-            <el-select :size="size" v-model="form.dcsj" value></el-select>
-          </el-col>
+            <el-select
+              v-model="form.tbbh"
+              :size="size"
+            ></el-select>
+          </el-col> -->
           <el-col :span="4">
             <span class="label">审核结果:</span>
-            <el-select :size="size" v-model="form.shjg" value></el-select>
+            <el-select
+              v-model="form.surveyStage"
+              @change="getList(form)"
+              :size="size"
+              clearable
+            >
+              <el-option
+                v-for="item in stageList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-col>
-          <el-col :span="4">
-            <span class="label">所属区县:</span>
-            <el-select :size="size" v-model="form.ssqx" value></el-select>
+          <el-col :span="8">
+            <span class="label">调查时间:</span>
+            <el-date-picker
+              v-model="time"
+              type="daterange"
+              align="right"
+              @change="timeChange"
+              :size="size"
+              unlink-panels
+              value-format="yyyy-MM-dd HH:mm:ss"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+            >
+            </el-date-picker>
           </el-col>
+          <!-- <el-col :span="4">
+            <span class="label">到期时间:</span>
+            <el-select
+              v-model="form.dqsj"
+              :size="size"
+            ></el-select>
+          </el-col> -->
         </el-row>
       </div>
-      <el-table :data="list" header-row-class-name="customer-table-header">
+      <el-table
+        :data="list"
+        header-row-class-name="customer-table-header"
+      >
         <el-table-column
           :key="index"
           :label="item.fieldAlias"
@@ -51,7 +95,10 @@
           label="调查人员"
           prop="referenceInfo.surverUserName"
         ></el-table-column>
-        <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
+        <el-table-column
+          label="调查时间"
+          prop="surveyTime"
+        ></el-table-column>
         <el-table-column label="审核状态">
           <template slot-scope="scope">
             <span :class="getClass(scope.row.checkFlowStage)">{{
@@ -59,7 +106,10 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="80px">
+        <el-table-column
+          label="操作"
+          width="80px"
+        >
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.checkFlowStage === 1"
@@ -99,7 +149,10 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review :data="detail" @close="close" />
+      <v-review
+        :data="detail"
+        @close="close"
+      />
     </el-dialog>
   </div>
 </template>
@@ -107,7 +160,7 @@
 import customerCard from 'components/card/card';
 import vReview from 'components/review/review';
 import list from 'mixins/list';
-import { task } from 'api';
+import { task, survey } from 'api';
 import { checkStatus, getClass } from 'filters';
 export default {
   name: 'detail',
@@ -131,12 +184,70 @@ export default {
         { name: '调查中', num: 50 },
       ],
       fields: [],
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            },
+          },
+          {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            },
+          },
+          {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            },
+          },
+        ],
+      },
+      stageList: [
+        {
+          label: '未调查',
+          value: 0,
+        },
+        {
+          label: '区县未审核',
+          value: 1,
+        },
+        {
+          label: '区县未通过',
+          value: 2,
+        },
+        {
+          label: '区县已通过',
+          value: 3,
+        },
+        {
+          label: '市级未通过',
+          value: 4,
+        },
+        {
+          label: '市级已通过',
+          value: 5,
+        },
+      ],
+      time: null,
+      surveyUserList: [],
       form: {
-        tbbh: '',
-        dcry: '',
-        dcsj: '',
-        shjg: '',
-        ssqx: '',
+        surveyUserId: null,
+        surveyTimeMin: null,
+        surveyTimeMax: null,
+        surveyStage: null,
       },
       size: 'small',
       detail: {},
@@ -151,6 +262,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.getList();
+      this.getSurveyUserList();
     });
   },
   methods: {
@@ -166,8 +278,17 @@ export default {
       const fields = await task.getTaskField(params);
       this.fields = fields.filter(e => !e.isSpace);
     },
-    async getList() {
+    async getList(searchParams) {
+      for (const key in searchParams) {
+        if (searchParams.hasOwnProperty(key)) {
+          let element = searchParams[key];
+          if (!element && element !== 0) {
+            searchParams[key] = null;
+          }
+        }
+      }
       const params = {
+        ...searchParams,
         ...this.params,
         taskId: this.id,
       };
@@ -183,7 +304,18 @@ export default {
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
-      this.getList();
+      this.getList(this.form);
+    },
+    async getSurveyUserList() {
+      const res = await survey.getSurveyUserList({ id: this.id });
+      if (res.code.toString() === '200') {
+        this.surveyUserList = res.data;
+      }
+    },
+    timeChange(val) {
+      this.form.surveyTimeMin = val ? val[0] : null;
+      this.form.surveyTimeMax = val ? val[1] : null;
+      this.getList(this.form);
     },
   },
 };
