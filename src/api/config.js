@@ -17,6 +17,7 @@ const url = {
   gdbUpload: baseUrl + 'manage/task/uploadGDB.do',
   taskImport: baseUrl + 'manage/task/import.do',
   statistic: baseUrl + 'manage/task/statistic.do',
+  taskStatistic: baseUrl + 'manage/taskRecord/statistic.do',
 };
 
 export default url;
