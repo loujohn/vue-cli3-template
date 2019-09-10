@@ -232,6 +232,7 @@ export default {
             type: 'success',
             message: '提交成功',
           });
+          this.$emit('refresh')
           this.close();
         }
       });
