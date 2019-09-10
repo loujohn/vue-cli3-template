@@ -40,7 +40,11 @@
           </el-col>
           <el-col :span="6">
             <span class="label">分发状态:</span>
-            <el-select v-model="status" :size="size" clearable>
+            <el-select
+              v-model="status"
+              :size="size"
+              @change="handleStatusChange"
+            >
               <el-option
                 v-for="item in distributionStatusList"
                 :key="item.name"
@@ -172,6 +176,11 @@ export default {
         status: '',
         ids: '',
       },
+      params: {
+        pageIndex: 1,
+        pageSize: 10,
+        distributionStatus: 0,
+      },
       surveyUserList: [],
       fields: [],
       selectedTasks: [],
@@ -193,7 +202,6 @@ export default {
   },
   methods: {
     async getTasksByRange(data) {
-      console.log(data);
       const params = {
         geojson: JSON.stringify(data),
         taskId: this.id,
@@ -242,6 +250,11 @@ export default {
         this.params.pageIndex = 1;
         this.getList();
       }
+    },
+    handleStatusChange(val) {
+      this.params.pageIndex = 1;
+      this.params.distributionStatus = val;
+      this.getList();
     },
     async handleMapLoad(e) {
       this.map = e.target;

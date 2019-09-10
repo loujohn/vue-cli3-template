@@ -26,7 +26,7 @@ export function hideLoading() {
   if (needLoadingRequestCount <= 0) return;
   needLoadingRequestCount--;
   if (needLoadingRequestCount === 0) {
-    loadingInstance.close()
+    loadingInstance.close();
   }
 }
 
@@ -66,6 +66,9 @@ http.interceptors.response.use(
     }
   },
   error => {
+    if (!error.config.hideLoading) {
+      hideLoading();
+    }
     console.log(error);
     if (error.response.status == 401) {
       sessionStorage.clear();

@@ -102,18 +102,18 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="80px">
+        <el-table-column label="操作">
           <template slot-scope="scope">
+            <!-- v-if="scope.row.checkFlowStage === 1" -->
             <el-button
-              v-if="scope.row.checkFlowStage === 1"
               @click="getTaskDetail(scope.row.id)"
               size="mini"
               type="text"
             >
               审核
             </el-button>
+            <!-- v-if="scope.row.checkFlowStage === 5" -->
             <el-button
-              v-if="scope.row.checkFlowStage === 5"
               @click="getTaskDetail(scope.row.id)"
               size="mini"
               type="text"
