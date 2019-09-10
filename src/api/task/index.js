@@ -120,4 +120,12 @@ export default {
     const res = await http.get(url.statistic);
     return res.data || {};
   },
+  /**
+   * 获取任务统计信息
+   * params { taskId }
+   */
+  async getTaskStatistic(params) {
+    const res = await http.get(url.taskStatistic, { params });
+    return res.data || {};
+  },
 };

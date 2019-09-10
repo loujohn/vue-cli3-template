@@ -2,9 +2,7 @@
   <div class="sj-detail">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>市级</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'sj-list' }"
-        >任务列表</el-breadcrumb-item
-      >
+      <el-breadcrumb-item :to="{ name: 'sj-list' }">任务列表</el-breadcrumb-item>
       <el-breadcrumb-item>任务详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="cards">
@@ -83,7 +81,10 @@
           </el-col> -->
         </el-row>
       </div>
-      <el-table :data="list" header-row-class-name="customer-table-header">
+      <el-table
+        :data="list"
+        header-row-class-name="customer-table-header"
+      >
         <el-table-column
           :key="index"
           :label="item.fieldAlias"
@@ -94,7 +95,10 @@
           label="调查人员"
           prop="referenceInfo.surverUserName"
         ></el-table-column>
-        <el-table-column label="调查时间" prop="surveyTime"></el-table-column>
+        <el-table-column
+          label="调查时间"
+          prop="surveyTime"
+        ></el-table-column>
         <el-table-column label="阶段">
           <template slot-scope="scope">
             <span :class="getClass(scope.row.checkFlowStage)">{{
@@ -142,7 +146,10 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review :data="detail" @close="close" />
+      <v-review
+        :data="detail"
+        @close="close"
+      />
     </el-dialog>
   </div>
 </template>
@@ -168,10 +175,10 @@ export default {
     return {
       showDialog: false,
       data: [
-        { name: '总图斑数', num: 300 },
-        { name: '已完成', num: 200 },
-        { name: '待审核', num: 50 },
-        { name: '调查中', num: 50 },
+        { name: '总图斑数', num: 0 },
+        { name: '已完成', num: 0 },
+        { name: '待审核', num: 0 },
+        { name: '调查中', num: 0 },
       ],
       fields: [],
       pickerOptions: {
@@ -253,6 +260,7 @@ export default {
     this.$nextTick(() => {
       this.getList();
       this.getSurveyUserList();
+      this.getTaskStatistic();
     });
   },
   methods: {
@@ -306,6 +314,13 @@ export default {
       this.form.surveyTimeMin = val ? val[0] : null;
       this.form.surveyTimeMax = val ? val[1] : null;
       this.getList(this.form);
+    },
+    async getTaskStatistic() {
+      let data = await task.getTaskStatistic({ taskId: this.id });
+      this.data[0].num = data.total;
+      this.data[1].num = data.finished;
+      this.data[2].num = data.todo;
+      this.data[3].num = data.surveying;
     },
   },
 };
