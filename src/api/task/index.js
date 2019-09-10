@@ -112,4 +112,12 @@ export default {
     const res = await http.post(url.taskImport, qs.stringify(params));
     return res;
   },
+
+  /**
+   * 获取统计信息
+   */
+  async getStatistic() {
+    const res = await http.get(url.statistic);
+    return res.data || {};
+  },
 };

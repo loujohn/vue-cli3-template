@@ -16,6 +16,7 @@ const url = {
   surveyUserList: baseUrl + 'manage/surveyUser/list.do',
   gdbUpload: baseUrl + 'manage/task/uploadGDB.do',
   taskImport: baseUrl + 'manage/task/import.do',
+  statistic: baseUrl + 'manage/task/statistic.do',
 };
 
 export default url;
