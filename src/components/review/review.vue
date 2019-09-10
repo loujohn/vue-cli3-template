@@ -1,8 +1,13 @@
 <template>
   <div class="sj-review">
     <div class="left">
-      <div class="map-container">
-        <v-map @load="handleMapLoad" />
+      <div class="map-container" :style="{ height: containerHeight }">
+        <v-map
+          @load="handleMapLoad"
+          :containerHeight="containerHeight"
+          :geojson="geojson"
+        />
+        <div class="image-container"></div>
         <span class="title">空间查看</span>
       </div>
     </div>
@@ -20,15 +25,6 @@
             :title="tab.name"
           ></el-step>
         </el-steps>
-        <!-- <div class="tabs">
-          <span
-            class="tab"
-            v-for="(tab, index) in tabs"
-            :key="tab.name"
-            :class="{ active: index === activeTabIndex }"
-            @click="setActiveTabIndex(index)"
-          >{{ tab.name }}</span>
-        </div> -->
         <span class="close" @click="close()">
           <i class="el-icon-close"></i>
         </span>
@@ -43,7 +39,7 @@
           </el-row>
         </div>
         <v-image v-show="activeTabIndex === 1" :images="imagesList" />
-        <div class="viedeo" style="height:470px" v-show="activeTabIndex === 2">
+        <div class="video" style="height:470px" v-show="activeTabIndex === 2">
           视频
         </div>
         <div
@@ -72,30 +68,6 @@
                 ></el-input>
               </el-form-item>
             </el-form>
-            <!-- <el-row>
-                <el-col :span="6">
-                  <span class="label">审核:</span>
-                </el-col>
-                <el-col :span="18">
-                  <el-radio-group
-                    class="radio-group"
-                    v-model="form.status"
-                  >
-                    <el-radio :label="1">通过</el-radio>
-                    <el-radio :label="0">不通过</el-radio>
-                  </el-radio-group>
-                </el-col>
-                <el-col :span="6">
-                  <span class="label">审核意见:</span>
-                </el-col>
-                <el-col :span="18">
-                  <el-input
-                    type="textarea"
-                    :rows="4"
-                    v-model="form.suggestion"
-                  ></el-input>
-                </el-col>
-              </el-row> -->
           </div>
           <div class="people">
             <span>调查人员: 王二小</span>
@@ -105,8 +77,8 @@
         </div>
         <div class="action">
           <div class="toggle">
-            <span>上一条</span>
-            <span>下一条</span>
+            <span @click="test()">上一条</span>
+            <span @click="test1()">下一条</span>
           </div>
           <div class="operation">
             <template v-if="activeTabIndex < 3">
@@ -169,6 +141,7 @@ export default {
       imagesList: [],
       geojson: '',
       map: null,
+      containerHeight: '600px',
     };
   },
   watch: {
@@ -226,6 +199,8 @@ export default {
     },
     close() {
       this.$emit('close');
+      this.activeTabIndex = 0;
+      this.containerHeight = '600px';
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
@@ -339,7 +314,7 @@ export default {
     flex-shrink: 0;
   }
   .map-container {
-    height: 600px;
+    // height: 600px;
     position: relative;
     .title {
       font-size: $font-xs;

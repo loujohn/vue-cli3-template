@@ -1,10 +1,19 @@
 import common from 'api/common';
 import d2c from 'd2c';
+import turf from 'turf';
 export default {
   name: 'v-map',
   props: {
     container: {
       type: [String, Object],
+      default: '',
+    },
+    containerHeight: {
+      type: String,
+      default: '600px',
+    },
+    geojson: {
+      type: String,
       default: '',
     },
   },
@@ -14,6 +23,17 @@ export default {
       D2c: d2c || window.d2c,
       map: null,
     };
+  },
+  watch: {
+    containerHeight: function(val) {
+      if (val) {
+        this.map && this.map.resize();
+        if (this.geojson) {
+          const bbox = turf.bbox(JSON.parse(this.geojson));
+          this.map.fitBounds(bbox);
+        }
+      }
+    },
   },
   mounted() {
     this.initMap();
