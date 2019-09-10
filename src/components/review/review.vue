@@ -7,8 +7,10 @@
           :containerHeight="containerHeight"
           :geojson="geojson"
         />
-        <div class="image-container"></div>
         <span class="title">空间查看</span>
+      </div>
+      <div class="image-container" v-show="showImage">
+        <img :src="imagePath" alt="图片" />
       </div>
     </div>
     <div class="right">
@@ -38,10 +40,12 @@
             </el-col>
           </el-row>
         </div>
-        <v-image v-show="activeTabIndex === 1" :images="imagesList" />
-        <div class="video" style="height:470px" v-show="activeTabIndex === 2">
-          视频
-        </div>
+        <v-image
+          v-show="activeTabIndex === 1"
+          :images="imagesList"
+          @file-path="hanldeImage"
+        />
+        <v-video :videos="videoList" v-show="activeTabIndex === 2" />
         <div
           class="approval"
           style="height:470px"
@@ -77,8 +81,8 @@
         </div>
         <div class="action">
           <div class="toggle">
-            <span @click="test()">上一条</span>
-            <span @click="test1()">下一条</span>
+            <span>上一条</span>
+            <span>下一条</span>
           </div>
           <div class="operation">
             <template v-if="activeTabIndex < 3">
@@ -103,6 +107,7 @@
 <script>
 import vMap from 'components/map/map';
 import vImage from 'components/image/image';
+import vVideo from 'components/video/video';
 import imgTest from 'assets/images/sj/test.png';
 import { task } from 'api';
 import turf from 'turf';
@@ -116,6 +121,7 @@ export default {
   components: {
     vMap,
     vImage,
+    vVideo,
   },
   props: {
     data: {
@@ -142,6 +148,9 @@ export default {
       geojson: '',
       map: null,
       containerHeight: '600px',
+      imagePath: '',
+      showImage: false,
+      videoList: [],
     };
   },
   watch: {
@@ -151,9 +160,10 @@ export default {
           this.form.taskRecordId = val.id;
           if (!val.referenceInfo) return false;
           let {
-            referenceInfo: { fieldsList, imageFiles },
+            referenceInfo: { fieldsList, imageFiles, vedioFiles },
           } = val;
           this.imagesList = imageFiles;
+          this.videoList = vedioFiles;
           fieldsList = fieldsList.map(e => {
             if (e.fieldName === 'centerPoint') {
               const { fieldValue } = e;
@@ -189,6 +199,13 @@ export default {
       immediate: true,
       deep: true,
     },
+    activeTabIndex: function(val) {
+      if (val !== 1) {
+        this.showImage = false;
+        this.imagePath = '';
+        if (this.containerHeight !== '600px') this.containerHeight = '600px';
+      }
+    },
   },
   methods: {
     pre() {
@@ -218,6 +235,12 @@ export default {
           this.close();
         }
       });
+    },
+    hanldeImage(path) {
+      console.log(path);
+      this.containerHeight = '300px';
+      this.imagePath = path;
+      this.showImage = true;
     },
     handleMapLoad(e) {
       const map = e.target;
@@ -324,6 +347,15 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
+    }
+  }
+  .image-container {
+    border-top: 1px solid #e6e6e6;
+    box-sizing: border-box;
+    height: 300px;
+    overflow: auto;
+    img {
+      max-width: 100%;
     }
   }
   .right {

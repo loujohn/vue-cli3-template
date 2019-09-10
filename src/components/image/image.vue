@@ -2,7 +2,11 @@
   <div class="image">
     <el-row :gutter="10" v-show="!isEmpty">
       <el-col :span="8" v-for="image in images" :key="image.fileName">
-        <el-image fit="fill" :src="`${staticUrl}${image.filePath}`">
+        <el-image
+          fit="fill"
+          :src="`${staticUrl}${image.filePath}`"
+          @click="handleImageClick(image)"
+        >
           <div slot="error">
             <i class="el-icon-picture-outline"></i>
           </div>
@@ -34,6 +38,13 @@ export default {
     return {
       staticUrl,
     };
+  },
+  methods: {
+    handleImageClick(image) {
+      const { filePath } = image;
+      const fullPath = `${staticUrl}${filePath}`;
+      this.$emit('file-path', fullPath);
+    },
   },
 };
 </script>
