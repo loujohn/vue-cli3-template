@@ -348,7 +348,7 @@ export default {
         paint: {
           'line-color': 'red',
         },
-        filter: ['==', 'distributionStatus', 0],
+        filter: ['==', ['get', 'distributionStatus'], 0],
       });
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox);

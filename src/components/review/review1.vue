@@ -8,6 +8,7 @@
           :geojson="geojson"
         />
         <span class="title">空间查看</span>
+        <geo-edit :map="map" :geojson="geojson" v-if="map" />
       </div>
       <div class="image-container" v-show="showImage">
         <img :src="imagePath" alt="图片" />
@@ -90,12 +91,14 @@ import geoHandler from 'mixins/geo-handler';
 import { task } from 'api';
 import turf from 'turf';
 import { checkStatus } from 'filters';
+import geoEdit from 'components/geo-edit/geo-edit';
 export default {
   name: 'review',
   components: {
     vMap,
     vImage,
     vVideo,
+    geoEdit,
   },
   props: {
     data: {

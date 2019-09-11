@@ -211,6 +211,7 @@ export default {
     },
     offEvent() {
       this.map.off('draw.create', this.handleDraw);
+      this.map.on('draw.update', this.handleDraw);
       this.map.off('draw.modeChange', this.handleMode);
     },
     destroy() {
