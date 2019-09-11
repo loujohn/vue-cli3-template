@@ -10,7 +10,7 @@
     <div class="panel">
       <div class="form-container">
         <p class="title">数据导入</p>
-        <el-form label-width="100px" ref="form" :model="form" :rules="rules">
+        <el-form label-width="110px" ref="form" :model="form" :rules="rules">
           <el-form-item label="任务名称:" prop="taskName">
             <el-input v-model="form.taskName" :style="style"></el-input>
           </el-form-item>
@@ -58,7 +58,7 @@
               v-if="!showTemplate && !isEmpty"
             />
           </el-form-item>
-          <el-form-item label="完成时间:" prop="completeTime">
+          <el-form-item label="要求完成时间:" prop="completeTime">
             <el-date-picker
               :style="style"
               type="datetime"

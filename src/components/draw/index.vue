@@ -198,7 +198,6 @@ export default {
       this.draw.deleteAll();
       this.draw.changeMode(this.mode);
       this.show = false;
-      de;
     },
     confirm() {
       const { features } = this.data;

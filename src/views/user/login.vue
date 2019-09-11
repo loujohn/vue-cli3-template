@@ -15,7 +15,6 @@
         </span>
         <el-input
           v-model="loginForm.username"
-          name="username"
           type="text"
           placeholder="用户名"
         />
@@ -27,7 +26,6 @@
         <el-input
           :type="pwdType"
           v-model="loginForm.password"
-          name="password"
           placeholder="密码"
           @keyup.enter.native="handleLogin"
         />
@@ -84,28 +82,13 @@ export default {
       redirect: undefined,
     };
   },
-  watch: {
-    $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect;
-      },
-      immediate: true,
-    },
-  },
   methods: {
     verify(text) {
       if (text === 'success') {
         this.verifyStatus = true;
-        // this.$message({
-        //   message:"验证成功",
-        //   type:"success"
         // })
       } else {
         this.verifyStatus = false;
-        // this.$message({
-        //   message:"验证失败",
-        //   type:"error"
-        // })
       }
     },
     showPwd() {

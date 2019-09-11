@@ -53,7 +53,7 @@
           </el-row>
         </div>
         <div class="people">
-          <span>调查人员: 王二小</span>
+          <span>调查人员: {{ data.surveyUserName }}</span>
           <span>调查日期: {{ data.surveyTime }}</span>
           <span>图斑状态: {{ data.checkFlowStage | checkStatus }}</span>
         </div>
@@ -86,14 +86,10 @@
 import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
+import geoHandler from 'mixins/geo-handler';
 import { task } from 'api';
 import turf from 'turf';
 import { checkStatus } from 'filters';
-import iconLocation from 'assets/images/sj/location.png';
-const img = new Image();
-img.src = iconLocation;
-img.style.height = '20px';
-img.style.width = '20px';
 export default {
   name: 'review',
   components: {
@@ -106,6 +102,7 @@ export default {
       type: Object,
     },
   },
+  mixins: [geoHandler],
   data() {
     return {
       tabs: [
@@ -122,14 +119,13 @@ export default {
       },
       fieldList: [],
       imagesList: [],
-      geojson: '',
-      map: null,
       containerHeight: '600px',
       imagePath: '',
       showImage: false,
       videoList: [],
     };
   },
+  computed: {},
   watch: {
     data: {
       handler: function(val) {
@@ -165,9 +161,9 @@ export default {
               type: 'Feature',
               geometry: geojson,
             };
-            this.setGeojson('geo-source', data);
+            this.setGeojson(this.map, 'geo-source', data);
             const center = turf.center(geojson);
-            this.setGeojson('geo-symbol', center);
+            this.setGeojson(this.map, 'geo-symbol', center);
             const bbox = turf.bbox(geojson);
             this.map.fitBounds(bbox);
           }
@@ -219,88 +215,6 @@ export default {
       this.imagePath = path;
       this.showImage = true;
     },
-    handleMapLoad(e) {
-      const map = e.target;
-      this.map = map;
-      this.addGeoLayer(map);
-      this.addSymbolLayer(map);
-
-      if (this.geojson) {
-        const bbox = turf.bbox(JSON.parse(this.geojson));
-        this.map.fitBounds(bbox);
-      }
-    },
-    addGeoLayer(map) {
-      map.addSource('geo-source', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [],
-        },
-      });
-      map.addLayer({
-        id: 'geo-fill',
-        type: 'fill',
-        source: 'geo-source',
-        paint: {
-          'fill-opacity': 0.3,
-        },
-      });
-      this.map.addLayer({
-        id: 'geo-line',
-        type: 'line',
-        source: 'geo-source',
-        paint: {
-          'line-color': '#c08f01',
-          'line-width': 2,
-        },
-      });
-
-      if (this.geojson) {
-        const geojson = JSON.parse(this.geojson);
-        map.getSource('geo-source').setData({
-          type: 'Feature',
-          geometry: geojson,
-        });
-      }
-    },
-    addSymbolLayer(map) {
-      map.addImage('icon-location', img);
-      map.addSource('geo-symbol', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [],
-        },
-      });
-      map.addLayer({
-        id: 'location-symbol',
-        type: 'symbol',
-        source: 'geo-symbol',
-        layout: {
-          'icon-image': 'icon-location',
-          'icon-size': 0.15,
-        },
-      });
-      if (this.geojson) {
-        const geojson = JSON.parse(this.geojson);
-        const center = turf.center(geojson);
-        map.getSource('geo-symbol').setData(center);
-      }
-    },
-    setGeojson(sourceId, geojson) {
-      this.map &&
-        this.map.getSource(sourceId) &&
-        this.map.getSource(sourceId).setData(geojson);
-    },
-  },
-  beforeDestroy() {
-    this.map.hasImage('icon-location') && this.map.removeImage('icon-location');
-    this.map.getLayer('location-symbol') &&
-      this.map.removeLayer('location-symbol');
-    this.map.getLayer('geo-line') && this.map.removeLayer('geo-line');
-    this.map.getLayer('geo-fill') && this.map.removeLayer('geo-fill');
-    this.map.getSource('geo-source') && this.map.removeSource('geo-source');
   },
 };
 </script>
