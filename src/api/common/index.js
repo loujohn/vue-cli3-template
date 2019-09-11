@@ -2,6 +2,7 @@ import axios from 'axios';
 import http from 'utils/http';
 import { baseMapUrl } from 'config';
 import url from '../config';
+import qs from 'querystring';
 
 const common = {
   async getMapConfig() {
@@ -9,7 +10,7 @@ const common = {
     return res.data;
   },
   async login(params) {
-    const res = await http.get(url.login, { params });
+    const res = await http.post(url.login, qs.stringify(params));
     return res;
   },
 };

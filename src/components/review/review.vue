@@ -232,13 +232,12 @@ export default {
             type: 'success',
             message: '提交成功',
           });
-          this.$emit('refresh')
+          this.$emit('refresh');
           this.close();
         }
       });
     },
     hanldeImage(path) {
-      console.log(path);
       this.containerHeight = '300px';
       this.imagePath = path;
       this.showImage = true;

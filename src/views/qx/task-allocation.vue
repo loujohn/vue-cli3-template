@@ -55,12 +55,14 @@
           </el-col>
           <el-col :span="12">
             <div class="operation">
-              <span v-if="!status" class="select">
-                已选择{{ count }}个
-                <el-button size="small" @click="handleTaskAll()"
-                  ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
-                >
-              </span>
+              <span class="select">已选择{{ count }}个</span>
+              <el-button
+                style="margin-left: 8px; background-color:#0e67f2;color: #fff; "
+                v-if="!status"
+                size="small"
+                @click="handleTaskAll()"
+                ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
+              >
               <el-button
                 @click="handleTaskAll()"
                 v-if="status"
@@ -208,7 +210,9 @@ export default {
       };
       const res = await task.taskDistributeByRange(params);
       if (res.code.toString() === '200' && res.message === 'ok') {
-        this.selectedTasks = res.data;
+        this.selectedTasks = res.data.filter(
+          e => e.distributionStatus === this.status,
+        );
         this.list.forEach(row => {
           if (this.selectedTasks.find(e => e.id === row.id)) {
             this.$refs['table'].toggleRowSelection(row, true);
@@ -255,6 +259,19 @@ export default {
       this.params.pageIndex = 1;
       this.params.distributionStatus = val;
       this.getList();
+
+      this.map &&
+        this.map.setFilter('task-fill', [
+          '==',
+          ['get', 'distributionStatus'],
+          val,
+        ]);
+      this.map &&
+        this.map.setFilter('task-line', [
+          '==',
+          ['get', 'distributionStatus'],
+          val,
+        ]);
     },
     async handleMapLoad(e) {
       this.map = e.target;
@@ -305,11 +322,6 @@ export default {
         this.selectedTasks.push(row);
       }
     },
-    defaultSelected() {
-      this.selectedKsList.forEach(row => {
-        this.$refs['table'].toggleRowSelection(row, true);
-      });
-    },
     handleTaskSelectAll(selection) {
       this.selectedTasks = selection;
     },
@@ -327,6 +339,7 @@ export default {
           'fill-color': '#888',
           'fill-opacity': 0.7,
         },
+        filter: ['==', 'distributionStatus', 0],
       });
       this.map.addLayer({
         id: 'task-line',
@@ -335,6 +348,7 @@ export default {
         paint: {
           'line-color': 'red',
         },
+        filter: ['==', 'distributionStatus', 0],
       });
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox);
@@ -394,13 +408,10 @@ export default {
     .operation {
       display: flex;
       justify-content: flex-end;
+      align-items: center;
       .select {
         font-size: $font-sm;
         color: #0e67f2;
-        .el-button {
-          background-color: #0e67f2;
-          color: #fff;
-        }
       }
       .select + .el-button {
         border: 1px solid #0e67f2;
