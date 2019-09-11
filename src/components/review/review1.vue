@@ -1,9 +1,16 @@
 <template>
   <div class="sj-review">
     <div class="left">
-      <div class="map-container">
-        <v-map @load="handleMapLoad" />
+      <div class="map-container" :style="{ height: containerHeight }">
+        <v-map
+          @load="handleMapLoad"
+          :containerHeight="containerHeight"
+          :geojson="geojson"
+        />
         <span class="title">空间查看</span>
+      </div>
+      <div class="image-container" v-show="showImage">
+        <img :src="imagePath" alt="图片" />
       </div>
     </div>
     <div class="right">
@@ -48,7 +55,7 @@
         <div class="people">
           <span>调查人员: 王二小</span>
           <span>调查日期: {{ data.surveyTime }}</span>
-          <span>图斑状态: {{ data.surveyStatus ? '已审核' : '未审核' }}</span>
+          <span>图斑状态: {{ data.checkFlowStage | checkStatus }}</span>
         </div>
         <div class="action">
           <div class="toggle">
@@ -65,7 +72,12 @@
           </div>
         </div>
       </div>
-      <v-image v-show="activeTabIndex === 1" :images="imagesList" />
+      <v-image
+        v-show="activeTabIndex === 1"
+        :images="imagesList"
+        @file-path="handleImage"
+      />
+      <v-video v-show="activeTabIndex === 2" :videos="videoList" />
     </div>
   </div>
 </template>
@@ -73,9 +85,10 @@
 <script>
 import vMap from 'components/map/map';
 import vImage from 'components/image/image';
-import imgTest from 'assets/images/sj/test.png';
+import vVideo from 'components/video/video';
 import { task } from 'api';
 import turf from 'turf';
+import { checkStatus } from 'filters';
 import iconLocation from 'assets/images/sj/location.png';
 const img = new Image();
 img.src = iconLocation;
@@ -86,6 +99,7 @@ export default {
   components: {
     vMap,
     vImage,
+    vVideo,
   },
   props: {
     data: {
@@ -94,10 +108,15 @@ export default {
   },
   data() {
     return {
-      imgTest,
-      tabs: [{ name: '文字' }, { name: '照片' }, { name: '视频' }],
+      tabs: [
+        { name: '文字' },
+        { name: '照片' },
+        { name: '视频' },
+        { name: '附件' },
+      ],
       activeTabIndex: 0,
       form: {
+        taskRecordId: '',
         suggestion: '',
         status: 1,
       },
@@ -105,17 +124,23 @@ export default {
       imagesList: [],
       geojson: '',
       map: null,
+      containerHeight: '600px',
+      imagePath: '',
+      showImage: false,
+      videoList: [],
     };
   },
   watch: {
     data: {
       handler: function(val) {
         if (val) {
+          this.form.taskRecordId = val.id;
           if (!val.referenceInfo) return false;
           let {
-            referenceInfo: { fieldsList, imageFiles },
+            referenceInfo: { fieldsList, imageFiles, vedioFiles },
           } = val;
           this.imagesList = imageFiles;
+          this.videoList = vedioFiles;
           fieldsList = fieldsList.map(e => {
             if (e.fieldName === 'centerPoint') {
               const { fieldValue } = e;
@@ -151,10 +176,25 @@ export default {
       immediate: true,
       deep: true,
     },
+    activeTabIndex: function(val) {
+      if (val !== 1) {
+        this.showImage = false;
+        this.imagePath = '';
+        if (this.containerHeight !== '600px') this.containerHeight = '600px';
+      }
+    },
+  },
+  filters: {
+    checkStatus,
   },
   methods: {
     close() {
       this.$emit('close');
+      this.activeTabIndex = 0;
+      this.containerHeight = '600px';
+      for (let key in this.form) {
+        this.form[key] = '';
+      }
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
@@ -162,7 +202,6 @@ export default {
     check() {
       const params = {
         ...this.form,
-        taskRecordId: this.$route.query.id,
       };
       task.taskCheck(params).then(res => {
         if (res.code.toString() === '200' && res.message === 'ok') {
@@ -170,9 +209,15 @@ export default {
             type: 'success',
             message: '提交成功',
           });
+          this.$emit('refresh');
           this.close();
         }
       });
+    },
+    handleImage(path) {
+      this.containerHeight = '300px';
+      this.imagePath = path;
+      this.showImage = true;
     },
     handleMapLoad(e) {
       const map = e.target;
@@ -269,7 +314,6 @@ export default {
     flex-shrink: 0;
   }
   .map-container {
-    height: 600px;
     position: relative;
     .title {
       font-size: $font-xs;
@@ -279,6 +323,15 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
+    }
+  }
+  .image-container {
+    border-top: 1px solid #e6e6e6;
+    box-sizing: border-box;
+    height: 300px;
+    overflow: auto;
+    img {
+      max-width: 100%;
     }
   }
   .right {

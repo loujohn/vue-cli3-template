@@ -108,7 +108,6 @@
 import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
-import imgTest from 'assets/images/sj/test.png';
 import { task } from 'api';
 import turf from 'turf';
 import iconLocation from 'assets/images/sj/location.png';
@@ -130,7 +129,6 @@ export default {
   },
   data() {
     return {
-      imgTest,
       tabs: [
         { name: '文字' },
         { name: '照片' },

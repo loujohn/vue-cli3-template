@@ -104,12 +104,20 @@
         </el-table-column>
         <el-table-column label="操作" width="80px">
           <template slot-scope="scope">
-            <!-- v-if="scope.row.checkFlowStage === 1" -->
             <el-button
+              v-if="scope.row.checkFlowStage === 1"
               type="text"
               size="mini"
               @click="getTaskDetail(scope.row.id)"
               >审核</el-button
+            >
+            <el-button
+              v-else
+              type="text"
+              size="mini"
+              style="color: #999"
+              @click="getTaskDetail(scope.row.id)"
+              >查看</el-button
             >
           </template>
         </el-table-column>
@@ -139,11 +147,10 @@
 
 <script>
 import customerCard from 'components/card/card';
-import vReview from 'components/review/review';
+import vReview from 'components/review/review1';
 import list from 'mixins/list';
 import { checkStatus, getClass } from 'filters';
 import { task, survey } from 'api';
-import throttle from 'lodash.throttle';
 export default {
   name: 'detail',
   components: {
