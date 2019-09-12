@@ -86,7 +86,6 @@ export default {
     verify(text) {
       if (text === 'success') {
         this.verifyStatus = true;
-        // })
       } else {
         this.verifyStatus = false;
       }

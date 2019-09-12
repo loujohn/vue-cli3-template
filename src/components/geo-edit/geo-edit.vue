@@ -1,6 +1,7 @@
 <template>
   <div class="geo-edit">
     <el-button size="mini" @click="handleEdit()">编辑</el-button>
+    <!-- <el-button size="mini" @click="clearDraw()">清除</el-button> -->
   </div>
 </template>
 
@@ -20,14 +21,14 @@ export default {
       featureId: 'geo-edit-id',
     };
   },
-  // watch: {
-  //   geojson: function(oldVal, newVal) {
-  //     if (oldVal) {
-  //       this.draw && this.draw.deleteAll();
-  //       this.draw.changeMode('simple_select');
-  //     }
-  //   },
-  // },
+  watch: {
+    geojson: function(oldVal, newVal) {
+      if (oldVal) {
+        this.draw && this.draw.deleteAll();
+        this.draw.changeMode('simple_select');
+      }
+    },
+  },
   mounted() {
     if (this.map) {
       this.initDraw();
@@ -44,6 +45,9 @@ export default {
         this.map.addControl(this.draw);
       }
       this.bindEvent();
+    },
+    clearDraw() {
+      this.draw && this.draw.deleteAll();
     },
     handleEdit() {
       if (this.geojson) {
