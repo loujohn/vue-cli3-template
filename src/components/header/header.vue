@@ -4,7 +4,7 @@
     <el-dropdown @command="handleCommand">
       <div class="user">
         <svg-icon iconClass="user"></svg-icon>
-        <span>{{ userName }}</span>
+        <span>{{ realName }} {{ userName }}</span>
       </div>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="logout">退出登录</el-dropdown-item>
@@ -23,7 +23,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['userName']),
+    ...mapGetters(['userName', 'realName']),
   },
   methods: {
     handleCommand(command) {
