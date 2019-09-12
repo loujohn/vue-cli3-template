@@ -1,10 +1,8 @@
 <template>
   <div class="draw" @click="toggle()">
-    <span>
+    <span class="trigger">
       <svg-icon iconClass="draw" style="height: 1.5em; width: 1.5em;" />空间选择
     </span>
-    <span v-show="show" class="confirm" @click="confirm()">确定</span>
-    <span v-show="show" class="clear" @click="clear()">清除</span>
   </div>
 </template>
 
@@ -192,7 +190,20 @@ export default {
     },
     handleDraw() {
       this.data = this.draw.getAll();
-      this.show = true;
+      this.$confirm('确定使用该范围?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.confirm();
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消',
+          });
+        });
     },
     clear() {
       this.draw.deleteAll();
@@ -228,7 +239,7 @@ export default {
   top: 10px;
   right: 15px;
   display: flex;
-  span {
+  .trigger {
     display: flex;
     align-items: center;
     background-color: $base-color;

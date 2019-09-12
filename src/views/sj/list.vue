@@ -23,15 +23,9 @@
           新增任务
         </el-button>
       </div>
-      <el-table
-        :data="list"
-        header-row-class-name="customer-table-header"
-      >
+      <el-table :data="list" header-row-class-name="customer-table-header">
         <el-table-column type="index"></el-table-column>
-        <el-table-column
-          label="任务名称"
-          prop="taskName"
-        ></el-table-column>
+        <el-table-column label="任务名称" prop="taskName"></el-table-column>
         <el-table-column
           label="总数"
           prop="referenceInfo.totalRecord"
@@ -42,26 +36,21 @@
         ></el-table-column>
         <el-table-column label="进度">
           <template slot-scope="scope">
-            <v-progress :percent="
+            <v-progress
+              :percent="
                 scope.row.referenceInfo && scope.row.referenceInfo.percent
-              " />
+              "
+            />
           </template>
         </el-table-column>
-        <el-table-column
-          label="操作"
-          width="100px"
-        >
+        <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
-            <el-button
-              type="text"
-              size="mini"
-              @click="$router.push('/sj/task')"
-            >追加</el-button>
-            <el-button
-              type="text"
-              size="mini"
-              @click="toDetail(scope.row.id)"
-            >详情</el-button>
+            <el-button type="text" size="mini" @click="$router.push('/sj/task')"
+              >追加</el-button
+            >
+            <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
+              >详情</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
