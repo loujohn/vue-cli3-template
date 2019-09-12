@@ -35,5 +35,6 @@ export default new Vuex.Store({
   getters: {
     xzqh: state => state.userInfo.xzqh,
     userName: state => state.userInfo.userName,
+    realName: state => state.userInfo.realName,
   },
 });

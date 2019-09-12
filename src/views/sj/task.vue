@@ -15,7 +15,7 @@
             <el-input v-model="form.taskName" :style="style"></el-input>
           </el-form-item>
           <el-form-item label="创建方式:" prop="importType">
-            <el-select v-model="form.importType" :style="style" clearable>
+            <!-- <el-select v-model="form.importType" :style="style" clearable>
               <el-option
                 v-for="item in createWayList"
                 :key="item.name"
@@ -23,7 +23,15 @@
                 :value="item.value"
               >
               </el-option>
-            </el-select>
+            </el-select> -->
+            <el-radio-group v-model="form.importType">
+              <el-radio
+                v-for="item in createWayList"
+                :key="item.name"
+                :label="item.value"
+                >{{ item.name }}</el-radio
+              >
+            </el-radio-group>
           </el-form-item>
           <el-form-item label="调查模板:" v-if="showTemplate" prop="templateId">
             <el-select
@@ -101,7 +109,7 @@ export default {
         taskName: '',
         taskDataTypeId: '28ba2788-71a1-4897-ad8b-9ddcdfdf3ead',
         completeTime: '',
-        importType: '',
+        importType: 0,
       },
       rules: {
         taskName: [
@@ -125,7 +133,7 @@ export default {
         { name: '通过GDB创建', value: 0 },
       ],
       fieldList: [],
-      showTemplate: true,
+      showTemplate: false,
       loading: false,
       options: [],
       style: {
