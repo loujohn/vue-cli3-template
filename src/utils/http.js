@@ -3,16 +3,6 @@ const http = axios.create();
 import { Message } from 'element-ui';
 import { Loading } from 'element-ui';
 
-http.interceptors.request.use(
-  config => {
-    config.headers['X-Token'] = sessionStorage.getItem('token');
-    return config;
-  },
-  error => {
-    console.error(error);
-    return Promise.reject(error);
-  },
-);
 let needLoadingRequestCount = 0;
 let loadingInstance;
 export function showLoading() {
@@ -33,6 +23,7 @@ export function hideLoading() {
 // 拦截请求
 http.interceptors.request.use(
   function(config) {
+    config.headers['X-Token'] = sessionStorage.getItem('token');
     if (!config.hideLoading) {
       showLoading();
     }

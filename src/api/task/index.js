@@ -72,7 +72,10 @@ export default {
    * params { taskId }
    */
   async getGeojson(params) {
-    const res = await http.get(url.initMap, { params });
+    const res = await http.get(url.initMap, {
+      params: params,
+      hideLoading: true,
+    });
     return res;
   },
   /**
@@ -117,7 +120,7 @@ export default {
    * 获取统计信息
    */
   async getStatistic() {
-    const res = await http.get(url.statistic);
+    const res = await http.get(url.statistic, { hideLoading: true });
     return res.data || {};
   },
   /**
@@ -125,7 +128,10 @@ export default {
    * params { taskId }
    */
   async getTaskStatistic(params) {
-    const res = await http.get(url.taskStatistic, { params });
+    const res = await http.get(url.taskStatistic, {
+      params,
+      hideLoading: true,
+    });
     return res.data || {};
   },
 };
