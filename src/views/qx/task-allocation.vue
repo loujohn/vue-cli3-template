@@ -61,15 +61,17 @@
                 v-if="!status"
                 size="small"
                 @click="handleTaskAll()"
-                ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
               >
+                <svg-icon iconClass="分发"></svg-icon> 全部分发
+              </el-button>
               <el-button
                 @click="handleTaskAll()"
                 v-if="status"
                 size="small"
                 style="margin-left: 8px;"
-                ><svg-icon iconClass="撤销"></svg-icon> 全部撤回</el-button
               >
+                <svg-icon iconClass="撤销"></svg-icon> 全部撤回
+              </el-button>
             </div>
           </el-col>
         </el-row>
@@ -142,9 +144,9 @@ import vMap from 'components/map/map';
 import vDraw from 'components/draw';
 import list from 'mixins/list';
 import { distributionStatus, distribution } from 'filters';
-const iconDot = require('assets/images/map/notDispatch.png');
+import iconLocation from 'assets/images/sj/location.png';
 const img = new Image();
-img.src = iconDot;
+img.src = iconLocation;
 img.style.height = '20px';
 img.style.width = '20px';
 export default {
@@ -197,12 +199,19 @@ export default {
     this.getSurveyUserList();
     this.getTaskField();
     this.getList();
+    this.getTuBanStatistic();
   },
   filters: {
     distributionStatus,
     distribution,
   },
   methods: {
+    async getTuBanStatistic() {
+      let data = await task.getTuBanStatistic({ taskId: this.id });
+      this.cards[0].value = data.total;
+      this.cards[1].value = data.notDistribution;
+      this.cards[2].value = data.distribution;
+    },
     async getTasksByRange(data) {
       const params = {
         geojson: JSON.stringify(data),
@@ -259,25 +268,31 @@ export default {
       this.params.pageIndex = 1;
       this.params.distributionStatus = val;
       this.getList();
-
-      this.map &&
+      if (this.map) {
         this.map.setFilter('task-fill', [
           '==',
           ['get', 'distributionStatus'],
           val,
         ]);
-      this.map &&
+
         this.map.setFilter('task-line', [
           '==',
           ['get', 'distributionStatus'],
           val,
         ]);
+        this.map.setFilter('symbol-layer', [
+          '==',
+          ['get', 'distributionStatus'],
+          val,
+        ]);
+      }
     },
     async handleMapLoad(e) {
       this.map = e.target;
       const res = await task.getGeojson({ id: this.id });
       if (res.code && res.code.toString() === '200') {
         this.addGeoLayer(res.data);
+        this.addSymbolLayer(res.data);
       } else {
         return false;
       }
@@ -325,6 +340,19 @@ export default {
     handleTaskSelectAll(selection) {
       this.selectedTasks = selection;
     },
+    getPointFeatures(geojson) {
+      let featureCollection = {
+        type: 'FeatureCollection',
+        features: [],
+      };
+      const { features } = geojson;
+      featureCollection.features = features.map(feature => {
+        const point = turf.center(feature);
+        point.properties = { ...feature.properties };
+        return point;
+      });
+      return featureCollection;
+    },
     addGeoLayer(geojson) {
       if (!geojson) return false;
       this.map.addSource('geo-task', {
@@ -352,6 +380,26 @@ export default {
       });
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox);
+    },
+    addSymbolLayer(geojson) {
+      if (!this.map.hasImage('icon-location')) {
+        this.map.addImage('icon-location', img);
+      }
+      const featureCollection = this.getPointFeatures(geojson);
+      this.map.addSource('symbol-source', {
+        type: 'geojson',
+        data: featureCollection,
+      });
+      this.map.addLayer({
+        id: 'symbol-layer',
+        type: 'symbol',
+        source: 'symbol-source',
+        layout: {
+          'icon-image': 'icon-location',
+          'icon-size': 0.1,
+        },
+        filter: ['==', ['get', 'distributionStatus'], 0],
+      });
     },
   },
   beforeDestroy() {

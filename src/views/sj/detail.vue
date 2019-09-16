@@ -37,7 +37,7 @@
           <el-col :span="4">
             <span class="label">审核结果:</span>
             <el-select
-              v-model="form.surveyStage"
+              v-model="form.checkFlowStage"
               @change="getList(form)"
               :size="size"
               clearable
@@ -230,7 +230,7 @@ export default {
         surveyUserId: null,
         surveyTimeMin: null,
         surveyTimeMax: null,
-        surveyStage: null,
+        checkFlowStage: null,
       },
       size: 'small',
       detail: {},
