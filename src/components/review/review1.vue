@@ -30,7 +30,12 @@
         </span>
       </div>
       <div class="review-box" v-show="activeTabIndex === 0">
-        <base-info :fields="fieldList" :operator="operator" :type="type" ref="baseInfo"></base-info>
+        <base-info
+          :fields="fieldList"
+          :operator="operator"
+          :type="type"
+          ref="baseInfo"
+        ></base-info>
         <div class="suggestion">
           <el-row>
             <el-col :span="4">

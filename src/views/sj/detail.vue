@@ -95,10 +95,10 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="110px">
           <template slot-scope="scope">
-            <!-- v-if="scope.row.checkFlowStage === 1" -->
             <el-button
+              v-if="scope.row.checkFlowStage === 3"
               @click="getTaskDetail(scope.row.id, 'check')"
               size="mini"
               type="text"

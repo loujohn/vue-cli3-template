@@ -361,6 +361,7 @@ export default {
       });
       this.map.addLayer({
         id: 'task-fill',
+        minZoom: 10,
         type: 'fill',
         source: 'geo-task',
         paint: {
@@ -371,6 +372,7 @@ export default {
       });
       this.map.addLayer({
         id: 'task-line',
+        minZoom: 10,
         type: 'line',
         source: 'geo-task',
         paint: {
@@ -407,7 +409,8 @@ export default {
     this.map.getLayer('task-line') && this.map.removeLayer('task-line');
     this.map.getLayer('symbol-layer') && this.map.remove('symbol-layer');
     this.map.getSource('geo-task') && this.map.removeSource('geo-task');
-    this.map.getSource('geo-symbol') && this.map.removeSource('geo-symbol');
+    this.map.getSource('symbol-source') &&
+      this.map.removeSource('symbol-source');
   },
 };
 </script>
