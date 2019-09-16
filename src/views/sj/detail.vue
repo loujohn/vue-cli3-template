@@ -99,7 +99,7 @@
           <template slot-scope="scope">
             <!-- v-if="scope.row.checkFlowStage === 1" -->
             <el-button
-              @click="getTaskDetail(scope.row.id)"
+              @click="getTaskDetail(scope.row.id, 'check')"
               size="mini"
               type="text"
             >
@@ -107,7 +107,7 @@
             </el-button>
             <!-- v-if="scope.row.checkFlowStage === 5" -->
             <el-button
-              @click="getTaskDetail(scope.row.id)"
+              @click="getTaskDetail(scope.row.id, 'view')"
               size="mini"
               type="text"
               style="color: #909399;"
@@ -135,7 +135,7 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review :data="detail" @close="close" />
+      <v-review :data="detail" type="sj" :operator="op" @close="close" />
     </el-dialog>
   </div>
 </template>
@@ -234,6 +234,7 @@ export default {
       },
       size: 'small',
       detail: {},
+      op: '',
     };
   },
   filters: {
@@ -281,9 +282,10 @@ export default {
       this.list = dataList;
       this.totalCount = totalCount;
     },
-    async getTaskDetail(id) {
+    async getTaskDetail(id, op) {
       const data = await task.getTaskDetail({ id });
       this.detail = data;
+      this.op = op;
       this.showDialog = true;
     },
     handleCurrentPageChange(val) {

@@ -108,7 +108,7 @@
               v-if="scope.row.checkFlowStage === 1"
               type="text"
               size="mini"
-              @click="getTaskDetail(scope.row.id)"
+              @click="getTaskDetail(scope.row.id, 'check')"
               >审核</el-button
             >
             <el-button
@@ -116,7 +116,7 @@
               type="text"
               size="mini"
               style="color: #999"
-              @click="getTaskDetail(scope.row.id)"
+              @click="getTaskDetail(scope.row.id, 'view')"
               >查看</el-button
             >
           </template>
@@ -140,7 +140,7 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review @close="close" @refresh="refresh" :data="detail" />
+      <v-review @close="close" @refresh="refresh" :data="detail" type="qx" :operator="op" />
     </el-dialog>
   </div>
 </template>
@@ -240,6 +240,7 @@ export default {
       size: 'small',
       fields: [],
       detail: {},
+      op: '',
     };
   },
   created() {
@@ -296,9 +297,10 @@ export default {
       this.list = dataList;
       this.totalCount = totalCount;
     },
-    async getTaskDetail(id) {
+    async getTaskDetail(id, op) {
       const data = await task.getTaskDetail({ id });
       this.detail = data;
+      this.op = op;
       this.showDialog = true;
     },
     handleCurrentPageChange(val) {

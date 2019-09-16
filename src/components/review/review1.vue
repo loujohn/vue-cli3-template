@@ -30,14 +30,7 @@
         </span>
       </div>
       <div class="review-box" v-show="activeTabIndex === 0">
-        <div class="base-info">
-          <el-row :gutter="10">
-            <el-col :span="12" v-for="item in fieldList" :key="item.id">
-              <span class="label">{{ item.fieldAlias }}:</span>
-              <span class="content">{{ item.fieldValue }}</span>
-            </el-col>
-          </el-row>
-        </div>
+        <review1Word :list="fieldList" :operator="operator" ref="review1Word"></review1Word>
         <div class="suggestion">
           <el-row>
             <el-col :span="4">
@@ -45,10 +38,12 @@
             </el-col>
             <el-col :span="18">
               <el-input
+                v-if="operator === 'check'"
                 type="textarea"
                 :rows="4"
                 v-model="form.suggestion"
               ></el-input>
+              <span v-else>{{ form.suggestion }}</span>
             </el-col>
           </el-row>
         </div>
@@ -62,7 +57,7 @@
             <span>上一条</span>
             <span>下一条</span>
           </div>
-          <div class="operation">
+          <div class="operation" v-show="operator === 'check'">
             <span>审核:</span>
             <el-radio-group class="radio-group" v-model="form.status">
               <el-radio :label="1">通过</el-radio>
@@ -87,6 +82,7 @@ import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
 import geoHandler from 'mixins/geo-handler';
+import review1Word from './review1Word';
 import { task } from 'api';
 import turf from 'turf';
 import { checkStatus } from 'filters';
@@ -96,10 +92,17 @@ export default {
     vMap,
     vImage,
     vVideo,
+    review1Word,
   },
   props: {
     data: {
       type: Object,
+    },
+    type: {
+      type: String,
+    },
+    operator: {
+      type: String,
     },
   },
   mixins: [geoHandler],
@@ -199,6 +202,7 @@ export default {
       const params = {
         ...this.form,
       };
+      // console.log(this.$refs.review1Word.form);
       task.taskCheck(params).then(res => {
         if (res.code.toString() === '200' && res.message === 'ok') {
           this.$message({
@@ -277,30 +281,10 @@ export default {
         }
       }
     }
-    .base-info {
-      padding: 30px 20px;
-      color: #000;
-      height: 250px;
-      overflow: auto;
-      box-sizing: border-box;
-      border-bottom: 1px solid #e6e6e6;
-      .label,
-      .content {
-        display: inline-block;
-        padding-bottom: 25px;
-      }
-      .label {
-        width: 110px;
-        text-align: left;
-      }
-    }
     .suggestion {
       padding: 30px 20px;
       height: 170px;
       box-sizing: border-box;
-      .el-textarea__inner {
-        background-color: #f8f8f8;
-      }
     }
     .people {
       height: 50px;
