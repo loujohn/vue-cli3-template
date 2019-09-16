@@ -105,7 +105,6 @@
             >
               审核
             </el-button>
-            <!-- v-if="scope.row.checkFlowStage === 5" -->
             <el-button
               @click="getTaskDetail(scope.row.id, 'view')"
               size="mini"

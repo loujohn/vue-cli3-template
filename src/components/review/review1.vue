@@ -78,6 +78,7 @@
         @file-path="handleImage"
       />
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
+      <manual-upload v-show="activeTabIndex === 3" />
     </div>
   </div>
 </template>
@@ -86,6 +87,7 @@
 import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
+import manualUpload from 'components/upload/manual-upload';
 import geoHandler from 'mixins/geo-handler';
 import baseInfo from '../base-info/baseInfo';
 import { task } from 'api';
@@ -98,6 +100,7 @@ export default {
     vImage,
     vVideo,
     baseInfo,
+    manualUpload,
   },
   props: {
     data: {

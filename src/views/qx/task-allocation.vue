@@ -361,7 +361,7 @@ export default {
       });
       this.map.addLayer({
         id: 'task-fill',
-        minZoom: 10,
+        minzoom: 10,
         type: 'fill',
         source: 'geo-task',
         paint: {
@@ -372,7 +372,7 @@ export default {
       });
       this.map.addLayer({
         id: 'task-line',
-        minZoom: 10,
+        minzoom: 10,
         type: 'line',
         source: 'geo-task',
         paint: {
