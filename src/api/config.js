@@ -18,6 +18,7 @@ const url = {
   taskImport: baseUrl + 'manage/task/import.do',
   statistic: baseUrl + 'manage/task/statistic.do',
   taskStatistic: baseUrl + 'manage/taskRecord/statistic.do',
+  tubanStatistic: baseUrl + '/manage/taskRecord/distribution/statistic.do'
 };
 
 export default url;
