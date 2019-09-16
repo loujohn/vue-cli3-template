@@ -1,6 +1,6 @@
 <template>
   <div class="base-info">
-    <el-row :gutter="10">
+    <el-row :gutter="10" type="flex">
       <el-col :span="12" v-for="field in fields" :key="field.id">
         <span class="label">{{ field.fieldAlias }}</span>
         <span class="content">{{ field.fieldValue }}</span>
@@ -36,6 +36,9 @@ export default {
   .label {
     width: 110px;
     text-align: left;
+  }
+  .el-row--flex {
+    flex-wrap: wrap;
   }
 }
 </style>
