@@ -3,27 +3,24 @@
     <div class="data">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>区县</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ name: 'qx-list' }">任务列表</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'qx-list' }"
+          >任务列表</el-breadcrumb-item
+        >
         <el-breadcrumb-item>任务分派</el-breadcrumb-item>
       </el-breadcrumb>
       <div class="cards">
-        <div
-          class="card"
-          v-for="card in cards"
-          :key="card.name"
-        >
+        <div class="card" v-for="card in cards" :key="card.name">
           <span class="name">
             <svg-icon
               :style="{ fill: '#fff', width: '1.5em', height: '1.5em' }"
               :iconClass="card.icon"
-            ></svg-icon>&nbsp;
+            ></svg-icon
+            >&nbsp;
             {{ card.name }}
           </span>
           <span class="value">
-            <svg-icon
-              iconClass="icon"
-              :style="{ fill: '#fff' }"
-            ></svg-icon>&nbsp;
+            <svg-icon iconClass="icon" :style="{ fill: '#fff' }"></svg-icon
+            >&nbsp;
             {{ card.value }}
           </span>
         </div>
@@ -32,11 +29,7 @@
         <el-row :gutter="10">
           <el-col :span="6">
             <span class="label">调查人员:</span>
-            <el-select
-              v-model="form.surveyUserId"
-              :size="size"
-              clearable
-            >
+            <el-select v-model="form.surveyUserId" :size="size" clearable>
               <el-option
                 v-for="item in surveyUserList"
                 :key="item.id"
@@ -104,18 +97,17 @@
         ></el-table-column>
         <el-table-column label="分发状态">
           <template slot-scope="scope">
-            <span :class="{
+            <span
+              :class="{
                 not: !scope.row.distributionStatus,
                 'has-dispatch': scope.row.distributionStatus,
-              }">
+              }"
+            >
               {{ scope.row.distributionStatus | distributionStatus }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="操作"
-          width="60px"
-        >
+        <el-table-column label="操作" width="60px">
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -140,11 +132,7 @@
     </div>
     <div class="map-container">
       <v-map @load="handleMapLoad" />
-      <v-draw
-        v-if="map"
-        :map="map"
-        @finish-draw="getTasksByRange"
-      />
+      <v-draw v-if="map" :map="map" @finish-draw="getTasksByRange" />
     </div>
   </div>
 </template>
@@ -398,7 +386,6 @@ export default {
         this.map.addImage('icon-location', img);
       }
       const featureCollection = this.getPointFeatures(geojson);
-      console.log(featureCollection);
       this.map.addSource('symbol-source', {
         type: 'geojson',
         data: featureCollection,
