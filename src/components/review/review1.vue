@@ -30,7 +30,7 @@
         </span>
       </div>
       <div class="review-box" v-show="activeTabIndex === 0">
-        <review1Word :list="fieldList" :operator="operator" ref="review1Word"></review1Word>
+        <base-info :fields="fieldList" :operator="operator" :type="type" ref="baseInfo"></base-info>
         <div class="suggestion">
           <el-row>
             <el-col :span="4">
@@ -82,7 +82,7 @@ import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
 import geoHandler from 'mixins/geo-handler';
-import review1Word from './review1Word';
+import baseInfo from '../base-info/baseInfo';
 import { task } from 'api';
 import turf from 'turf';
 import { checkStatus } from 'filters';
@@ -92,7 +92,7 @@ export default {
     vMap,
     vImage,
     vVideo,
-    review1Word,
+    baseInfo,
   },
   props: {
     data: {
