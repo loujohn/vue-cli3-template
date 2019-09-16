@@ -1,6 +1,9 @@
 <template>
   <div class="draw" @click="toggle()">
-    <span class="trigger">
+    <span
+      class="trigger"
+      :class="{ 'is-drawing': drawing, 'not-drawing': !drawing }"
+    >
       <svg-icon iconClass="draw" style="height: 1.5em; width: 1.5em;" />空间选择
     </span>
   </div>
@@ -8,6 +11,7 @@
 
 <script>
 import d2c from 'd2c';
+import drawStyle from './draw-style';
 export default {
   name: 'd2c-map-draw',
   props: ['map'],
@@ -38,144 +42,7 @@ export default {
       } else {
         this.draw = new this.D2c.draw({
           displayControlsDefault: false,
-          styles: [
-            {
-              id: 'gl-draw-line',
-              type: 'line',
-              filter: [
-                'all',
-                ['==', '$type', 'LineString'],
-                ['!=', 'mode', 'static'],
-              ],
-              layout: {
-                'line-cap': 'round',
-                'line-join': 'round',
-              },
-              paint: {
-                'line-color': '#D20C0C',
-                'line-dasharray': [0.2, 2],
-                'line-width': 2,
-              },
-            },
-            // polygon fill
-            {
-              id: 'gl-draw-polygon-fill',
-              type: 'fill',
-              filter: [
-                'all',
-                ['==', '$type', 'Polygon'],
-                ['!=', 'mode', 'static'],
-              ],
-              paint: {
-                'fill-color': '#D20C0C',
-                'fill-outline-color': '#D20C0C',
-                'fill-opacity': 0.1,
-              },
-            },
-            // polygon outline stroke
-            // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
-            {
-              id: 'gl-draw-polygon-stroke-active',
-              type: 'line',
-              filter: [
-                'all',
-                ['==', '$type', 'Polygon'],
-                ['!=', 'mode', 'static'],
-              ],
-              layout: {
-                'line-cap': 'round',
-                'line-join': 'round',
-              },
-              paint: {
-                'line-color': '#D20C0C',
-                // 'line-dasharray': [0.2, 2],
-                // 'line-width': 2,
-              },
-            },
-            // vertex point halos
-            {
-              id: 'gl-draw-polygon-and-line-vertex-halo-active',
-              type: 'circle',
-              filter: [
-                'all',
-                ['==', 'meta', 'vertex'],
-                ['==', '$type', 'Point'],
-                ['!=', 'mode', 'static'],
-              ],
-              paint: {
-                'circle-radius': 5,
-                'circle-color': '#FFF',
-              },
-            },
-            // vertex points
-            {
-              id: 'gl-draw-polygon-and-line-vertex-active',
-              type: 'circle',
-              filter: [
-                'all',
-                ['==', 'meta', 'vertex'],
-                ['==', '$type', 'Point'],
-                ['!=', 'mode', 'static'],
-              ],
-              paint: {
-                'circle-radius': 3,
-                'circle-color': '#D20C0C',
-              },
-            },
-
-            // INACTIVE (static, already drawn)
-            // line stroke
-            {
-              id: 'gl-draw-line-static',
-              type: 'line',
-              filter: [
-                'all',
-                ['==', '$type', 'LineString'],
-                ['==', 'mode', 'static'],
-              ],
-              layout: {
-                'line-cap': 'round',
-                'line-join': 'round',
-              },
-              paint: {
-                'line-color': '#000',
-                'line-width': 3,
-              },
-            },
-            // polygon fill
-            {
-              id: 'gl-draw-polygon-fill-static',
-              type: 'fill',
-              filter: [
-                'all',
-                ['==', '$type', 'Polygon'],
-                ['==', 'mode', 'static'],
-              ],
-              paint: {
-                'fill-color': '#000',
-                'fill-outline-color': '#000',
-                'fill-opacity': 0.1,
-              },
-            },
-            // polygon outline
-            {
-              id: 'gl-draw-polygon-stroke-static',
-              type: 'line',
-              filter: [
-                'all',
-                ['==', '$type', 'Polygon'],
-                ['==', 'mode', 'static'],
-              ],
-              layout: {
-                'line-cap': 'round',
-                'line-join': 'round',
-              },
-              paint: {
-                'line-color': '#000',
-                'line-width': 3,
-              },
-            },
-          ],
+          styles: drawStyle,
         });
         this.map.draw = this.draw;
         this.map.addControl(this.draw);
@@ -203,6 +70,8 @@ export default {
             type: 'info',
             message: '已取消',
           });
+          this.draw.deleteAll();
+          this.draw.changeMode(this.mode);
         });
     },
     clear() {
@@ -213,6 +82,9 @@ export default {
     confirm() {
       const { features } = this.data;
       const feature = features[0];
+      this.draw.deleteAll();
+      this.draw.changeMode('simple_select');
+      this.drawing = false;
       this.$emit('finish-draw', feature.geometry);
     },
     handleMode(e) {
@@ -247,14 +119,13 @@ export default {
     font-size: 12px;
     padding: 6px;
     cursor: pointer;
-    display: inline-block;
     margin-right: 5px;
   }
-  .confirm {
-    color: #67c23a;
-  }
-  .clear {
+  .is-drawing {
     color: #409eff;
+  }
+  .not-drawing {
+    color: #303133;
   }
 }
 </style>

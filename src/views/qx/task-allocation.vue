@@ -405,7 +405,9 @@ export default {
   beforeDestroy() {
     this.map.getLayer('task-fill') && this.map.removeLayer('task-fill');
     this.map.getLayer('task-line') && this.map.removeLayer('task-line');
+    this.map.getLayer('symbol-layer') && this.map.remove('symbol-layer');
     this.map.getSource('geo-task') && this.map.removeSource('geo-task');
+    this.map.getSource('geo-symbol') && this.map.removeSource('geo-symbol');
   },
 };
 </script>
