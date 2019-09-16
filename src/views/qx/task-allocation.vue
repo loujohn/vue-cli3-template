@@ -3,24 +3,27 @@
     <div class="data">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>区县</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ name: 'qx-list' }"
-          >任务列表</el-breadcrumb-item
-        >
+        <el-breadcrumb-item :to="{ name: 'qx-list' }">任务列表</el-breadcrumb-item>
         <el-breadcrumb-item>任务分派</el-breadcrumb-item>
       </el-breadcrumb>
       <div class="cards">
-        <div class="card" v-for="card in cards" :key="card.name">
+        <div
+          class="card"
+          v-for="card in cards"
+          :key="card.name"
+        >
           <span class="name">
             <svg-icon
               :style="{ fill: '#fff', width: '1.5em', height: '1.5em' }"
               :iconClass="card.icon"
-            ></svg-icon
-            >&nbsp;
+            ></svg-icon>&nbsp;
             {{ card.name }}
           </span>
           <span class="value">
-            <svg-icon iconClass="icon" :style="{ fill: '#fff' }"></svg-icon
-            >&nbsp;
+            <svg-icon
+              iconClass="icon"
+              :style="{ fill: '#fff' }"
+            ></svg-icon>&nbsp;
             {{ card.value }}
           </span>
         </div>
@@ -29,7 +32,11 @@
         <el-row :gutter="10">
           <el-col :span="6">
             <span class="label">调查人员:</span>
-            <el-select v-model="form.surveyUserId" :size="size" clearable>
+            <el-select
+              v-model="form.surveyUserId"
+              :size="size"
+              clearable
+            >
               <el-option
                 v-for="item in surveyUserList"
                 :key="item.id"
@@ -61,15 +68,17 @@
                 v-if="!status"
                 size="small"
                 @click="handleTaskAll()"
-                ><svg-icon iconClass="分发"></svg-icon> 全部分发</el-button
               >
+                <svg-icon iconClass="分发"></svg-icon> 全部分发
+              </el-button>
               <el-button
                 @click="handleTaskAll()"
                 v-if="status"
                 size="small"
                 style="margin-left: 8px;"
-                ><svg-icon iconClass="撤销"></svg-icon> 全部撤回</el-button
               >
+                <svg-icon iconClass="撤销"></svg-icon> 全部撤回
+              </el-button>
             </div>
           </el-col>
         </el-row>
@@ -95,17 +104,18 @@
         ></el-table-column>
         <el-table-column label="分发状态">
           <template slot-scope="scope">
-            <span
-              :class="{
+            <span :class="{
                 not: !scope.row.distributionStatus,
                 'has-dispatch': scope.row.distributionStatus,
-              }"
-            >
+              }">
               {{ scope.row.distributionStatus | distributionStatus }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="60px">
+        <el-table-column
+          label="操作"
+          width="60px"
+        >
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -130,7 +140,11 @@
     </div>
     <div class="map-container">
       <v-map @load="handleMapLoad" />
-      <v-draw v-if="map" :map="map" @finish-draw="getTasksByRange" />
+      <v-draw
+        v-if="map"
+        :map="map"
+        @finish-draw="getTasksByRange"
+      />
     </div>
   </div>
 </template>
@@ -197,12 +211,19 @@ export default {
     this.getSurveyUserList();
     this.getTaskField();
     this.getList();
+    this.getTuBanStatistic();
   },
   filters: {
     distributionStatus,
     distribution,
   },
   methods: {
+    async getTuBanStatistic() {
+      let data = await task.getTuBanStatistic({ taskId: this.id });
+      this.cards[0].value = data.total;
+      this.cards[1].value = data.notDistribution;
+      this.cards[2].value = data.distribution;
+    },
     async getTasksByRange(data) {
       const params = {
         geojson: JSON.stringify(data),

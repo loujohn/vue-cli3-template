@@ -134,4 +134,15 @@ export default {
     });
     return res.data || {};
   },
+    /**
+   * 获取图斑统计信息
+   * params { taskId }
+   */
+  async getTuBanStatistic(params) {
+    const res = await http.get(url.tubanStatistic, {
+      params,
+      hideLoading: true,
+    });
+    return res.data || {};
+  },
 };
