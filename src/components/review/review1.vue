@@ -30,14 +30,7 @@
         </span>
       </div>
       <div class="review-box" v-show="activeTabIndex === 0">
-        <div class="base-info">
-          <el-row :gutter="10">
-            <el-col :span="12" v-for="item in fieldList" :key="item.id">
-              <span class="label">{{ item.fieldAlias }}:</span>
-              <span class="content">{{ item.fieldValue }}</span>
-            </el-col>
-          </el-row>
-        </div>
+        <base-info :fields="fieldList" />
         <div class="suggestion">
           <el-row>
             <el-col :span="4">
@@ -86,6 +79,7 @@
 import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
+import baseInfo from 'components/base-info/baseInfo';
 import geoHandler from 'mixins/geo-handler';
 import { task } from 'api';
 import turf from 'turf';
@@ -96,6 +90,7 @@ export default {
     vMap,
     vImage,
     vVideo,
+    baseInfo,
   },
   props: {
     data: {
@@ -275,23 +270,6 @@ export default {
           color: #0e67f2;
           border-bottom: 3px solid #0e67f2;
         }
-      }
-    }
-    .base-info {
-      padding: 30px 20px;
-      color: #000;
-      height: 250px;
-      overflow: auto;
-      box-sizing: border-box;
-      border-bottom: 1px solid #e6e6e6;
-      .label,
-      .content {
-        display: inline-block;
-        padding-bottom: 25px;
-      }
-      .label {
-        width: 110px;
-        text-align: left;
       }
     }
     .suggestion {

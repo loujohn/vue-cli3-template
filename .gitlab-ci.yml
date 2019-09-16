@@ -1,0 +1,12 @@
+cache:
+  paths:
+    - node_modules/
+    - dist/
+build:
+    script:
+        - yarn config get registry
+        - yarn install
+        - yarn build
+        - cp -r dist/* /opt/ksxf/apache-tomcat-8.5.35/webapps/sb
+    tags:
+        - master
