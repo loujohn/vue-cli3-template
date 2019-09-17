@@ -208,10 +208,6 @@ export default {
     },
     check() {
       const files = this.$refs['manual-upload'].fileList;
-      // const params = {
-      //   ...this.form,
-      //   annex: files.map(file => JSON.stringify(file.raw)),
-      // };
       let formData = new FormData();
       if (files.length !== 0) {
         files.forEach(file => {
