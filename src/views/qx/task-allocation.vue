@@ -428,7 +428,12 @@ export default {
         type: 'line',
         source: 'geo-task',
         paint: {
-          'line-color': 'red',
+          'line-color': [
+            'case',
+            ['==', ['get', 'distributionStatus'], 0],
+            '#d81e06',
+            '#1296db',
+          ],
         },
         filter: ['==', ['get', 'distributionStatus'], 0],
       });
