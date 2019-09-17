@@ -234,8 +234,10 @@ export default {
       }
     },
     handleCancel() {
+      this.selectedTasks = [];
       this.params.pageIndex = 1;
       this.getList();
+      this.showPagination = true;
     },
     async handleTaskAll() {
       if (!this.form.surveyUserId) {

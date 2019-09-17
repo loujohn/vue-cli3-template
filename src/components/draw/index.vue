@@ -87,6 +87,7 @@ export default {
     cancel() {
       this.$emit('cancel');
       this.showCancel = false;
+      this.drawing = false;
     },
     handleMode(e) {
       if (e.mode !== this.mode) {
