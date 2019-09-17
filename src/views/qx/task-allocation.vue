@@ -133,6 +133,7 @@
     <div class="map-container">
       <v-map @load="handleMapLoad" />
       <v-draw
+        ref="draw"
         v-if="map"
         :map="map"
         @finish-draw="getTasksByRange"
@@ -240,6 +241,8 @@ export default {
       this.showPagination = true;
     },
     async handleTaskAll() {
+      this.showPagination = true;
+      this.$refs['draw'].showCancel = false;
       if (!this.form.surveyUserId) {
         this.$message({
           type: 'warning',
