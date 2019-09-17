@@ -277,6 +277,7 @@ export default {
         this.selectedTasks = [];
         this.params.pageIndex = 1;
         this.getList();
+        this.handleMap();
       }
     },
     async handleTaskOne(id) {
@@ -301,6 +302,7 @@ export default {
         this.selectedTasks = [];
         this.params.pageIndex = 1;
         this.getList();
+        this.handleMap();
       }
     },
     handleStatusChange(val) {
@@ -332,13 +334,7 @@ export default {
         const features = this.map.queryRenderedFeatures(e.point);
         console.log(features[0]);
       });
-      const res = await task.getGeojson({ id: this.id });
-      if (res.code && res.code.toString() === '200') {
-        this.addGeoLayer(res.data);
-        this.addSymbolLayer(res.data);
-      } else {
-        return false;
-      }
+      this.handleMap();
     },
     async getSurveyUserList() {
       const res = await survey.getSurveyUserList({ id: this.id });
@@ -396,8 +392,21 @@ export default {
       });
       return featureCollection;
     },
+    async handleMap() {
+      const res = await task.getGeojson({ id: this.id });
+      if (res.code && res.code.toString() === '200') {
+        this.addGeoLayer(res.data);
+        this.addSymbolLayer(res.data);
+      } else {
+        return false;
+      }
+    },
     addGeoLayer(geojson) {
       if (!geojson) return false;
+      if (this.map.getSource('geo-task')) {
+        this.map.getSource('geo-task').setData(geojson);
+        return;
+      }
       this.map.addSource('geo-task', {
         type: 'geojson',
         data: geojson,
@@ -434,6 +443,10 @@ export default {
         this.map.addImage('icon-location-blue', locationBlue);
       }
       const featureCollection = this.getPointFeatures(geojson);
+      if (this.map.getSource('symbol-source')) {
+        this.map.getSource('symbol-source').setData(featureCollection);
+        return;
+      }
       this.map.addSource('symbol-source', {
         type: 'geojson',
         data: featureCollection,
