@@ -7,6 +7,6 @@ build:
         - yarn config get registry
         - yarn install
         - yarn build
-        - cp -r dist/* /opt/ksxf/apache-tomcat-8.5.35/webapps/sb
+        - cp -r dist/* /d2c/yx/apache-tomcat-8.5.35/webapps/dc/
     tags:
         - master
