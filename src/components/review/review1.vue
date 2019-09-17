@@ -214,6 +214,8 @@ export default {
           formData.append('annex', file.raw);
         });
       }
+      const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
+      formData.append('recordJsonStr', recordJsonStr);
       for (let key in this.form) {
         formData.append(key, this.form[key]);
       }

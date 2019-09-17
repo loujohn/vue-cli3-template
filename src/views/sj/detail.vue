@@ -106,6 +106,7 @@
               审核
             </el-button>
             <el-button
+              v-else
               @click="getTaskDetail(scope.row.id, 'view')"
               size="mini"
               type="text"
