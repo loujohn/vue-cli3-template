@@ -78,7 +78,7 @@
         @file-path="handleImage"
       />
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
-      <manual-upload v-show="activeTabIndex === 3" />
+      <manual-upload ref="manual-upload" v-show="activeTabIndex === 3" />
     </div>
   </div>
 </template>
@@ -127,6 +127,7 @@ export default {
         taskRecordId: '',
         suggestion: '',
         status: 1,
+        annex: [],
       },
       fieldList: [],
       imagesList: [],
@@ -207,10 +208,11 @@ export default {
       this.activeTabIndex = index;
     },
     check() {
+      const files = this.$refs['manual-upload'].fileList;
       const params = {
         ...this.form,
+        annex: files.map(file => file.raw),
       };
-      // console.log(this.$refs.review1Word.form);
       task.taskCheck(params).then(res => {
         if (res.code.toString() === '200' && res.message === 'ok') {
           this.$message({
