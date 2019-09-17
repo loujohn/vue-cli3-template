@@ -393,7 +393,7 @@ export default {
       return featureCollection;
     },
     async handleMap() {
-      const res = await task.getGeojson({ id: this.id });
+      const res = await task.getGeojson({ taskId: this.id });
       if (res.code && res.code.toString() === '200') {
         this.addGeoLayer(res.data);
         this.addSymbolLayer(res.data);
@@ -469,14 +469,12 @@ export default {
     },
   },
   beforeDestroy() {
-    if (this.map) {
-      this.map.getLayer('task-fill') && this.map.removeLayer('task-fill');
-      this.map.getLayer('task-line') && this.map.removeLayer('task-line');
-      this.map.getSource('geo-task') && this.map.removeSource('geo-task');
-      this.map.getLayer('symbol-layer') && this.map.remove('symbol-layer');
-      this.map.getSource('symbol-source') &&
-        this.map.removeSource('symbol-source');
-    }
+    this.map.getLayer('task-fill') && this.map.removeLayer('task-fill');
+    this.map.getLayer('task-line') && this.map.removeLayer('task-line');
+    this.map.getSource('geo-task') && this.map.removeSource('geo-task');
+    this.map.getLayer('symbol-layer') && this.map.removeLayer('symbol-layer');
+    this.map.getSource('symbol-source') &&
+      this.map.removeSource('symbol-source');
   },
 };
 </script>
