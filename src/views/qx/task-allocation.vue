@@ -119,7 +119,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="pagination">
+      <div class="pagination" v-show="showPagination">
         <el-pagination
           layout="total, prev, pager, next"
           :total="totalCount"
@@ -188,6 +188,7 @@ export default {
       surveyUserList: [],
       fields: [],
       selectedTasks: [],
+      showPagination: true,
     };
   },
   computed: {
@@ -222,11 +223,8 @@ export default {
         this.selectedTasks = res.data.filter(
           e => e.distributionStatus === this.status,
         );
-        this.list.forEach(row => {
-          if (this.selectedTasks.find(e => e.id === row.id)) {
-            this.$refs['table'].toggleRowSelection(row, true);
-          }
-        });
+        this.list = this.selectedTasks;
+        this.$refs['table'].toggleAllSelection();
       }
     },
     async handleTaskAll() {

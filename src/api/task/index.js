@@ -42,7 +42,7 @@ export default {
    * params { taskReocrdId, suggestion, status }
    */
   async taskCheck(params) {
-    const res = await http.get(url.taskCheck, { params });
+    const res = await http.post(url.taskCheck, params);
     return res;
   },
 
@@ -134,7 +134,7 @@ export default {
     });
     return res.data || {};
   },
-    /**
+  /**
    * 获取图斑统计信息
    * params { taskId }
    */

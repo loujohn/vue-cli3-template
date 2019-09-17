@@ -127,7 +127,6 @@ export default {
         taskRecordId: '',
         suggestion: '',
         status: 1,
-        annex: [],
       },
       fieldList: [],
       imagesList: [],
@@ -209,16 +208,27 @@ export default {
     },
     check() {
       const files = this.$refs['manual-upload'].fileList;
-      const params = {
-        ...this.form,
-        annex: files.map(file => file.raw),
-      };
-      task.taskCheck(params).then(res => {
+      // const params = {
+      //   ...this.form,
+      //   annex: files.map(file => JSON.stringify(file.raw)),
+      // };
+      let formData = new FormData();
+      if (files.length !== 0) {
+        files.forEach(file => {
+          formData.append('annex', file.raw);
+        });
+      }
+      for (let key in this.form) {
+        formData.append(key, this.form[key]);
+      }
+
+      task.taskCheck(formData).then(res => {
         if (res.code.toString() === '200' && res.message === 'ok') {
           this.$message({
             type: 'success',
             message: '提交成功',
           });
+          this.$refs['manual-upload'].$refs['upload'].clearFiles();
           this.$emit('refresh');
           this.close();
         }
