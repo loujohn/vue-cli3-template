@@ -6,6 +6,7 @@
     >
       <svg-icon iconClass="draw" style="height: 1.5em; width: 1.5em;" />空间选择
     </span>
+    <span class="cancel" v-show="showCancel" @click="cancel()">取消</span>
   </div>
 </template>
 
@@ -23,7 +24,7 @@ export default {
       range: '',
       drawing: false,
       data: '',
-      show: false,
+      showCancel: false,
     };
   },
   methods: {
@@ -74,11 +75,6 @@ export default {
           this.draw.changeMode(this.mode);
         });
     },
-    clear() {
-      this.draw.deleteAll();
-      this.draw.changeMode(this.mode);
-      this.show = false;
-    },
     confirm() {
       const { features } = this.data;
       const feature = features[0];
@@ -86,6 +82,11 @@ export default {
       this.draw.changeMode('simple_select');
       this.drawing = false;
       this.$emit('finish-draw', feature.geometry);
+      this.showCancel = true;
+    },
+    cancel() {
+      this.$emit('cancel');
+      this.showCancel = false;
     },
     handleMode(e) {
       if (e.mode !== this.mode) {
@@ -126,6 +127,16 @@ export default {
   }
   .not-drawing {
     color: #303133;
+  }
+  .cancel {
+    background-color: #fff;
+    border-radius: 3px;
+    font-size: 12px;
+    padding: 0 5px;
+    color: red;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
   }
 }
 </style>

@@ -132,7 +132,12 @@
     </div>
     <div class="map-container">
       <v-map @load="handleMapLoad" />
-      <v-draw v-if="map" :map="map" @finish-draw="getTasksByRange" />
+      <v-draw
+        v-if="map"
+        :map="map"
+        @finish-draw="getTasksByRange"
+        @cancel="handleCancel"
+      />
     </div>
   </div>
 </template>
@@ -220,6 +225,7 @@ export default {
       };
       const res = await task.taskDistributeByRange(params);
       if (res.code.toString() === '200' && res.message === 'ok') {
+        this.showPagination = false;
         this.selectedTasks = res.data.filter(
           e => e.distributionStatus === this.status,
         );
@@ -227,7 +233,25 @@ export default {
         this.$refs['table'].toggleAllSelection();
       }
     },
+    handleCancel() {
+      this.params.pageIndex = 1;
+      this.getList();
+    },
     async handleTaskAll() {
+      if (!this.form.surveyUserId) {
+        this.$message({
+          type: 'warning',
+          message: '请选择调查员',
+        });
+        return false;
+      }
+      if (this.selectedTasks.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请勾选图斑',
+        });
+        return false;
+      }
       const ids = this.selectedTasks.map(e => e.id);
       const params = {
         ...this.form,
@@ -246,6 +270,13 @@ export default {
       }
     },
     async handleTaskOne(id) {
+      if (!this.form.surveyUserId) {
+        this.$message({
+          type: 'warning',
+          message: '请选择调查员',
+        });
+        return false;
+      }
       const params = {
         ...this.form,
         status: this.status ? 0 : 1,
@@ -405,8 +436,8 @@ export default {
   beforeDestroy() {
     this.map.getLayer('task-fill') && this.map.removeLayer('task-fill');
     this.map.getLayer('task-line') && this.map.removeLayer('task-line');
-    this.map.getLayer('symbol-layer') && this.map.remove('symbol-layer');
     this.map.getSource('geo-task') && this.map.removeSource('geo-task');
+    this.map.getLayer('symbol-layer') && this.map.remove('symbol-layer');
     this.map.getSource('symbol-source') &&
       this.map.removeSource('symbol-source');
   },
