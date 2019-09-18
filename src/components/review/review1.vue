@@ -84,11 +84,13 @@
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
       <manual-upload
         ref="manual-upload"
-        v-show="activeTabIndex === 3 && operator !== 'view'"
+        v-show="activeTabIndex === 3 && type === 'qx' && operator !== 'view'"
       />
       <v-attachments
         :attachments="attachmentList"
-        v-show="activeTabIndex === 3"
+        v-show="
+          activeTabIndex === 3 && operator !== 'check' && operator !== 'recheck'
+        "
       />
     </div>
   </div>

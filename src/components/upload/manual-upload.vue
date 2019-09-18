@@ -17,6 +17,12 @@
 <script>
 export default {
   name: 'manual-upload',
+  props: {
+    files: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       fileList: [],

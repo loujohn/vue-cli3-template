@@ -307,7 +307,7 @@ export default {
       const { id, checkFlowStage } = item;
       let op;
       switch (checkFlowStage) {
-        case '1':
+        case 1:
           op = 'check';
           break;
         case 4:
