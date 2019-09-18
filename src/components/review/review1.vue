@@ -82,7 +82,7 @@
       </div>
       <v-image
         v-show="activeTabIndex === 1"
-        :images="imagesList"
+        :imageObj="imageObj"
         @file-path="handleImage"
       />
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
@@ -144,7 +144,7 @@ export default {
         status: 1,
       },
       fieldList: [],
-      imagesList: [],
+      imageObj: {},
       containerHeight: '600px',
       imagePath: '',
       showImage: false,
@@ -176,9 +176,16 @@ export default {
           this.form.taskRecordId = val.id;
           if (!val.referenceInfo) return false;
           let {
-            referenceInfo: { fieldsList, imageFiles, vedioFiles, annexFiles },
+            referenceInfo: {
+              fieldsList,
+              farImageFiles,
+              nearImageFiles,
+              otherImageFiles,
+              vedioFiles,
+              annexFiles,
+            },
           } = val;
-          this.imagesList = imageFiles;
+          this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
           this.videoList = vedioFiles;
           this.attachmentList = annexFiles;
           fieldsList = fieldsList.map(e => {
