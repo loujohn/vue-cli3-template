@@ -70,6 +70,10 @@
             </el-radio-group>
             <el-button size="mini" @click="check()">提交</el-button>
           </div>
+          <div class="operation" v-show="operator === 'recheck'">
+            <el-button size="mini" type="primary">重新提交</el-button>
+            <el-button size="mini" type="warning">重新下发</el-button>
+          </div>
         </div>
       </div>
       <v-image
@@ -78,7 +82,14 @@
         @file-path="handleImage"
       />
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
-      <manual-upload ref="manual-upload" v-show="activeTabIndex === 3" />
+      <manual-upload
+        ref="manual-upload"
+        v-show="activeTabIndex === 3 && operator !== 'view'"
+      />
+      <v-attachments
+        :attachments="attachmentList"
+        v-show="activeTabIndex === 3"
+      />
     </div>
   </div>
 </template>
@@ -88,6 +99,7 @@ import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
 import manualUpload from 'components/upload/manual-upload';
+import vAttachments from 'components/attachments/attachments';
 import geoHandler from 'mixins/geo-handler';
 import baseInfo from '../base-info/baseInfo';
 import { task } from 'api';
@@ -101,6 +113,7 @@ export default {
     vVideo,
     baseInfo,
     manualUpload,
+    vAttachments,
   },
   props: {
     data: {
@@ -134,6 +147,7 @@ export default {
       imagePath: '',
       showImage: false,
       videoList: [],
+      attachmentList: [],
     };
   },
   computed: {},
@@ -144,10 +158,11 @@ export default {
           this.form.taskRecordId = val.id;
           if (!val.referenceInfo) return false;
           let {
-            referenceInfo: { fieldsList, imageFiles, vedioFiles },
+            referenceInfo: { fieldsList, imageFiles, vedioFiles, annexFiles },
           } = val;
           this.imagesList = imageFiles;
           this.videoList = vedioFiles;
+          this.attachmentList = annexFiles;
           fieldsList = fieldsList.map(e => {
             if (e.fieldName === 'centerPoint') {
               const { fieldValue } = e;
@@ -214,8 +229,10 @@ export default {
           formData.append('annex', file.raw);
         });
       }
-      const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
-      formData.append('recordJsonStr', recordJsonStr);
+      if (this.type === 'qx') {
+        const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
+        formData.append('recordJsonStr', recordJsonStr);
+      }
       for (let key in this.form) {
         formData.append(key, this.form[key]);
       }
