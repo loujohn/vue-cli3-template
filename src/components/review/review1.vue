@@ -91,12 +91,7 @@
         :files="attachmentList"
         v-show="activeTabIndex === 3 && type === 'qx' && operator !== 'view'"
       />
-      <v-attachments
-        :attachments="attachmentList"
-        v-show="
-          activeTabIndex === 3 && operator !== 'check' && operator !== 'recheck'
-        "
-      />
+      <v-attachments :attachments="attachmentList" v-show="showAttachments" />
     </div>
   </div>
 </template>
@@ -157,7 +152,16 @@ export default {
       attachmentList: [],
     };
   },
-  computed: {},
+  computed: {
+    showAttachments() {
+      return (
+        (this.activeTabIndex === 3 &&
+          this.operator !== 'check' &&
+          this.operator !== 'recheck') ||
+        (this.type === 'sj' && this.activeTabIndex === 3)
+      );
+    },
+  },
   watch: {
     data: {
       handler: function(val) {

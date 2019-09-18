@@ -67,13 +67,6 @@
             >
             </el-date-picker>
           </el-col>
-          <!-- <el-col :span="4">
-            <span class="label">到期时间:</span>
-            <el-select
-              v-model="form.dqsj"
-              :size="size"
-            ></el-select>
-          </el-col> -->
         </el-row>
       </div>
       <el-table :data="list" header-row-class-name="customer-table-header">
