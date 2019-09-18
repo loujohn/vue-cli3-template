@@ -7,6 +7,7 @@
         :key="attachment.id"
       >
         <a
+          target="_blank"
           :href="`${staticUrl}${attachment.filePath}`"
           :download="attachment.originName"
         >
