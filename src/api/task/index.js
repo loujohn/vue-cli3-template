@@ -145,4 +145,15 @@ export default {
     });
     return res.data || {};
   },
+    /**
+   * 获取枚举信息
+   * params { taskId }
+   */
+  async getDictionaryKey(params) {
+    const res = await http.get(url.getDictionaryKey, {
+      params,
+      hideLoading: true,
+    });
+    return res.data || {};
+  },
 };

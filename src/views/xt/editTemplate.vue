@@ -4,7 +4,7 @@
       type="primary"
       size="small"
       icon="el-icon-plus"
-      @click="centerDialogVisible = true"
+      @click="centerDialogVisible = true&&getDictionaryKey()"
       v-if="btnText === '新增模版'"
     >{{btnText}}</el-button>
     <el-button
@@ -66,13 +66,15 @@
             <table>
               <thead>
                 <tr>
-                  <th style="width: 25%">别名</th>
-                  <th style="width: 25%">字段名称</th>
+                  <th style="width: 15%">别名</th>
+                  <th style="width: 15%">字段名称</th>
                   <th style="width: 12%">是否是行政区划</th>
                   <th style="width: 10%">是否可编辑</th>
                   <th style="width: 10%">是否在pc展示</th>
-                  <th style="width: 12%">是否在app展示</th>
-                  <th style="width: 6%">操作</th>
+                  <th style="width: 10%">是否在app展示</th>
+                  <th style="width: 10%">字段类型</th>
+                  <th style="width: 10%">枚举值</th>
+                  <th style="width: 8%">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -161,6 +163,39 @@
                     </el-form-item>
                   </td>
                   <td>
+                    <el-form-item :prop="'params.' + index + '.fieldType'">
+                      <el-select
+                        v-model="item.fieldType"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
+                        <el-option
+                          v-for="item in fieldTypeList"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item :prop="'params.' + index + '.dictionaryKey'">
+                      <el-select
+                        v-model="item.dictionaryKey"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
+                        <el-option
+                          v-for="item in dictionaryKeyList"
+                          :key="item.dictionaryKey"
+                          :label="item.dictionaryName"
+                          :value="item.dictionaryKey"
+                          :title="item.referenceInfo.map(item=>{return item.optionValue}).join(';')"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </td>
+                  <td>
                     <el-button
                       type="text"
                       style="color: #F56C6C;"
@@ -205,6 +240,7 @@ export default {
         name: '',
         params: [],
       },
+      dictionaryKeyList:[],
       showList: [
         {
           label: '是',
@@ -212,6 +248,16 @@ export default {
         },
         {
           label: '否',
+          value: 0,
+        },
+      ],
+      fieldTypeList: [
+        {
+          label: '下拉框',
+          value: 1,
+        },
+        {
+          label: '输入框',
           value: 0,
         },
       ],
@@ -254,6 +300,7 @@ export default {
     //   deep: true,
     // }
   },
+  mounted() {},
   methods: {
     addParma() {
       let param = {
@@ -312,6 +359,10 @@ export default {
         res.data.referenceInfo.fields,
       );
       this.centerDialogVisible = true;
+    },
+    async getDictionaryKey() {
+      let res = await task.getDictionaryKey();
+      this.dictionaryKeyList = res;
     },
   },
 };
