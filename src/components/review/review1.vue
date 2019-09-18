@@ -89,7 +89,7 @@
       <manual-upload
         ref="manual-upload"
         :files="attachmentList"
-        v-show="activeTabIndex === 3 && type === 'qx' && operator !== 'view'"
+        v-show="showUpload"
       />
       <v-attachments :attachments="attachmentList" v-show="showAttachments" />
     </div>
@@ -153,6 +153,13 @@ export default {
     };
   },
   computed: {
+    showUpload() {
+      return (
+        this.activeTabIndex === 3 &&
+        this.type === 'qx' &&
+        this.operator !== 'view'
+      );
+    },
     showAttachments() {
       return (
         (this.activeTabIndex === 3 &&
