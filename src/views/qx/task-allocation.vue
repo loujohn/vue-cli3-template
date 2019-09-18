@@ -133,6 +133,7 @@
     <div class="map-container">
       <v-map @load="handleMapLoad" />
       <v-draw
+        ref="draw"
         v-if="map"
         :map="map"
         @finish-draw="getTasksByRange"
@@ -149,11 +150,16 @@ import vMap from 'components/map/map';
 import vDraw from 'components/draw';
 import list from 'mixins/list';
 import { distributionStatus, distribution } from 'filters';
-import iconLocation from 'assets/images/sj/location.png';
-const img = new Image();
-img.src = iconLocation;
-img.style.height = '20px';
-img.style.width = '20px';
+import iconLocationRed from 'assets/images/sj/location.png';
+import iconLocationBlue from 'assets/images/sj/location-blue.png';
+const locationRed = new Image();
+locationRed.src = iconLocationRed;
+locationRed.style.height = '20px';
+locationRed.style.width = '20px';
+const locationBlue = new Image();
+locationBlue.src = iconLocationBlue;
+locationBlue.style.height = '20px';
+locationBlue.style.width = '20px';
 export default {
   name: 'task-allocation',
   components: {
@@ -240,6 +246,8 @@ export default {
       this.showPagination = true;
     },
     async handleTaskAll() {
+      this.showPagination = true;
+      this.$refs['draw'].showCancel = false;
       if (!this.form.surveyUserId) {
         this.$message({
           type: 'warning',
@@ -269,6 +277,7 @@ export default {
         this.selectedTasks = [];
         this.params.pageIndex = 1;
         this.getList();
+        this.handleMap();
       }
     },
     async handleTaskOne(id) {
@@ -293,6 +302,7 @@ export default {
         this.selectedTasks = [];
         this.params.pageIndex = 1;
         this.getList();
+        this.handleMap();
       }
     },
     handleStatusChange(val) {
@@ -320,13 +330,11 @@ export default {
     },
     async handleMapLoad(e) {
       this.map = e.target;
-      const res = await task.getGeojson({ id: this.id });
-      if (res.code && res.code.toString() === '200') {
-        this.addGeoLayer(res.data);
-        this.addSymbolLayer(res.data);
-      } else {
-        return false;
-      }
+      this.map.on('click', e => {
+        const features = this.map.queryRenderedFeatures(e.point);
+        console.log(features[0]);
+      });
+      this.handleMap();
     },
     async getSurveyUserList() {
       const res = await survey.getSurveyUserList({ id: this.id });
@@ -384,8 +392,21 @@ export default {
       });
       return featureCollection;
     },
+    async handleMap() {
+      const res = await task.getGeojson({ taskId: this.id });
+      if (res.code && res.code.toString() === '200') {
+        this.addGeoLayer(res.data);
+        this.addSymbolLayer(res.data);
+      } else {
+        return false;
+      }
+    },
     addGeoLayer(geojson) {
       if (!geojson) return false;
+      if (this.map.getSource('geo-task')) {
+        this.map.getSource('geo-task').setData(geojson);
+        return;
+      }
       this.map.addSource('geo-task', {
         type: 'geojson',
         data: geojson,
@@ -407,7 +428,12 @@ export default {
         type: 'line',
         source: 'geo-task',
         paint: {
-          'line-color': 'red',
+          'line-color': [
+            'case',
+            ['==', ['get', 'distributionStatus'], 0],
+            '#d81e06',
+            '#1296db',
+          ],
         },
         filter: ['==', ['get', 'distributionStatus'], 0],
       });
@@ -415,10 +441,17 @@ export default {
       this.map.fitBounds(bbox);
     },
     addSymbolLayer(geojson) {
-      if (!this.map.hasImage('icon-location')) {
-        this.map.addImage('icon-location', img);
+      if (!this.map.hasImage('icon-location-red')) {
+        this.map.addImage('icon-location-red', locationRed);
+      }
+      if (!this.map.hasImage('icon-location-blue')) {
+        this.map.addImage('icon-location-blue', locationBlue);
       }
       const featureCollection = this.getPointFeatures(geojson);
+      if (this.map.getSource('symbol-source')) {
+        this.map.getSource('symbol-source').setData(featureCollection);
+        return;
+      }
       this.map.addSource('symbol-source', {
         type: 'geojson',
         data: featureCollection,
@@ -428,7 +461,12 @@ export default {
         type: 'symbol',
         source: 'symbol-source',
         layout: {
-          'icon-image': 'icon-location',
+          'icon-image': [
+            'case',
+            ['==', ['get', 'distributionStatus'], 0],
+            'icon-location-red',
+            'icon-location-blue',
+          ],
           'icon-size': 0.1,
         },
         filter: ['==', ['get', 'distributionStatus'], 0],
@@ -439,7 +477,7 @@ export default {
     this.map.getLayer('task-fill') && this.map.removeLayer('task-fill');
     this.map.getLayer('task-line') && this.map.removeLayer('task-line');
     this.map.getSource('geo-task') && this.map.removeSource('geo-task');
-    this.map.getLayer('symbol-layer') && this.map.remove('symbol-layer');
+    this.map.getLayer('symbol-layer') && this.map.removeLayer('symbol-layer');
     this.map.getSource('symbol-source') &&
       this.map.removeSource('symbol-source');
   },

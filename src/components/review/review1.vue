@@ -70,15 +70,28 @@
             </el-radio-group>
             <el-button size="mini" @click="check()">提交</el-button>
           </div>
+          <div class="operation" v-show="operator === 'recheck'">
+            <el-button size="mini" type="primary" @click="recheck()"
+              >重新提交</el-button
+            >
+            <el-button size="mini" type="warning" @click="reDistribute()"
+              >重新下发</el-button
+            >
+          </div>
         </div>
       </div>
       <v-image
         v-show="activeTabIndex === 1"
-        :images="imagesList"
+        :imageObj="imageObj"
         @file-path="handleImage"
       />
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
-      <manual-upload ref="manual-upload" v-show="activeTabIndex === 3" />
+      <manual-upload
+        ref="manual-upload"
+        :files="attachmentList"
+        v-show="showUpload"
+      />
+      <v-attachments :attachments="attachmentList" v-show="showAttachments" />
     </div>
   </div>
 </template>
@@ -88,6 +101,7 @@ import vMap from 'components/map/map';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
 import manualUpload from 'components/upload/manual-upload';
+import vAttachments from 'components/attachments/attachments';
 import geoHandler from 'mixins/geo-handler';
 import baseInfo from '../base-info/baseInfo';
 import { task } from 'api';
@@ -101,6 +115,7 @@ export default {
     vVideo,
     baseInfo,
     manualUpload,
+    vAttachments,
   },
   props: {
     data: {
@@ -129,14 +144,31 @@ export default {
         status: 1,
       },
       fieldList: [],
-      imagesList: [],
+      imageObj: {},
       containerHeight: '600px',
       imagePath: '',
       showImage: false,
       videoList: [],
+      attachmentList: [],
     };
   },
-  computed: {},
+  computed: {
+    showUpload() {
+      return (
+        this.activeTabIndex === 3 &&
+        this.type === 'qx' &&
+        this.operator !== 'view'
+      );
+    },
+    showAttachments() {
+      return (
+        (this.activeTabIndex === 3 &&
+          this.operator !== 'check' &&
+          this.operator !== 'recheck') ||
+        (this.type === 'sj' && this.activeTabIndex === 3)
+      );
+    },
+  },
   watch: {
     data: {
       handler: function(val) {
@@ -144,10 +176,18 @@ export default {
           this.form.taskRecordId = val.id;
           if (!val.referenceInfo) return false;
           let {
-            referenceInfo: { fieldsList, imageFiles, vedioFiles },
+            referenceInfo: {
+              fieldsList,
+              farImageFiles,
+              nearImageFiles,
+              otherImageFiles,
+              vedioFiles,
+              annexFiles,
+            },
           } = val;
-          this.imagesList = imageFiles;
+          this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
           this.videoList = vedioFiles;
+          this.attachmentList = annexFiles;
           fieldsList = fieldsList.map(e => {
             if (e.fieldName === 'centerPoint') {
               const { fieldValue } = e;
@@ -208,25 +248,63 @@ export default {
     },
     check() {
       const files = this.$refs['manual-upload'].fileList;
-      // const params = {
-      //   ...this.form,
-      //   annex: files.map(file => JSON.stringify(file.raw)),
-      // };
       let formData = new FormData();
       if (files.length !== 0) {
         files.forEach(file => {
           formData.append('annex', file.raw);
         });
       }
+      if (this.type === 'qx') {
+        const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
+        formData.append('recordJsonStr', recordJsonStr);
+      }
       for (let key in this.form) {
         formData.append(key, this.form[key]);
       }
-
-      task.taskCheck(formData).then(res => {
+      this.doCheck(formData);
+    },
+    recheck() {
+      const files = this.$refs['manual-upload'].fileList;
+      const existedFiles = files.filter(file => file.id);
+      const newFiles = files.filter(file => !file.id);
+      let formData = new FormData();
+      newFiles.forEach(file => {
+        formData.append('annex', file.raw);
+      });
+      formData.append(
+        'surviveAnnexIdStr',
+        existedFiles.map(file => file.id).toString(),
+      );
+      const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
+      formData.append('recordJsonStr', recordJsonStr);
+      this.form = {
+        ...this.form,
+        status: 1,
+      };
+      for (let key in this.form) {
+        formData.append(key, this.form[key]);
+      }
+      this.doCheck(formData);
+    },
+    reDistribute() {
+      const params = {
+        ...this.form,
+        status: 0,
+        // surviveAnnexIdStr: '',
+        // annex: [],
+      };
+      const formData = new FormData();
+      for (let key in params) {
+        formData.append(key, params[key]);
+      }
+      this.doCheck(formData);
+    },
+    doCheck(params) {
+      task.taskCheck(params).then(res => {
         if (res.code.toString() === '200' && res.message === 'ok') {
           this.$message({
             type: 'success',
-            message: '提交成功',
+            message: '成功',
           });
           this.$refs['manual-upload'].$refs['upload'].clearFiles();
           this.$emit('refresh');

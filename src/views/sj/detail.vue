@@ -67,13 +67,6 @@
             >
             </el-date-picker>
           </el-col>
-          <!-- <el-col :span="4">
-            <span class="label">到期时间:</span>
-            <el-select
-              v-model="form.dqsj"
-              :size="size"
-            ></el-select>
-          </el-col> -->
         </el-row>
       </div>
       <el-table :data="list" header-row-class-name="customer-table-header">
@@ -106,6 +99,7 @@
               审核
             </el-button>
             <el-button
+              v-else
               @click="getTaskDetail(scope.row.id, 'view')"
               size="mini"
               type="text"
@@ -134,7 +128,13 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review :data="detail" type="sj" :operator="op" @close="close" />
+      <v-review
+        :data="detail"
+        type="sj"
+        :operator="op"
+        @close="close"
+        @refresh="refresh"
+      />
     </el-dialog>
   </div>
 </template>
@@ -256,6 +256,9 @@ export default {
     },
     close() {
       this.showDialog = false;
+    },
+    refresh() {
+      this.getList();
     },
     async getTaskField() {
       const params = { taskId: this.id };
