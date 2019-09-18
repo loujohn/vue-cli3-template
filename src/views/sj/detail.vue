@@ -135,7 +135,13 @@
       custom-class="my-dialog"
       width="1100px"
     >
-      <v-review :data="detail" type="sj" :operator="op" @close="close" />
+      <v-review
+        :data="detail"
+        type="sj"
+        :operator="op"
+        @close="close"
+        @refresh="refresh"
+      />
     </el-dialog>
   </div>
 </template>
@@ -257,6 +263,9 @@ export default {
     },
     close() {
       this.showDialog = false;
+    },
+    refresh() {
+      this.getList();
     },
     async getTaskField() {
       const params = { taskId: this.id };
