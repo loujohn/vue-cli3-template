@@ -15,6 +15,7 @@
   </div>
 </template>
 <script>
+import { staticUrl } from 'config';
 export default {
   name: 'manual-upload',
   props: {
@@ -28,9 +29,29 @@ export default {
       fileList: [],
     };
   },
+  mounted() {
+    if (this.files.length !== 0) {
+      this.initFile(this.files);
+    }
+  },
+  watch: {
+    files: function(val) {
+      this.initFile(val);
+    },
+  },
   methods: {
     handleChange(file, fileList) {
       this.fileList = fileList;
+    },
+    initFile(files) {
+      this.fileList = files.map(file => {
+        const { id, originName, filePath } = file;
+        return {
+          id,
+          name: originName,
+          url: `${staticUrl}${filePath}`,
+        };
+      });
     },
   },
 };

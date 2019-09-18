@@ -71,8 +71,12 @@
             <el-button size="mini" @click="check()">提交</el-button>
           </div>
           <div class="operation" v-show="operator === 'recheck'">
-            <el-button size="mini" type="primary">重新提交</el-button>
-            <el-button size="mini" type="warning">重新下发</el-button>
+            <el-button size="mini" type="primary" @click="recheck()"
+              >重新提交</el-button
+            >
+            <el-button size="mini" type="warning" @click="reDistribute()"
+              >重新下发</el-button
+            >
           </div>
         </div>
       </div>
@@ -84,6 +88,7 @@
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
       <manual-upload
         ref="manual-upload"
+        :files="attachmentList"
         v-show="activeTabIndex === 3 && type === 'qx' && operator !== 'view'"
       />
       <v-attachments
@@ -238,12 +243,50 @@ export default {
       for (let key in this.form) {
         formData.append(key, this.form[key]);
       }
-
-      task.taskCheck(formData).then(res => {
+      this.doCheck(formData);
+    },
+    recheck() {
+      const files = this.$refs['manual-upload'].fileList;
+      const existedFiles = files.filter(file => file.id);
+      const newFiles = files.filter(file => !file.id);
+      let formData = new FormData();
+      newFiles.forEach(file => {
+        formData.append('annex', file.raw);
+      });
+      formData.append(
+        'surviveAnnexIdStr',
+        existedFiles.map(file => file.id).toString(),
+      );
+      const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
+      formData.append('recordJsonStr', recordJsonStr);
+      this.form = {
+        ...this.form,
+        status: 1,
+      };
+      for (let key in this.form) {
+        formData.append(key, this.form[key]);
+      }
+      this.doCheck(formData);
+    },
+    reDistribute() {
+      const params = {
+        ...this.form,
+        status: 0,
+        // surviveAnnexIdStr: '',
+        // annex: [],
+      };
+      const formData = new FormData();
+      for (let key in params) {
+        formData.append(key, params[key]);
+      }
+      this.doCheck(formData);
+    },
+    doCheck(params) {
+      task.taskCheck(params).then(res => {
         if (res.code.toString() === '200' && res.message === 'ok') {
           this.$message({
             type: 'success',
-            message: '提交成功',
+            message: '成功',
           });
           this.$refs['manual-upload'].$refs['upload'].clearFiles();
           this.$emit('refresh');
