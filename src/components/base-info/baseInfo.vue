@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="type === 'qx' && operator === 'check'">
+    <div v-if="showForm">
       <div class="base-info">
         <el-row :gutter="10">
           <el-col :span="12" v-for="item in fieldList" :key="item.id">
@@ -40,7 +40,15 @@ export default {
   data() {
     return {
       fieldList: [],
-    }
+    };
+  },
+  computed: {
+    showForm() {
+      return (
+        this.type === 'qx' &&
+        (this.operator === 'check' || this.operator === 'recheck')
+      );
+    },
   },
   watch: {
     fields: {
@@ -53,8 +61,7 @@ export default {
       deep: true,
     },
   },
-  methods: {
-  },
+  methods: {},
 };
 </script>
 

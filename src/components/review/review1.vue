@@ -257,8 +257,15 @@ export default {
         });
       }
       if (this.type === 'qx') {
-        const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
-        formData.append('recordJsonStr', recordJsonStr);
+        const fieldList = this.$refs['baseInfo'].fieldList;
+        const list = fieldList.map(item => {
+          const { id, fieldValue } = item;
+          return {
+            taskFieldsId: id,
+            fieldValue,
+          };
+        });
+        formData.append('recordJsonStr', JSON.stringify(list));
       }
       for (let key in this.form) {
         formData.append(key, this.form[key]);
@@ -274,8 +281,15 @@ export default {
         formData.append('annex', file.raw);
       });
       formData.append('deleteAnnexIdStr', deletedFileIds.toString());
-      const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
-      formData.append('recordJsonStr', recordJsonStr);
+      const fieldList = this.$refs['baseInfo'].fieldList;
+      const list = fieldList.map(item => {
+        const { id, fieldValue } = item;
+        return {
+          taskFieldsId: id,
+          fieldValue,
+        };
+      });
+      formData.append('recordJsonStr', JSON.stringify(list));
       this.form = {
         ...this.form,
         status: 1,
