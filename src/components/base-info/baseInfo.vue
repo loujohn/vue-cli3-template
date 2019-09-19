@@ -4,8 +4,25 @@
       <div class="base-info">
         <el-row :gutter="10">
           <el-col :span="12" v-for="item in fieldList" :key="item.id">
-            <span class="label-edit">{{ item.fieldAlias }}:</span>
-            <el-input class="content-edit" v-model="item.fieldValue"></el-input>
+            <template v-if="item.fieldType === 0">
+              <span class="label-edit">{{ item.fieldAlias }}:</span>
+              <el-input
+                class="content-edit"
+                v-model="item.fieldValue"
+              ></el-input>
+            </template>
+            <template v-else>
+              <span class="label-edit">{{ item.fieldAlias }}:</span>
+              <el-select class="content-edit" v-model="item.fieldValue">
+                <el-option
+                  v-for="option in item.options"
+                  :key="option.optionKey"
+                  :label="option.optionValue"
+                  :value="option.optionKey"
+                >
+                </el-option>
+              </el-select>
+            </template>
           </el-col>
         </el-row>
       </div>
@@ -14,8 +31,16 @@
       <div class="base-info">
         <el-row :gutter="10">
           <el-col :span="12" v-for="item in fieldList" :key="item.id">
-            <span class="label">{{ item.fieldAlias }}:</span>
-            <span class="content">{{ item.fieldValue }}</span>
+            <template v-if="item.fieldType === 0">
+              <span class="label-edit">{{ item.fieldAlias }}:</span>
+              <span class="content">{{ item.fieldValue }}</span>
+            </template>
+            <template v-else>
+              <span class="label-edit">{{ item.fieldAlias }}:</span>
+              <span class="content">{{
+                getValue(item.fieldValue, item.options)
+              }}</span>
+            </template>
           </el-col>
         </el-row>
       </div>
@@ -61,7 +86,14 @@ export default {
       deep: true,
     },
   },
-  methods: {},
+  methods: {
+    getValue(value, options) {
+      let item = options.filter(option => option.optionKey === value);
+      if (item[0]) {
+        return item[0].optionValue;
+      }
+    },
+  },
 };
 </script>
 
