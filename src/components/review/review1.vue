@@ -227,6 +227,7 @@ export default {
       if (val !== 1) {
         this.showImage = false;
         this.imagePath = '';
+        this.map.setLayoutProperty('direction-symbol', 'visibility', 'none');
         if (this.containerHeight !== '600px') this.containerHeight = '600px';
       }
     },
@@ -312,10 +313,20 @@ export default {
         }
       });
     },
-    handleImage(path) {
+    handleImage(data) {
+      const { fullPath, azimuth } = data;
       this.containerHeight = '300px';
-      this.imagePath = path;
+      this.imagePath = fullPath;
       this.showImage = true;
+
+      if (azimuth) {
+        this.map.setLayoutProperty(
+          'direction-symbol',
+          'icon-rotate',
+          Number(azimuth),
+        );
+        this.map.setLayoutProperty('direction-symbol', 'visibility', 'visible');
+      }
     },
   },
 };

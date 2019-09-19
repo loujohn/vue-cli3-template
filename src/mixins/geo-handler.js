@@ -1,9 +1,15 @@
 import turf from 'turf';
 import iconLocation from 'assets/images/sj/location.png';
-const img = new Image();
-img.src = iconLocation;
-img.style.height = '20px';
-img.style.width = '20px';
+import iconDirection from 'assets/images/sj/direction.png';
+const imgLocation = new Image();
+imgLocation.src = iconLocation;
+imgLocation.style.height = '20px';
+imgLocation.style.width = '20px';
+
+const imgDirection = new Image();
+imgDirection.src = iconDirection;
+imgDirection.style.height = '20px';
+imgDirection.style.width = '20px';
 
 export default {
   data() {
@@ -16,9 +22,9 @@ export default {
     handleMapLoad(e) {
       const map = e.target;
       this.map = map;
+      window.$map = map;
       this.addGeoLayer(map);
       this.addSymbolLayer(map);
-
       if (this.geojson) {
         const bbox = turf.bbox(JSON.parse(this.geojson));
         this.map.fitBounds(bbox);
@@ -59,7 +65,8 @@ export default {
       }
     },
     addSymbolLayer(map) {
-      map.addImage('icon-location', img);
+      map.addImage('icon-location', imgLocation);
+      map.addImage('icon-direction', imgDirection);
       map.addSource('geo-symbol', {
         type: 'geojson',
         data: {
@@ -75,6 +82,18 @@ export default {
           'icon-image': 'icon-location',
           'icon-size': 0.15,
         },
+      });
+      map.addLayer({
+        id: 'direction-symbol',
+        type: 'symbol',
+        source: 'geo-symbol',
+        layout: {
+          'icon-image': 'icon-direction',
+          visibility: 'none',
+        },
+        // paint: {
+        //   'icon-opacity': 0.4,
+        // },
       });
       if (this.geojson) {
         const geojson = JSON.parse(this.geojson);

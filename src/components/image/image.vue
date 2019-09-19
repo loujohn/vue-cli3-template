@@ -57,9 +57,19 @@ export default {
   },
   methods: {
     handleImageClick(image) {
-      const { filePath } = image;
+      const {
+        filePath,
+        referenceInfo: { info },
+      } = image;
+      let azimuth;
+      if (info) {
+        azimuth = info.azimuth;
+      }
       const fullPath = `${staticUrl}${filePath}`;
-      this.$emit('file-path', fullPath);
+      this.$emit('file-path', {
+        fullPath,
+        azimuth,
+      });
     },
     handleChange(val) {
       this.images = this.imageObj[val];
