@@ -1,4 +1,5 @@
 import turf from 'turf';
+import d2c from 'd2c';
 import iconLocation from 'assets/images/sj/location.png';
 import iconDirection from 'assets/images/sj/direction.png';
 const imgLocation = new Image();
@@ -16,6 +17,7 @@ export default {
     return {
       map: null,
       geojson: '',
+      marker: null,
     };
   },
   methods: {
@@ -64,23 +66,22 @@ export default {
         });
       }
     },
+    addMarker(geojson) {
+      this.marker && this.marker.remove();
+      const {
+        geometry: { coordinates },
+      } = geojson;
+      this.marker = new d2c.Marker(imgLocation)
+        .setLngLat(coordinates)
+        .addTo(this.map);
+    },
     addSymbolLayer(map) {
-      map.addImage('icon-location', imgLocation);
       map.addImage('icon-direction', imgDirection);
       map.addSource('geo-symbol', {
         type: 'geojson',
         data: {
           type: 'FeatureCollection',
           features: [],
-        },
-      });
-      map.addLayer({
-        id: 'location-symbol',
-        type: 'symbol',
-        source: 'geo-symbol',
-        layout: {
-          'icon-image': 'icon-location',
-          'icon-size': 0.15,
         },
       });
       map.addLayer({
@@ -95,6 +96,7 @@ export default {
       if (this.geojson) {
         const geojson = JSON.parse(this.geojson);
         const center = turf.center(geojson);
+        this.addMarker(center);
         map.getSource('geo-symbol').setData(center);
       }
     },
@@ -104,12 +106,12 @@ export default {
         map.getSource(sourceId).setData(geojson);
     },
   },
-  beforeDestroy() {
-    this.map.hasImage('icon-location') && this.map.removeImage('icon-location');
-    this.map.getLayer('location-symbol') &&
-      this.map.removeLayer('location-symbol');
-    this.map.getLayer('geo-line') && this.map.removeLayer('geo-line');
-    this.map.getLayer('geo-fill') && this.map.removeLayer('geo-fill');
-    this.map.getSource('geo-source') && this.map.removeSource('geo-source');
-  },
+  // beforeDestroy() {
+  //   this.map.hasImage('icon-location') && this.map.removeImage('icon-location');
+  //   this.map.getLayer('location-symbol') &&
+  //     this.map.removeLayer('location-symbol');
+  //   this.map.getLayer('geo-line') && this.map.removeLayer('geo-line');
+  //   this.map.getLayer('geo-fill') && this.map.removeLayer('geo-fill');
+  //   this.map.getSource('geo-source') && this.map.removeSource('geo-source');
+  // },
 };

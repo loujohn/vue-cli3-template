@@ -214,6 +214,7 @@ export default {
             };
             this.setGeojson(this.map, 'geo-source', data);
             const center = turf.center(geojson);
+            this.addMarker(center);
             this.setGeojson(this.map, 'geo-symbol', center);
             const bbox = turf.bbox(geojson);
             this.map.fitBounds(bbox);
