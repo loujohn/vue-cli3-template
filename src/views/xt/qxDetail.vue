@@ -50,7 +50,11 @@
               <template slot-scope="scope">{{scope.row.fieldType === 1 ? '下拉框' : '输入框'}}</template>
             </el-table-column>
             <el-table-column label="枚举值">
-              <template slot-scope="scope">{{ getDictionaryKey(scope) }}</template>
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" :content="getDictionaryInfo(scope)" placement="top">
+                  <span>{{ getDictionaryKey(scope) }}</span>
+                </el-tooltip>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -101,6 +105,13 @@ export default {
       for (let item of this.dictionaryKeyList) {
         if (item.dictionaryKey === scope.row.dictionaryKey) {
           return item.dictionaryName;
+        }
+      }
+    },
+    getDictionaryInfo(scope) {
+      for (let item of this.dictionaryKeyList) {
+        if (item.dictionaryKey === scope.row.dictionaryKey) {
+          return item.referenceInfo.map(item=>{return item.optionValue}).join(';');
         }
       }
     }
