@@ -289,8 +289,6 @@ export default {
       const params = {
         ...this.form,
         status: 0,
-        // surviveAnnexIdStr: '',
-        // annex: [],
       };
       const formData = new FormData();
       for (let key in params) {

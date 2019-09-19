@@ -20,6 +20,7 @@ const url = {
   taskStatistic: baseUrl + 'manage/taskRecord/statistic.do',
   tubanStatistic: baseUrl + '/manage/taskRecord/distribution/statistic.do',
   getDictionaryKey: baseUrl + '/manage/dictionarys/list.do',
+  getFlowLog: baseUrl + '/manage/taskRecord/getFlowLog.do',
 };
 
 export default url;
