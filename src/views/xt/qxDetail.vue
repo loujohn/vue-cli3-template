@@ -46,6 +46,16 @@
             <el-table-column label="是否在APP展示">
               <template slot-scope="scope">{{scope.row.isAppShow === 1 ? '是' : '否'}}</template>
             </el-table-column>
+            <el-table-column label="字段类型">
+              <template slot-scope="scope">{{scope.row.fieldType === 1 ? '下拉框' : '输入框'}}</template>
+            </el-table-column>
+            <el-table-column label="枚举值">
+              <template slot-scope="scope">
+                <el-tooltip effect="dark" :content="getDictionaryInfo(scope)" placement="top">
+                  <span>{{ getDictionaryKey(scope) }}</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -65,6 +75,7 @@ export default {
           fields: [],
         },
       },
+      dictionaryKeyList: [],
     };
   },
   props: {
@@ -78,6 +89,7 @@ export default {
   },
   methods: {
     async getTemplate() {
+      this.getDictionaryKeyList();
       let data = {
         id: this.id,
       };
@@ -85,6 +97,24 @@ export default {
       this.form = Object.assign({}, this.form, res.data);
       this.centerDialogVisible = true;
     },
+    async getDictionaryKeyList() {
+      let res = await task.getDictionaryKey();
+      this.dictionaryKeyList = res;
+    },
+    getDictionaryKey(scope) {
+      for (let item of this.dictionaryKeyList) {
+        if (item.dictionaryKey === scope.row.dictionaryKey) {
+          return item.dictionaryName;
+        }
+      }
+    },
+    getDictionaryInfo(scope) {
+      for (let item of this.dictionaryKeyList) {
+        if (item.dictionaryKey === scope.row.dictionaryKey) {
+          return item.referenceInfo.map(item=>{return item.optionValue}).join(';');
+        }
+      }
+    }
   },
 };
 </script>

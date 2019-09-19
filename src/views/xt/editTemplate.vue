@@ -347,6 +347,7 @@ export default {
       });
     },
     async getTemplate() {
+      this.getDictionaryKey();
       let data = {
         id: this.id,
       };
