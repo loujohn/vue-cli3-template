@@ -91,9 +91,6 @@ export default {
           'icon-image': 'icon-direction',
           visibility: 'none',
         },
-        // paint: {
-        //   'icon-opacity': 0.4,
-        // },
       });
       if (this.geojson) {
         const geojson = JSON.parse(this.geojson);

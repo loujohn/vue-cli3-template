@@ -52,7 +52,7 @@ export default {
     return {
       staticUrl,
       activeKey: 'farImageFiles',
-      images: this.imageObj[this.activeKey],
+      images: this.imageObj['farImageFiles'],
     };
   },
   methods: {
