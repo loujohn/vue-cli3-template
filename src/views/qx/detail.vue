@@ -83,12 +83,17 @@
           </el-col> -->
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header" :data="list">
+      <el-table
+        header-row-class-name="customer-table-header"
+        :data="list"
+        style="width: 100%;"
+      >
         <el-table-column
           v-for="(item, index) in fields"
           :key="index"
           :label="item.fieldAlias"
           :prop="`referenceInfo.fields[${item.fieldName}]`"
+          :width="getWidth(item.fieldAlias)"
         ></el-table-column>
         <el-table-column
           label="调查人员"
@@ -264,6 +269,14 @@ export default {
   },
   methods: {
     getClass,
+    getWidth(name) {
+      switch (name) {
+        case '矿山名称':
+          return '350px';
+        default:
+          return null;
+      }
+    },
     open() {
       this.showDialog = true;
     },

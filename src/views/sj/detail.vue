@@ -74,6 +74,7 @@
           :key="index"
           :label="item.fieldAlias"
           :prop="`referenceInfo.fields[${item.fieldName}]`"
+          :width="getWidth(item.fieldsAlias)"
           v-for="(item, index) in fields"
         ></el-table-column>
         <el-table-column
@@ -251,6 +252,14 @@ export default {
   },
   methods: {
     getClass,
+    getWidth(name) {
+      switch (name) {
+        case '矿山名称':
+          return '350px';
+        default:
+          return null;
+      }
+    },
     open() {
       this.showDialog = true;
     },

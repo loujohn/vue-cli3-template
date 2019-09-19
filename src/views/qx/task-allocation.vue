@@ -94,8 +94,9 @@
         <el-table-column
           label="调查人员"
           prop="referenceInfo.surverUserName"
+          width="150px"
         ></el-table-column>
-        <el-table-column label="分发状态">
+        <el-table-column label="分发状态" width="150px">
           <template slot-scope="scope">
             <span
               :class="{
