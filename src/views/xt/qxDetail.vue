@@ -51,7 +51,7 @@
             </el-table-column>
             <el-table-column label="枚举值">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="dark" :content="getDictionaryInfo(scope)" placement="top">
+                <el-tooltip effect="dark" :content="getDictionaryInfo(scope)" placement="top">
                   <span>{{ getDictionaryKey(scope) }}</span>
                 </el-tooltip>
               </template>
