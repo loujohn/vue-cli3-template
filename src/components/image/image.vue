@@ -6,7 +6,7 @@
       <el-radio label="otherImageFiles">其它</el-radio>
     </el-radio-group>
     <el-row :gutter="10" v-show="!isEmpty">
-      <el-col :span="8" v-for="image in images" :key="image.fileName">
+      <el-col :span="8" v-for="(image, index) in images" :key="index">
         <el-image
           fit="fill"
           :src="`${staticUrl}${image.filePath}`"
