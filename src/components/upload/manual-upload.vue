@@ -7,6 +7,7 @@
       :file-list="fileList"
       :auto-upload="false"
       :on-change="handleChange"
+      :on-remove="handleRemove"
     >
       <el-button size="small" icon="el-icon-upload" type="primary"
         >添加文件</el-button
@@ -27,6 +28,7 @@ export default {
   data() {
     return {
       fileList: [],
+      deletedFileIds: [],
     };
   },
   mounted() {
@@ -44,6 +46,7 @@ export default {
       this.fileList = fileList;
     },
     initFile(files) {
+      this.deletedFileIds = [];
       this.fileList = files.map(file => {
         const { id, originName, filePath } = file;
         return {
@@ -52,6 +55,11 @@ export default {
           url: `${staticUrl}${filePath}`,
         };
       });
+    },
+    handleRemove(file) {
+      if (file.id) {
+        this.deletedFileIds.push(file.id);
+      }
     },
   },
 };

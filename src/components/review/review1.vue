@@ -267,16 +267,13 @@ export default {
     },
     recheck() {
       const files = this.$refs['manual-upload'].fileList;
-      const existedFiles = files.filter(file => file.id);
+      const deletedFileIds = this.$refs['manual-upload'].deletedFileIds;
       const newFiles = files.filter(file => !file.id);
       let formData = new FormData();
       newFiles.forEach(file => {
         formData.append('annex', file.raw);
       });
-      formData.append(
-        'surviveAnnexIdStr',
-        existedFiles.map(file => file.id).toString(),
-      );
+      formData.append('deleteAnnexIdStr', deletedFileIds.toString());
       const recordJsonStr = JSON.stringify(this.$refs['baseInfo'].fieldList);
       formData.append('recordJsonStr', recordJsonStr);
       this.form = {
