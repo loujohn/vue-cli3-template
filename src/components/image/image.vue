@@ -1,14 +1,16 @@
 <template>
   <div class="image">
-    <el-radio-group v-model="activeKey" @change="handleChange">
-      <el-radio label="farImageFiles">远景</el-radio>
-      <el-radio label="nearImageFiles">近景</el-radio>
-      <el-radio label="otherImageFiles">其它</el-radio>
-    </el-radio-group>
+    <div style="padding-bottom: 10px">
+      <el-radio-group v-model="activeKey" @change="handleChange">
+        <el-radio label="farImageFiles">远景</el-radio>
+        <el-radio label="nearImageFiles">近景</el-radio>
+        <el-radio label="otherImageFiles">其它</el-radio>
+      </el-radio-group>
+    </div>
     <el-row :gutter="10" v-show="!isEmpty">
       <el-col :span="8" v-for="(image, index) in images" :key="index">
         <el-image
-          fit="fill"
+          fit="scale-down"
           :src="`${staticUrl}${image.filePath}`"
           @click="handleImageClick(image)"
         >
@@ -86,7 +88,7 @@ export default {
   overflow: auto;
   box-sizing: border-box;
   .no-image {
-    height: calc(100% - 18px);
+    height: calc(100% - 28px);
     position: relative;
     span {
       font-size: 18px;

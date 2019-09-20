@@ -7,13 +7,19 @@
             <template v-if="item.fieldType === 0">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <el-input
+                size="small"
                 class="content-edit"
                 v-model="item.fieldValue"
               ></el-input>
             </template>
             <template v-else>
               <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <el-select class="content-edit" v-model="item.fieldValue">
+              <el-select
+                class="content-edit"
+                v-model="item.fieldValue"
+                size="small"
+                style="width: 100%;"
+              >
                 <el-option
                   v-for="option in item.options"
                   :key="option.optionKey"
@@ -108,7 +114,7 @@ export default {
   .label {
     display: inline-block;
     padding-bottom: 25px;
-    width: 110px;
+    width: 120px;
     text-align: left;
   }
   .content {
@@ -117,8 +123,8 @@ export default {
   }
   .label-edit {
     display: inline-block;
-    padding-bottom: 5px;
-    width: 110px;
+    padding: 5px 0;
+    width: 120px;
     text-align: left;
   }
   .content-deit {
