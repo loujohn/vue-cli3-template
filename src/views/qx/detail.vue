@@ -143,7 +143,7 @@
       :visible="showDialog"
       :show-close="false"
       custom-class="my-dialog"
-      width="1100px"
+      width="1300px"
     >
       <v-review
         @close="close"
