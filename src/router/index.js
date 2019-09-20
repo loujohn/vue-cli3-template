@@ -77,6 +77,18 @@ const router = new Router({
             },
           ],
         },
+        {
+          path: 'dc',
+          component: () => import('views/dc/index'),
+          redirect: 'dc/list',
+          children: [
+            {
+              path: 'list',
+              name: 'dc-list',
+              component: () => import('views/dc/list'),
+            },
+          ],
+        },
       ],
     },
     {
