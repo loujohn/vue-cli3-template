@@ -8,3 +8,6 @@ window.config = {
   baseUrl: common + '/dc-core/',
   staticUrl: common + '/dc-core/static',
 };
+if (!parseInt(window.location.host)) {
+  window.config.ksxf = 'http://zrzy.cqdlzx.com/dc-score';
+}
