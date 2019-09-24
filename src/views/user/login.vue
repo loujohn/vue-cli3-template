@@ -111,12 +111,20 @@ export default {
           this.$store
             .dispatch('LOGIN', this.loginForm)
             .then(res => {
-              const { xzqh } = res;
+              const { type } = res;
               this.loading = false;
-              if (xzqh === '500000') {
+              if (type === 1) {
                 this.$router.push('/sj');
-              } else {
+              } else if (type === 2) {
                 this.$router.push('qx');
+              } else if (type === 3) {
+                this.$router.push('/dc');
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: '未知用户类型',
+                });
+                return false;
               }
             })
             .catch(() => {
