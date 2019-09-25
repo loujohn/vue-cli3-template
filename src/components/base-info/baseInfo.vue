@@ -3,7 +3,11 @@
     <div v-if="showForm">
       <div class="base-info">
         <el-row :gutter="10">
-          <el-col :span="12" v-for="item in fieldList" :key="item.id">
+          <el-col
+            :span="12"
+            v-for="item in fieldList"
+            :key="item.id"
+          >
             <template v-if="item.fieldType === 0">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <el-input
@@ -12,7 +16,7 @@
                 v-model="item.fieldValue"
               ></el-input>
             </template>
-            <template v-else>
+            <template v-else-if="item.fieldType === 1">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <el-select
                 class="content-edit"
@@ -29,6 +33,21 @@
                 </el-option>
               </el-select>
             </template>
+            <template v-else-if="item.fieldType === 2">
+              <span class="label-edit">{{ item.fieldAlias }}:</span>
+              <el-date-picker
+                v-model="item.fieldValue"
+                type="daterange"
+                align="right"
+                :size="size"
+                unlink-panels
+                value-format="yyyy-MM-dd HH:mm:ss"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </template>
           </el-col>
         </el-row>
       </div>
@@ -36,15 +55,25 @@
     <div v-else>
       <div class="base-info">
         <el-row :gutter="10">
-          <el-col :span="12" v-for="item in fieldList" :key="item.id">
+          <el-col
+            :span="12"
+            v-for="item in fieldList"
+            :key="item.id"
+          >
             <template v-if="item.fieldType === 0">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
-            <template v-else>
+            <template v-else-if="item.fieldType === 1">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{
                 getValue(item.fieldValue, item.options)
+              }}</span>
+            </template>
+            <template v-else-if="item.fieldType === 2">
+              <span class="label-edit">{{ item.fieldAlias }}:</span>
+              <span class="content">{{
+                item.fieldValue
               }}</span>
             </template>
           </el-col>
