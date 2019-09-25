@@ -1,7 +1,7 @@
 <template>
   <div class="dc-detail">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>区县</el-breadcrumb-item>
+      <el-breadcrumb-item>调查员</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ name: 'dc-list' }"
         >任务列表</el-breadcrumb-item
       >
@@ -112,6 +112,7 @@ export default {
     }
     .list {
       background-color: $base-color;
+      overflow: auto;
       .filter {
         padding: 15px 20px;
         .label {

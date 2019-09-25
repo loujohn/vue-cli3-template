@@ -91,6 +91,13 @@ const router = new Router({
               path: 'detail',
               name: 'dc-detail',
               component: () => import('views/dc/detail'),
+              props: route => ({ ...route.query }),
+            },
+            {
+              path: 'particular',
+              name: 'dc-particular',
+              component: () => import('views/dc/particular'),
+              props: route => ({ ...route.query }),
             },
           ],
         },

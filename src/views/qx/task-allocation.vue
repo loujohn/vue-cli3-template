@@ -331,10 +331,6 @@ export default {
     },
     async handleMapLoad(e) {
       this.map = e.target;
-      this.map.on('click', e => {
-        const features = this.map.queryRenderedFeatures(e.point);
-        console.log(features[0]);
-      });
       this.handleMap();
     },
     async getSurveyUserList() {
