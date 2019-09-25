@@ -1,6 +1,8 @@
 <template>
   <div class="head">
-    <span class="title">{{ title }}</span>
+    <span class="title"
+      ><img class="img" :src="titleLogo" alt="" />{{ title }}</span
+    >
     <el-dropdown @command="handleCommand">
       <div class="user">
         <svg-icon iconClass="user"></svg-icon>
@@ -15,11 +17,14 @@
 <script>
 import { title } from 'config';
 import { mapGetters } from 'vuex';
+// const logo = require('../../assets/images/header/kuangshan.png');
+import titleLogo from 'assets/images/sj/kuangshan .png';
 export default {
   name: 'v-header',
   data() {
     return {
       title,
+      titleLogo,
     };
   },
   computed: {
@@ -57,6 +62,13 @@ export default {
     color: $base-color;
     font-size: $font-xl;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    .img {
+      height: 45px;
+      width: 45px;
+      margin-right: 8px;
+    }
   }
   .user {
     color: $user-color;
