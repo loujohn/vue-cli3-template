@@ -39,12 +39,6 @@
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
               >详情</el-button
             >
-            <el-button
-              type="text"
-              size="mini"
-              @click="toAllocation(scope.row.id)"
-              >分派</el-button
-            >
           </template>
         </el-table-column>
       </el-table>
@@ -89,10 +83,7 @@ export default {
   },
   methods: {
     toDetail(id) {
-      this.$router.push({ name: 'qx-detail', query: { id } });
-    },
-    toAllocation(id) {
-      this.$router.push({ name: 'task-allocation', query: { id } });
+      this.$router.push({ name: 'dc-detail', query: { id } });
     },
     async getList() {
       const data = await task.getTaskList(this.params);

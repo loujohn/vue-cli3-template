@@ -87,6 +87,11 @@ const router = new Router({
               name: 'dc-list',
               component: () => import('views/dc/list'),
             },
+            {
+              path: 'detail',
+              name: 'dc-detail',
+              component: () => import('views/dc/detail'),
+            },
           ],
         },
       ],

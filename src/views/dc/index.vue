@@ -1,16 +1,16 @@
 <template>
-  <div class="qx-container">
+  <div class="dc-container">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'qx-container',
+  name: 'dc-container',
 };
 </script>
 <style lang="scss">
-.qx-container {
+.dc-container {
   .el-breadcrumb {
     padding: 10px 0;
   }
