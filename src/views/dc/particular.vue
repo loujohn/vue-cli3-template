@@ -9,7 +9,23 @@
       <el-breadcrumb-item>图斑详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="content">
-      <div class="operation-panel"></div>
+      <div class="operation-panel">
+        <div class="tabs">
+          <span
+            class="tab"
+            :class="{ active: index === activeTabIndex }"
+            v-for="(tab, index) in tabs"
+            :key="index"
+            @click="handleTabClick(index)"
+          >
+            {{ tab.name }}
+          </span>
+        </div>
+        <div class="content-view">
+          <v-image v-show="activeTabIndex === 1" />
+          <v-video v-show="activeTabIndex === 2" />
+        </div>
+      </div>
       <div class="map-container">
         <v-map @load="handleMapLoad" />
         <geojson-edit :map="map" v-if="map" />
@@ -20,20 +36,29 @@
 <script>
 import vMap from 'components/map/map';
 import geojsonEdit from 'components/geo-edit/geo-edit';
+import vImage from 'components/image/image';
+import vVideo from 'components/video/video';
 export default {
   name: 'dc-particular',
   components: {
     vMap,
     geojsonEdit,
+    vImage,
+    vVideo,
   },
   data() {
     return {
       map: null,
+      tabs: [{ name: '文字' }, { name: '照片' }, { name: '视频' }],
+      activeTabIndex: 0,
     };
   },
   methods: {
     handleMapLoad(e) {
       this.map = e.target;
+    },
+    handleTabClick(index) {
+      this.activeTabIndex = index;
     },
   },
 };
@@ -57,6 +82,20 @@ export default {
     }
     .operation-panel {
       background: #fff;
+      .tabs {
+        background-color: #f1f1f1;
+        .tab {
+          display: inline-block;
+          font-size: 14px;
+          padding: 10px 0;
+          margin: 0 10px;
+          cursor: pointer;
+        }
+        .tab.active {
+          color: #0e67f2;
+          border-bottom: 3px solid #0e67f2;
+        }
+      }
     }
   }
 }
