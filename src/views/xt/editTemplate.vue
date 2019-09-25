@@ -240,7 +240,7 @@ export default {
         name: '',
         params: [],
       },
-      dictionaryKeyList:[],
+      dictionaryKeyList: [],
       showList: [
         {
           label: '是',
@@ -252,6 +252,10 @@ export default {
         },
       ],
       fieldTypeList: [
+        {
+          label: '时间',
+          value: 2,
+        },
         {
           label: '下拉框',
           value: 1,
