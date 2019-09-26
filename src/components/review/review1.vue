@@ -385,7 +385,7 @@ export default {
     },
     togglePopover() {
       if (
-        this.data.checkFlowStage === 3 ||
+        // this.data.checkFlowStage === 3 ||
         this.data.checkFlowStage === 4 ||
         this.data.checkFlowStage === 5
       ) {
