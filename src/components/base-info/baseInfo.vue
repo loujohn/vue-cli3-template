@@ -37,7 +37,7 @@
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <el-date-picker
                 v-model="item.fieldValue"
-                type="daterange"
+                type="datetime"
                 align="right"
                 :size="size"
                 unlink-panels
