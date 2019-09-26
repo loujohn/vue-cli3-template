@@ -43,12 +43,12 @@
             </el-col>
             <el-col :span="18">
               <el-input
-                v-if="operator === 'check'"
+                v-if="operator === 'check' || operator === 'recheck'"
                 type="textarea"
                 :rows="4"
                 v-model="form.suggestion"
               ></el-input>
-              <span v-else>{{ form.suggestion }}</span>
+              <span v-else>{{ suggestion }}</span>
             </el-col>
           </el-row>
         </div>
@@ -57,7 +57,6 @@
           <span>调查日期: {{ data.surveyTime }}</span>
           <el-popover
             placement="top"
-            title=""
             ref="popover"
             trigger="manual"
             v-model="visible"
@@ -66,8 +65,7 @@
             <span
               style="cursor: pointer;"
               slot="reference"
-              title="点击查看"
-              @click="showSuggestion()"
+              @click="togglePopover()"
               >图斑状态:
               <strong :class="getClass(data.checkFlowStage)">{{
                 data.checkFlowStage | checkStatus
@@ -169,6 +167,7 @@ export default {
       videoList: [],
       attachmentList: [],
       content: '',
+      suggestion: '通过',
       visible: false,
     };
   },
@@ -194,6 +193,13 @@ export default {
       handler: function(val) {
         if (val) {
           this.form.taskRecordId = val.id;
+          try {
+            this.getFlowLog({
+              taskRecordId: val.id,
+            });
+          } catch (error) {
+            console.log('getFlowLog', error);
+          }
           if (!val.referenceInfo) return false;
           let {
             referenceInfo: {
@@ -360,19 +366,22 @@ export default {
         this.map.setLayoutProperty('direction-symbol', 'visibility', 'visible');
       }
     },
-    async showSuggestion() {
-      if (this.visible) {
-        this.visible = false;
-        return;
-      }
-      const params = { taskRecordId: this.form.taskRecordId };
+    async getFlowLog(params) {
       const res = await task.getFlowLog(params);
-      const {
-        sjLog: { suggestion },
-      } = res;
+      const { sjLog, qxLog } = res;
+      if (this.type === 'qx') {
+        this.suggestion = qxLog.suggestion;
+        if (this.operator === 'recheck') {
+          this.form.suggestion = qxLog.suggestion;
+          this.content = `不通过原因: ${sjLog.suggestion || '无'}`;
+        }
+      } else if (this.type === 'sj') {
+        this.suggestion = sjLog.suggestion;
+      }
+    },
+    togglePopover() {
       if (this.operator === 'recheck') {
-        this.content = `不通过原因: ${suggestion}`;
-        this.visible = true;
+        this.visible = !this.visible;
       }
     },
   },
