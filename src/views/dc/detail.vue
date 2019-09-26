@@ -42,20 +42,44 @@
             </el-col>
           </el-row>
         </div>
-        <el-table>
+        <el-table
+          header-row-class-name="customer-table-header"
+          :data="list"
+          style="width: 100%;"
+        >
           <el-table-column type="selection"></el-table-column>
-          <el-table-column label="矿山名称"></el-table-column>
-          <el-table-column label="地块编号"></el-table-column>
-          <el-table-column label="关闭类型"></el-table-column>
-          <el-table-column label="行政区划"></el-table-column>
-          <el-table-column label="调查人员"></el-table-column>
-          <el-table-column label="状态"></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column
+            v-for="(item, index) in fields"
+            :key="index"
+            :label="item.fieldAlias"
+            :prop="`referenceInfo.fields[${item.fieldName}]`"
+          ></el-table-column>
+          <el-table-column
+            label="调查人员"
+            prop="referenceInfo.surverUserName"
+            width="150px"
+          ></el-table-column>
+          <el-table-column label="状态">
+            <template slot-scope="scope">
+              {{ scope.row.surveyStage | surveyStatus }}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="80px">
             <template>
               <el-button size="mini" type="text">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
+        <div class="pagination">
+          <el-pagination
+            layout="total, prev, pager, next"
+            :total="totalCount"
+            background
+            :small="true"
+            :page-count="5"
+            @current-change="handleCurrentPageChange"
+          ></el-pagination>
+        </div>
       </div>
       <div class="map-container">
         <v-map style="border-radius: 3px;" />
@@ -67,6 +91,8 @@
 import customerCard from 'components/card/card';
 import vMap from 'components/map/map';
 import list from 'mixins/list';
+import { surveyStatus } from 'filters';
+import { task } from 'api';
 export default {
   name: 'dc-detail',
   components: {
@@ -74,6 +100,11 @@ export default {
     vMap,
   },
   mixins: [list],
+  props: {
+    id: {
+      type: [Number, String],
+    },
+  },
   data() {
     return {
       data: [
@@ -88,8 +119,42 @@ export default {
         status: 0,
         keyword: '',
       },
+      fields: [],
       size: 'small',
     };
+  },
+  created() {
+    this.getTaskField();
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.getList();
+      // this.getTaskStatistic();
+    });
+  },
+  filters: {
+    surveyStatus,
+  },
+  methods: {
+    async getTaskField() {
+      const params = { taskId: this.id };
+      const fields = await task.getTaskField(params);
+      this.fields = fields.filter(e => !e.isSpace);
+    },
+    async getList() {
+      const params = {
+        ...this.params,
+        taskId: this.id,
+      };
+      const data = await task.getTaskRecordList(params);
+      const { dataList, totalCount } = data;
+      this.list = dataList;
+      this.totalCount = totalCount;
+    },
+    handleCurrentPageChange(val) {
+      this.params.pageIndex = val;
+      this.getList();
+    },
   },
 };
 </script>

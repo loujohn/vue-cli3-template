@@ -29,6 +29,27 @@ const checkStatus = val => {
   }
 };
 
+const surveyStatus = val => {
+  try {
+    val = val.toString();
+  } catch (error) {
+    console.log('surveyStatus', error);
+    return '';
+  }
+  switch (val) {
+    case '0':
+      return '未调查';
+    case '1':
+      return '未提交';
+    case '2':
+      return '审核中';
+    case '3':
+      return '审核失败';
+    case 4:
+      return '已完成';
+  }
+};
+
 const getClass = val => {
   try {
     val = val.toString();
@@ -52,4 +73,10 @@ const getClass = val => {
   }
 };
 
-export { distributionStatus, distribution, checkStatus, getClass };
+export {
+  distributionStatus,
+  distribution,
+  checkStatus,
+  surveyStatus,
+  getClass,
+};
