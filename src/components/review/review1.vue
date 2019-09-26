@@ -55,7 +55,18 @@
         <div class="people">
           <span>调查人员: {{ data.surveyUserName }}</span>
           <span>调查日期: {{ data.surveyTime }}</span>
-          <span>图斑状态: {{ data.checkFlowStage | checkStatus }}</span>
+          <el-popover
+            placement="top"
+            title=""
+            ref="popover"
+            trigger="manual"
+            v-model="visible"
+            :content="content"
+          >
+            <span slot="reference" @click="showSuggestion()"
+              >图斑状态: {{ data.checkFlowStage | checkStatus }}</span
+            >
+          </el-popover>
         </div>
         <div class="action">
           <div class="toggle">
@@ -150,6 +161,8 @@ export default {
       showImage: false,
       videoList: [],
       attachmentList: [],
+      content: '',
+      visible: false,
     };
   },
   computed: {
@@ -244,6 +257,7 @@ export default {
       for (let key in this.form) {
         this.form[key] = '';
       }
+      this.visible = false;
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
@@ -336,6 +350,21 @@ export default {
           Number(azimuth),
         );
         this.map.setLayoutProperty('direction-symbol', 'visibility', 'visible');
+      }
+    },
+    async showSuggestion() {
+      if (this.visible) {
+        this.visible = false;
+        return;
+      }
+      const params = { taskRecordId: this.form.taskRecordId };
+      const res = await task.getFlowLog(params);
+      const {
+        sjLog: { suggestion },
+      } = res;
+      if (this.operator === 'recheck') {
+        this.content = `不通过原因: ${suggestion}`;
+        this.visible = true;
       }
     },
   },
