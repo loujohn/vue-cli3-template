@@ -46,6 +46,11 @@ export default {
     vImage,
     vVideo,
   },
+  props: {
+    id: {
+      type: [Number, String],
+    },
+  },
   data() {
     return {
       map: null,

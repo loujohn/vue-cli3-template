@@ -20,8 +20,12 @@ const url = {
   statistic: baseUrl + 'manage/task/statistic.do',
   taskStatistic: baseUrl + 'manage/taskRecord/statistic.do',
   tubanStatistic: baseUrl + '/manage/taskRecord/distribution/statistic.do',
+  surveyUserTaskStatistic: baseUrl + '/pc/surveyUser/taskRecord/statistic.do',
+  surverUserStatistic: baseUrl + '/pc/surveyUser/task/statistic.do',
   getDictionaryKey: baseUrl + '/manage/dictionarys/list.do',
   getFlowLog: baseUrl + '/manage/taskRecord/getFlowLog.do',
+  saveTaskRecordInfo: baseUrl + '/manage/taskRecord/saveTaskRecordInfo.do',
+  taskSubmit: baseUrl + '/manage/taskRecord/submit.do',
 };
 
 export default url;

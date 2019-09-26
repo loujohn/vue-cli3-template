@@ -58,7 +58,7 @@
 <script>
 import customerCard from 'components/card/card';
 import vProgress from 'components/progress/progress';
-import { task } from 'api';
+import { task, survey } from 'api';
 import list from 'mixins/list';
 export default {
   name: 'qx-list',
@@ -92,7 +92,7 @@ export default {
       this.totalCount = totalCount;
     },
     async getStatistic() {
-      const data = await task.getStatistic();
+      const data = await survey.statistic();
       this.data[0].num = data.total;
       this.data[1].num = data.started;
       this.data[2].num = data.completeRate;

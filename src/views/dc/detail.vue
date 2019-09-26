@@ -28,7 +28,18 @@
             </el-col>
             <el-col :span="8">
               <span class="label">状态:</span>
-              <el-select v-model="params.status" :size="size"></el-select>
+              <el-select
+                v-model="params.surveyStage"
+                :size="size"
+                @change="handleSelectChange"
+              >
+                <el-option
+                  v-for="(item, index) in surveyStatusList"
+                  :key="index"
+                  :label="item.name"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </el-col>
             <el-col :span="8" style="text-align: right;">
               <span class="count">已选择0项</span>
@@ -47,7 +58,10 @@
           :data="list"
           style="width: 100%;"
         >
-          <el-table-column type="selection"></el-table-column>
+          <el-table-column
+            type="selection"
+            v-if="params.surveyStage === 1"
+          ></el-table-column>
           <el-table-column
             v-for="(item, index) in fields"
             :key="index"
@@ -59,7 +73,7 @@
             prop="referenceInfo.surverUserName"
             width="150px"
           ></el-table-column>
-          <el-table-column label="状态">
+          <el-table-column label="状态" width="80px">
             <template slot-scope="scope">
               {{ scope.row.surveyStage | surveyStatus }}
             </template>
@@ -92,7 +106,7 @@ import customerCard from 'components/card/card';
 import vMap from 'components/map/map';
 import list from 'mixins/list';
 import { surveyStatus } from 'filters';
-import { task } from 'api';
+import { task, survey } from 'api';
 export default {
   name: 'dc-detail',
   components: {
@@ -113,10 +127,17 @@ export default {
         { name: '未核实图斑', num: 0 },
         { name: '已提交图斑', num: 0 },
       ],
+      surveyStatusList: [
+        { name: '未调查', value: 0 },
+        { name: '未提交', value: 1 },
+        { name: '审核中', value: 2 },
+        { name: '审核失败', value: 3 },
+        { name: '已完成', value: 4 },
+      ],
       params: {
         pageIndex: 1,
         pageSize: 10,
-        status: 0,
+        surveyStage: 0,
         keyword: '',
       },
       fields: [],
@@ -129,7 +150,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.getList();
-      // this.getTaskStatistic();
+      this.getTaskStatistic();
     });
   },
   filters: {
@@ -150,6 +171,21 @@ export default {
       const { dataList, totalCount } = data;
       this.list = dataList;
       this.totalCount = totalCount;
+    },
+    async getTaskStatistic() {
+      const params = {
+        taskId: this.id,
+      };
+      const data = await survey.taskStatistics(params);
+      this.data[0].num = data.total;
+      this.data[1].num = data.checked;
+      this.data[2].num = data.unchecked;
+      this.data[3].num = data.submit;
+    },
+    handleSelectChange(val) {
+      this.params.status = val;
+      this.params.pageIndex = 1;
+      this.getList();
     },
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
