@@ -61,6 +61,7 @@
             trigger="manual"
             v-model="visible"
             :content="content"
+            width="200"
           >
             <span
               style="cursor: pointer;"
@@ -371,16 +372,23 @@ export default {
       const { sjLog, qxLog } = res;
       if (this.type === 'qx') {
         this.suggestion = qxLog.suggestion;
-        if (this.operator === 'recheck') {
+        if (this.data.checkFlowStage === 4 || this.data.checkFlowStage === 5) {
           this.form.suggestion = qxLog.suggestion;
-          this.content = `不通过原因: ${sjLog.suggestion || '无'}`;
+          this.content = `市级审核意见: ${sjLog.suggestion || '无'}`;
         }
       } else if (this.type === 'sj') {
         this.suggestion = sjLog.suggestion;
+        if (qxLog) {
+          this.content = `区县审核意见: ${qxLog.suggestion}`;
+        }
       }
     },
     togglePopover() {
-      if (this.operator === 'recheck') {
+      if (
+        this.data.checkFlowStage === 3 ||
+        this.data.checkFlowStage === 4 ||
+        this.data.checkFlowStage === 5
+      ) {
         this.visible = !this.visible;
       }
     },
