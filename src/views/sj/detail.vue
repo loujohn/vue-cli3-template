@@ -89,7 +89,7 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="110px">
+        <el-table-column label="操作" width="80px">
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.checkFlowStage === 3"

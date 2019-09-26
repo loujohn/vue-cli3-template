@@ -471,11 +471,21 @@ export default {
     },
   },
   beforeDestroy() {
-    this.map.getLayer('task-fill') && this.map.removeLayer('task-fill');
-    this.map.getLayer('task-line') && this.map.removeLayer('task-line');
-    this.map.getSource('geo-task') && this.map.removeSource('geo-task');
-    this.map.getLayer('symbol-layer') && this.map.removeLayer('symbol-layer');
-    this.map.getSource('symbol-source') &&
+    this.map &&
+      this.map.getLayer('task-fill') &&
+      this.map.removeLayer('task-fill');
+    this.map &&
+      this.map.getLayer('task-line') &&
+      this.map.removeLayer('task-line');
+    this.map &&
+      this.map.getSource('geo-task') &&
+      this.map.removeSource('geo-task');
+    this.map &&
+      this.map.getLayer('symbol-layer') &&
+      this.map.removeLayer('symbol-layer');
+    this.map &&
+      this.map.getSource('symbol-source') &&
+      this.map &&
       this.map.removeSource('symbol-source');
   },
 };

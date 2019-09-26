@@ -63,8 +63,15 @@
             v-model="visible"
             :content="content"
           >
-            <span slot="reference" @click="showSuggestion()"
-              >图斑状态: {{ data.checkFlowStage | checkStatus }}</span
+            <span
+              style="cursor: pointer;"
+              slot="reference"
+              title="点击查看"
+              @click="showSuggestion()"
+              >图斑状态:
+              <strong :class="getClass(data.checkFlowStage)">{{
+                data.checkFlowStage | checkStatus
+              }}</strong></span
             >
           </el-popover>
         </div>
@@ -117,7 +124,7 @@ import geoHandler from 'mixins/geo-handler';
 import baseInfo from '../base-info/baseInfo';
 import { task } from 'api';
 import turf from 'turf';
-import { checkStatus } from 'filters';
+import { checkStatus, getClass } from 'filters';
 export default {
   name: 'review',
   components: {
@@ -250,6 +257,7 @@ export default {
     checkStatus,
   },
   methods: {
+    getClass,
     close() {
       this.$emit('close');
       this.activeTabIndex = 0;
@@ -374,6 +382,24 @@ export default {
 <style lang="scss">
 .sj-review {
   display: flex;
+  .no-survey {
+    color: #909399;
+  }
+  .qx-no-check {
+    color: #e6a23c;
+  }
+  .qx-no-pass {
+    color: #f56c6c;
+  }
+  .qx-has-passed {
+    color: #409eff;
+  }
+  .sj-no-pass {
+    color: #f56c6c;
+  }
+  .sj-has-passed {
+    color: #67c23a;
+  }
   .left,
   .right {
     width: 50%;
