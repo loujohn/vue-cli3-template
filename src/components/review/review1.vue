@@ -81,15 +81,13 @@
           </div>
           <div class="operation" v-show="operator === 'check'">
             <span>审核:</span>
-            <el-radio-group
-              class="radio-group"
-              v-model="form.status"
-              text-color="red"
-            >
+            <el-radio-group class="radio-group" v-model="form.status">
               <el-radio :label="1">通过</el-radio>
               <el-radio :label="0">不通过</el-radio>
             </el-radio-group>
-            <el-button size="mini" @click="check()">提交</el-button>
+            <el-button size="mini" @click="check()" class="submit-botton"
+              >提交</el-button
+            >
           </div>
           <div class="operation" v-show="operator === 'recheck'">
             <el-button size="mini" type="primary" @click="recheck()"
@@ -457,7 +455,7 @@ export default {
     .head {
       padding: 0 20px;
       height: 40px;
-      background-color: #f1f1f1;
+      background-color: #5d7b9a;
       line-height: 40px;
       position: relative;
       .close {
@@ -467,18 +465,27 @@ export default {
         right: 10px;
       }
       .tabs {
+        width: 100%;
         height: 100%;
         display: flex;
         span {
+          color: #fff;
+          width: 25%;
           display: flex;
+          justify-content: center;
           height: 100%;
           margin-right: 30px;
           box-sizing: border-box;
           cursor: pointer;
+          text-align: center;
         }
         span.active {
-          color: #0094ec;
-          border-bottom: 3px solid #0094ec;
+          margin-top: 8px;
+          color: #5d7b9a;
+          font-weight: bold;
+          background-color: #fff;
+          // border-bottom: 3px solid #0094ec;
+          border-radius: 5px;
         }
       }
     }
@@ -515,8 +522,22 @@ export default {
         .radio-group {
           padding: 0 15px;
           .el-radio {
+            color: #ffffff40;
+          }
+          .el-radio__input.is-checked + .el-radio__label {
             color: #fff;
           }
+          .el-radio__input.is-checked .el-radio__inner {
+            border-color: #4eb4ee;
+            background: #4eb4ee;
+          }
+        }
+        .submit-botton {
+          color: #fff;
+          width: 80px;
+          background-color: #ffffff40;
+          border: none;
+          border-radius: 15px;
         }
       }
     }

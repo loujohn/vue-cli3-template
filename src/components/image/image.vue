@@ -84,7 +84,7 @@ export default {
 .image {
   padding: 10px;
   overflow: auto;
-  height: 470px;
+  height: 550px;
   overflow: auto;
   box-sizing: border-box;
   .no-image {

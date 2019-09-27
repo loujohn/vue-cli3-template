@@ -51,7 +51,7 @@
     <div v-else>
       <div class="base-info">
         <el-row :gutter="10">
-          <el-col :span="12" v-for="item in fieldList" :key="item.id">
+          <el-col :span="24" v-for="item in fieldList" :key="item.id">
             <template v-if="item.fieldType === 0">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
@@ -127,7 +127,7 @@ export default {
 .base-info {
   padding: 30px 20px;
   color: #000;
-  height: 350px;
+  height: 340px;
   overflow: auto;
   box-sizing: border-box;
   border-bottom: 1px solid #e6e6e6;
