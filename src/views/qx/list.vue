@@ -26,7 +26,7 @@
           label="完成数"
           prop="referenceInfo.completedRecord"
         ></el-table-column>
-        <el-table-column label="进度">
+        <el-table-column label="进度" width="350px">
           <template slot-scope="scope">
             <v-progress
               :percent="
