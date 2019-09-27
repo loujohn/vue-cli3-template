@@ -29,10 +29,12 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column label="任务名称" prop="taskName"></el-table-column>
         <el-table-column
+          width="120"
           label="总图斑数"
           prop="referenceInfo.totalRecord"
         ></el-table-column>
         <el-table-column
+          width="120"
           label="完成数"
           prop="referenceInfo.completedRecord"
         ></el-table-column>

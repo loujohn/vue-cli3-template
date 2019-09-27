@@ -19,10 +19,12 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column label="任务名称" prop="taskName"></el-table-column>
         <el-table-column
+          width="120"
           label="总图斑数"
           prop="referenceInfo.totalRecord"
         ></el-table-column>
         <el-table-column
+          width="120"
           label="完成数"
           prop="referenceInfo.completedRecord"
         ></el-table-column>
@@ -35,7 +37,7 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="截止日期" prop="completeTime"></el-table-column>
+        <el-table-column label="截止日期" prop="completeTime" width="160"></el-table-column>
         <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
