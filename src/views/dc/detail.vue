@@ -1,12 +1,14 @@
 <template>
   <div class="dc-detail">
+    <div class="my-breadcrumb">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>调查员</el-breadcrumb-item>
+      <el-breadcrumb-item><i class="el-icon-s-home"></i> 调查员</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ name: 'dc-list' }"
         >任务列表</el-breadcrumb-item
       >
       <el-breadcrumb-item>任务详情</el-breadcrumb-item>
     </el-breadcrumb>
+    </div>
     <div class="cards">
       <customer-card
         v-for="(item, index) in data"
@@ -45,7 +47,7 @@
               <span class="count">已选择0项</span>
               <el-button
                 :size="size"
-                style="margin-left: 8px; background-color:#0e67f2;color: #fff;"
+                style="margin-left: 8px; background-color:#0094ec;color: #fff;"
               >
                 <svg-icon iconClass="upload"></svg-icon>
                 全部提交
@@ -241,9 +243,65 @@ export default {
           }
         }
         .count {
-          color: #0e67f2;
+          color: #0094ec;
           font-size: 14px;
         }
+      }
+    }
+  }
+  .my-breadcrumb {
+    background-color: #fff;
+    border-radius: 4px;
+    margin: 10px 0;
+    .el-breadcrumb {
+      padding: 0px;
+    }
+    .el-breadcrumb__item {
+      color:#FFF;
+      display:block;
+      position:relative;
+      text-decoration: none;
+      background: #0094ec;
+      height: 40px;
+      width: 60px;
+      line-height:40px;
+      padding: 0 10px 0 5px;
+      text-align: center;
+      margin-right: 23px;
+      &:first-child{
+        padding-left:15px;
+        border-radius: 4px 0 0 4px;
+        &:before{
+          border:none;
+        }
+      }
+
+      &:before,
+      &:after{
+        content: "";
+        position:absolute;
+        top: 0;
+        border:0 solid #0094ec;
+        border-width:20px 10px;
+        width: 0;
+        height: 0;
+      }
+      &:before{
+        left:-20px;
+        border-left-color:transparent;
+      }
+      &:after{
+        left:100%;
+        border-color:transparent;
+        border-left-color:#0094ec;
+      }
+
+
+      .el-breadcrumb__inner {
+        color: #fff;
+      }
+      .el-breadcrumb__separator {
+        display: none;
       }
     }
   }

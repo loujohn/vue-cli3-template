@@ -383,8 +383,8 @@ export default {
           cursor: pointer;
         }
         span.active {
-          color: #0e67f2;
-          border-bottom: 3px solid #0e67f2;
+          color: #0094ec;
+          border-bottom: 3px solid #0094ec;
         }
       }
     }
@@ -423,7 +423,7 @@ export default {
     }
     .action {
       height: 80px;
-      background-color: #0e67f2;
+      background-color: #0094ec;
       padding: 0 20px;
       display: flex;
       justify-content: space-between;
