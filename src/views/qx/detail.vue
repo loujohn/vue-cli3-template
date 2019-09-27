@@ -278,6 +278,9 @@ export default {
       switch (name) {
         case '矿山名称':
           return '350px';
+        case '地块编号':
+        case '行政区名称':
+          return '100px';
         default:
           return null;
       }
