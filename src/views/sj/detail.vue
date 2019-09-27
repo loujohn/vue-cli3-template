@@ -72,14 +72,16 @@
         </el-row>
       </div>
       <el-table :data="list" header-row-class-name="customer-table-header">
+        <el-table-column type="index"></el-table-column>
         <el-table-column
           :key="index"
           :label="item.fieldAlias"
           :prop="`referenceInfo.fields[${item.fieldName}]`"
-          :width="getWidth(item.fieldsAlias)"
+          :width="getWidth(item)"
           v-for="(item, index) in fields"
         ></el-table-column>
         <el-table-column
+          width="100"
           label="调查人员"
           prop="referenceInfo.surverUserName"
         ></el-table-column>
@@ -254,8 +256,8 @@ export default {
   },
   methods: {
     getClass,
-    getWidth(name) {
-      switch (name) {
+    getWidth(item) {
+      switch (item.fieldAlias) {
         case '矿山名称':
           return '350px';
         default:
