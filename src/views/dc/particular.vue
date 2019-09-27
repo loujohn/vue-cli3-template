@@ -5,7 +5,9 @@
       <el-breadcrumb-item :to="{ name: 'dc-list' }"
         >任务列表</el-breadcrumb-item
       >
-      <el-breadcrumb-item>任务详情</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ name: 'dc-detail', query: { id: taskId } }"
+        >任务详情</el-breadcrumb-item
+      >
       <el-breadcrumb-item>图斑详情</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="content">
@@ -22,8 +24,9 @@
           </span>
         </div>
         <div class="content-view">
-          <v-image v-show="activeTabIndex === 1" />
-          <v-video v-show="activeTabIndex === 2" />
+          <base-info :fields="fieldList" v-show="activeTabIndex === 0" />
+          <v-image :imageObj="imageObj" v-show="activeTabIndex === 1" />
+          <v-video :videos="videoList" v-show="activeTabIndex === 2" />
         </div>
       </div>
       <div class="map-container">
@@ -38,6 +41,8 @@ import vMap from 'components/map/map';
 import geojsonEdit from 'components/geo-edit/geo-edit';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
+import baseInfo from 'components/base-info/baseInfo';
+import { task } from 'api';
 export default {
   name: 'dc-particular',
   components: {
@@ -45,6 +50,7 @@ export default {
     geojsonEdit,
     vImage,
     vVideo,
+    baseInfo,
   },
   props: {
     id: {
@@ -56,7 +62,14 @@ export default {
       map: null,
       tabs: [{ name: '文字' }, { name: '照片' }, { name: '视频' }],
       activeTabIndex: 0,
+      taskId: '',
+      fieldList: [],
+      imageObj: {},
+      videoList: [],
     };
+  },
+  mounted() {
+    this.getTaskDetail();
   },
   methods: {
     handleMapLoad(e) {
@@ -64,6 +77,35 @@ export default {
     },
     handleTabClick(index) {
       this.activeTabIndex = index;
+    },
+    async getTaskDetail() {
+      const params = { id: this.id };
+      const data = await task.getTaskDetail(params);
+      let {
+        taskId,
+        referenceInfo: {
+          fieldsList,
+          farImageFiles,
+          nearImageFiles,
+          otherImageFiles,
+          vedioFiles,
+        },
+      } = data;
+      this.taskId = taskId;
+      this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
+      this.videoList = vedioFiles;
+      fieldsList = fieldsList.map(e => {
+        if (e.fieldName === 'centerPoint') {
+          const { fieldValue } = e;
+          return {
+            ...e,
+            fieldValue: JSON.parse(fieldValue).coordinates,
+          };
+        } else {
+          return e;
+        }
+      });
+      this.fieldList = fieldsList.filter(e => !e.isSpace);
     },
   },
 };

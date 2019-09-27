@@ -3,11 +3,7 @@
     <div v-if="showForm">
       <div class="base-info">
         <el-row :gutter="10">
-          <el-col
-            :span="12"
-            v-for="item in fieldList"
-            :key="item.id"
-          >
+          <el-col :span="12" v-for="item in fieldList" :key="item.id">
             <template v-if="item.fieldType === 0">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <el-input
@@ -55,11 +51,7 @@
     <div v-else>
       <div class="base-info">
         <el-row :gutter="10">
-          <el-col
-            :span="12"
-            v-for="item in fieldList"
-            :key="item.id"
-          >
+          <el-col :span="12" v-for="item in fieldList" :key="item.id">
             <template v-if="item.fieldType === 0">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
@@ -72,9 +64,7 @@
             </template>
             <template v-else-if="item.fieldType === 2">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <span class="content">{{
-                item.fieldValue
-              }}</span>
+              <span class="content">{{ item.fieldValue }}</span>
             </template>
           </el-col>
         </el-row>
@@ -100,6 +90,7 @@ export default {
   data() {
     return {
       fieldList: [],
+      size: 'small',
     };
   },
   computed: {
