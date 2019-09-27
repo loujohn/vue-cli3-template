@@ -81,7 +81,11 @@
           </div>
           <div class="operation" v-show="operator === 'check'">
             <span>审核:</span>
-            <el-radio-group class="radio-group" v-model="form.status" text-color="red">
+            <el-radio-group
+              class="radio-group"
+              v-model="form.status"
+              text-color="red"
+            >
               <el-radio :label="1">通过</el-radio>
               <el-radio :label="0">不通过</el-radio>
             </el-radio-group>
@@ -245,6 +249,10 @@ export default {
             this.setGeojson(this.map, 'geo-symbol', center);
             const bbox = turf.bbox(geojson);
             this.map.fitBounds(bbox);
+            this.map.once('zoomend', () => {
+              const zoom = this.map.getZoom();
+              this.map.flyTo({ zoom: zoom - 1 });
+            });
           }
         }
       },
