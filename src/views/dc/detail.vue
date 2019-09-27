@@ -79,8 +79,13 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" width="80px">
-            <template>
-              <el-button size="mini" type="text">详情</el-button>
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="text"
+                @click="toParticular(scope.row.id)"
+                >详情</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -137,7 +142,7 @@ export default {
       params: {
         pageIndex: 1,
         pageSize: 10,
-        surveyStage: 0,
+        surveyStage: 1,
         keyword: '',
       },
       fields: [],
@@ -190,6 +195,9 @@ export default {
     handleCurrentPageChange(val) {
       this.params.pageIndex = val;
       this.getList();
+    },
+    toParticular(id) {
+      this.$router.push({ name: 'dc-particular', query: { id } });
     },
   },
 };

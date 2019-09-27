@@ -371,12 +371,14 @@ export default {
       const res = await task.getFlowLog(params);
       const { sjLog, qxLog } = res;
       if (this.type === 'qx') {
+        if (!qxLog) return false;
         this.suggestion = qxLog.suggestion;
         if (this.data.checkFlowStage === 4 || this.data.checkFlowStage === 5) {
           this.form.suggestion = qxLog.suggestion;
           this.content = `市级审核意见: ${sjLog.suggestion || '无'}`;
         }
       } else if (this.type === 'sj') {
+        if (!sjLog) return false;
         this.suggestion = sjLog.suggestion;
         if (qxLog) {
           this.content = `区县审核意见: ${qxLog.suggestion}`;
