@@ -30,7 +30,7 @@ export default {
         this.map && this.map.resize();
         if (this.geojson) {
           const bbox = turf.bbox(JSON.parse(this.geojson));
-          this.map.fitBounds(bbox);
+          this.map.fitBounds(bbox, { padding: 200 });
         }
       }
     },
