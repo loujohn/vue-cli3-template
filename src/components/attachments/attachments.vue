@@ -6,12 +6,13 @@
         v-for="attachment in attachments"
         :key="attachment.id"
       >
+        <div class="icon"><i class="el-icon-document"></i></div>
         <a
+          class="my-list"
           target="_blank"
           :href="`${staticUrl}${attachment.filePath}`"
           :download="attachment.originName"
         >
-          <i class="el-icon-document"></i>
           <span class="name">{{ attachment.originName }}</span>
         </a>
       </div>
@@ -75,6 +76,29 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+    }
+  }
+  .attachment {
+    border-radius: 4px;
+    margin-bottom: 10px;
+    height: 30px;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    display: flex;
+    align-items: center;
+    .icon {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+      width: 30px;
+      height: 30px;
+      background-color: #409eff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      i {
+        font-size: 20px;
+        display: inline-block;
+        color: #fff;
+      }
     }
   }
 }

@@ -81,7 +81,7 @@
           </div>
           <div class="operation" v-show="operator === 'check'">
             <span>审核:</span>
-            <el-radio-group class="radio-group" v-model="form.status">
+            <el-radio-group class="radio-group" v-model="form.status" text-color="red">
               <el-radio :label="1">通过</el-radio>
               <el-radio :label="0">不通过</el-radio>
             </el-radio-group>
@@ -149,10 +149,10 @@ export default {
   data() {
     return {
       tabs: [
-        { name: '文字' },
-        { name: '照片' },
-        { name: '视频' },
-        { name: '附件' },
+        { name: '文 字' },
+        { name: '照 片' },
+        { name: '视 频' },
+        { name: '附 件' },
       ],
       activeTabIndex: 0,
       form: {
@@ -448,9 +448,9 @@ export default {
   .right {
     .head {
       padding: 0 20px;
-      height: 50px;
+      height: 40px;
       background-color: #f1f1f1;
-      line-height: 50px;
+      line-height: 40px;
       position: relative;
       .close {
         cursor: pointer;
@@ -469,14 +469,14 @@ export default {
           cursor: pointer;
         }
         span.active {
-          color: #0e67f2;
-          border-bottom: 3px solid #0e67f2;
+          color: #0094ec;
+          border-bottom: 3px solid #0094ec;
         }
       }
     }
     .suggestion {
-      padding: 30px 20px;
-      height: 170px;
+      padding: 15px 20px 0px;
+      height: 130px;
       box-sizing: border-box;
     }
     .people {
@@ -488,8 +488,8 @@ export default {
       align-items: center;
     }
     .action {
-      height: 80px;
-      background-color: #0e67f2;
+      height: 40px;
+      background-color: #5d7b9a;
       padding: 0 20px;
       display: flex;
       justify-content: space-between;

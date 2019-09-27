@@ -1,9 +1,11 @@
 <template>
   <div class="progress-list">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>市级</el-breadcrumb-item>
-      <el-breadcrumb-item>任务列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    <div class="my-breadcrumb">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>市级</el-breadcrumb-item>
+        <el-breadcrumb-item>任务列表</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div class="cards">
       <customer-card
         width="24%"
@@ -128,6 +130,12 @@ export default {
       padding: 13px 20px;
       background-color: $base-color;
     }
+  }
+  .my-breadcrumb {
+    background-color: #fff;
+    border-radius: 4px;
+    margin: 10px 0;
+    padding: 0 20px;
   }
 }
 </style>

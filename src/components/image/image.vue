@@ -1,10 +1,10 @@
 <template>
   <div class="image">
-    <div style="padding-bottom: 10px">
+    <div class="my-radio-group">
       <el-radio-group v-model="activeKey" @change="handleChange">
-        <el-radio label="farImageFiles">远景</el-radio>
-        <el-radio label="nearImageFiles">近景</el-radio>
-        <el-radio label="otherImageFiles">其它</el-radio>
+        <el-radio-button label="farImageFiles">远 景</el-radio-button>
+        <el-radio-button label="nearImageFiles">近 景</el-radio-button>
+        <el-radio-button label="otherImageFiles">其 它</el-radio-button>
       </el-radio-group>
     </div>
     <el-row :gutter="10" v-show="!isEmpty">
@@ -98,6 +98,22 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+    }
+  }
+  .my-radio-group {
+    margin: 10px 0;
+    .el-radio-button__inner {
+      color: #9aa3ae;
+      border: none;
+      font-weight: normal;
+      padding: 10px 25px;
+      border-radius: 45px;
+    }
+    .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+      border-radius: 45px;
+      background-color: #0094ec;
+      border-color: #0094ec;
+      color: #fff;
     }
   }
 }

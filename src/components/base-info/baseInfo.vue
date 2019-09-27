@@ -127,7 +127,7 @@ export default {
 .base-info {
   padding: 30px 20px;
   color: #000;
-  height: 250px;
+  height: 350px;
   overflow: auto;
   box-sizing: border-box;
   border-bottom: 1px solid #e6e6e6;
@@ -139,13 +139,14 @@ export default {
   }
   .content {
     display: inline-block;
-    padding-bottom: 25px;
+    // padding-bottom: 25px;
   }
   .label-edit {
     display: inline-block;
     padding: 5px 0;
     width: 120px;
     text-align: left;
+    color: #606266;
   }
   .content-deit {
     display: inline-block;

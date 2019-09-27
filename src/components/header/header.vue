@@ -48,7 +48,8 @@ export default {
 .head {
   height: 70px;
   padding: 0 40px;
-  background-color: $header-bg-color;
+  // background-color: $header-bg-color;
+  background-color: #0087d7;
   display: flex;
   justify-content: space-between;
   .title,
