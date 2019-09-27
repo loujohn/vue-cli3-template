@@ -101,7 +101,7 @@ export default {
     }
   }
   .my-radio-group {
-    margin: 10px 0;
+    margin: 0 0 10px 0;
     .el-radio-button__inner {
       color: #9aa3ae;
       border: none;
@@ -110,9 +110,10 @@ export default {
       border-radius: 45px;
     }
     .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+      box-shadow: none;
       border-radius: 45px;
-      background-color: #0094ec;
-      border-color: #0094ec;
+      background-color: #5d7b9a;
+      border-color: #5d7b9a;
       color: #fff;
     }
   }
