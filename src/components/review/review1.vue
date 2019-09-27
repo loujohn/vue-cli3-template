@@ -85,7 +85,9 @@
               <el-radio :label="1">通过</el-radio>
               <el-radio :label="0">不通过</el-radio>
             </el-radio-group>
-            <el-button size="mini" @click="check()" class="submit-botton">提交</el-button>
+            <el-button size="mini" @click="check()" class="submit-botton"
+              >提交</el-button
+            >
           </div>
           <div class="operation" v-show="operator === 'recheck'">
             <el-button size="mini" type="primary" @click="recheck()"
@@ -245,6 +247,10 @@ export default {
             this.setGeojson(this.map, 'geo-symbol', center);
             const bbox = turf.bbox(geojson);
             this.map.fitBounds(bbox);
+            this.map.once('zoomend', () => {
+              const zoom = this.map.getZoom();
+              this.map.flyTo({ zoom: zoom - 1 });
+            });
           }
         }
       },
@@ -518,7 +524,7 @@ export default {
           .el-radio {
             color: #ffffff40;
           }
-          .el-radio__input.is-checked+.el-radio__label {
+          .el-radio__input.is-checked + .el-radio__label {
             color: #fff;
           }
           .el-radio__input.is-checked .el-radio__inner {

@@ -30,6 +30,10 @@ export default {
       if (this.geojson) {
         const bbox = turf.bbox(JSON.parse(this.geojson));
         this.map.fitBounds(bbox);
+        this.map.once('zoomend', () => {
+          const zoom = this.map.getZoom();
+          this.map.flyTo({ zoom: zoom - 1 });
+        });
       }
     },
     addGeoLayer(map) {
