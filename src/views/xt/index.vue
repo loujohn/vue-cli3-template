@@ -18,7 +18,7 @@ export default {
   .cards {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 30px;
+    padding-bottom: 20px;
   }
 }
 </style>

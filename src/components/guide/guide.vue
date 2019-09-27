@@ -1,7 +1,7 @@
 <template>
   <div class="guide">
     <p class="title">
-      <svg-icon iconClass="提示" :style="{ fill: '#0e67f2' }"></svg-icon>
+      <svg-icon iconClass="提示" :style="{ fill: '#0094ec' }"></svg-icon>
       <span>使用提示</span>
     </p>
     <p v-for="tip in tips" :key="tip.name">{{ tip.name }}： {{ tip.value }}</p>

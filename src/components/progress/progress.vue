@@ -68,7 +68,7 @@ export default {
     background-color: #fbb751;
   }
   .step3 {
-    background-color: #0e67f2;
+    background-color: #0094ec;
   }
   .step4 {
     background-color: #00c988;

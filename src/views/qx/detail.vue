@@ -1,12 +1,14 @@
 <template>
   <div class="qx-detail">
+    <div class="my-breadcrumb">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>区县</el-breadcrumb-item>
+      <el-breadcrumb-item><i class="el-icon-s-home"></i> 区县</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ name: 'qx-list' }"
         >任务列表</el-breadcrumb-item
       >
       <el-breadcrumb-item>任务详情</el-breadcrumb-item>
     </el-breadcrumb>
+    </div>
     <div class="cards">
       <customer-card
         v-for="(item, index) in data"
@@ -401,6 +403,62 @@ export default {
   }
   .sj-has-passed {
     color: #67c23a;
+  }
+  .my-breadcrumb {
+    background-color: #fff;
+    border-radius: 4px;
+    margin: 10px 0;
+    .el-breadcrumb {
+      padding: 0px;
+    }
+    .el-breadcrumb__item {
+      color:#FFF;
+      display:block;
+      position:relative;
+      text-decoration: none;
+      background: #0094ec;
+      height: 40px;
+      width: 60px;
+      line-height:40px;
+      padding: 0 10px 0 5px;
+      text-align: center;
+      margin-right: 23px;
+      &:first-child{
+        padding-left:15px;
+        border-radius: 4px 0 0 4px;
+        &:before{
+          border:none;
+        }
+      }
+
+      &:before,
+      &:after{
+        content: "";
+        position:absolute;
+        top: 0;
+        border:0 solid #0094ec;
+        border-width:20px 10px;
+        width: 0;
+        height: 0;
+      }
+      &:before{
+        left:-20px;
+        border-left-color:transparent;
+      }
+      &:after{
+        left:100%;
+        border-color:transparent;
+        border-left-color:#0094ec;
+      }
+
+
+      .el-breadcrumb__inner {
+        color: #fff;
+      }
+      .el-breadcrumb__separator {
+        display: none;
+      }
+    }
   }
 }
 </style>

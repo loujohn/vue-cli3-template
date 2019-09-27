@@ -1,13 +1,15 @@
 <template>
   <div class="task-allocation">
     <div class="data">
+      <div class="my-breadcrumb">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>区县</el-breadcrumb-item>
+        <el-breadcrumb-item><i class="el-icon-s-home"></i> 区县</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ name: 'qx-list' }"
           >任务列表</el-breadcrumb-item
         >
         <el-breadcrumb-item>任务分派</el-breadcrumb-item>
       </el-breadcrumb>
+      </div>
       <div class="cards">
         <div class="card" v-for="card in cards" :key="card.name">
           <span class="name">
@@ -57,7 +59,7 @@
             <div class="operation">
               <span class="select">已选择{{ count }}个</span>
               <el-button
-                style="margin-left: 8px; background-color:#0e67f2;color: #fff; "
+                style="margin-left: 8px; background-color:#0094ec;color: #fff; "
                 v-if="!status"
                 size="small"
                 @click="handleTaskAll()"
@@ -517,7 +519,7 @@ export default {
       padding-top: 0;
       .card {
         width: 30%;
-        background-color: #0e67f2;
+        background-color: #0094ec;
         border-radius: 3px;
         padding: 18px 16px;
         box-sizing: border-box;
@@ -540,11 +542,11 @@ export default {
       align-items: center;
       .select {
         font-size: $font-sm;
-        color: #0e67f2;
+        color: #0094ec;
       }
       .select + .el-button {
-        border: 1px solid #0e67f2;
-        color: #0e67f2;
+        border: 1px solid #0094ec;
+        color: #0094ec;
       }
     }
     .filter {
@@ -567,6 +569,61 @@ export default {
     flex-shrink: 0;
     height: 100%;
     position: relative;
+  }
+  .my-breadcrumb {
+    background-color: #fff;
+    border-radius: 4px;
+    margin: 10px 0;
+    .el-breadcrumb {
+      padding: 0px;
+    }
+    .el-breadcrumb__item {
+      color:#FFF;
+      display:block;
+      position:relative;
+      text-decoration: none;
+      background: #0094ec;
+      height: 40px;
+      width: 60px;
+      line-height:40px;
+      padding: 0 10px 0 5px;
+      text-align: center;
+      margin-right: 23px;
+      &:first-child{
+        padding-left:15px;
+        border-radius: 4px 0 0 4px;
+        &:before{
+          border:none;
+        }
+      }
+
+      &:before,
+      &:after{
+        content: "";
+        position:absolute;
+        top: 0;
+        border:0 solid #0094ec;
+        border-width:20px 10px;
+        width: 0;
+        height: 0;
+      }
+      &:before{
+        left:-20px;
+        border-left-color:transparent;
+      }
+      &:after{
+        left:100%;
+        border-color:transparent;
+        border-left-color:#0094ec;
+      }
+
+      .el-breadcrumb__inner {
+        color: #fff;
+      }
+      .el-breadcrumb__separator {
+        display: none;
+      }
+    }
   }
 }
 </style>
