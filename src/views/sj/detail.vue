@@ -87,7 +87,11 @@
           label="调查人员"
           prop="referenceInfo.surverUserName"
         ></el-table-column>
-        <el-table-column label="调查时间" prop="surveyTime" width="160"></el-table-column>
+        <el-table-column
+          label="调查时间"
+          prop="surveyTime"
+          width="160"
+        ></el-table-column>
         <el-table-column label="阶段">
           <template slot-scope="scope">
             <span :class="getClass(scope.row.checkFlowStage)">{{
@@ -262,6 +266,9 @@ export default {
       switch (item.fieldAlias) {
         case '矿山名称':
           return '350px';
+        case '地块编号':
+        case '行政区名称':
+          return '100px';
         default:
           return null;
       }
