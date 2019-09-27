@@ -1,12 +1,13 @@
 <template>
-  <div class="draw" @click="toggle()">
+  <div class="draw">
     <span
       class="trigger"
       :class="{ 'is-drawing': drawing, 'not-drawing': !drawing }"
+      @click="toggle()"
     >
       <svg-icon iconClass="draw" style="height: 1.5em; width: 1.5em;" />空间选择
     </span>
-    <span class="cancel" v-show="showCancel" @click="cancel()">取消</span>
+    <span class="cancel" v-show="showCancel" @click.stop="cancel()">取消</span>
   </div>
 </template>
 

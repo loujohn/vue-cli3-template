@@ -236,6 +236,19 @@ export default {
         this.selectedTasks = res.data.filter(
           e => e.distributionStatus === this.status,
         );
+        // const ids = this.selectedTasks.map(e => e.id);
+        // this.map.setLayoutProperty()
+        let idMap = {};
+        this.selectedTasks.map(task => {
+          idMap[task.id] = task.id;
+        });
+        console.log(idMap);
+        this.map.setLayoutProperty('symbol-layer', 'icon-size', [
+          'case',
+          ['has', ['get', 'taskRecordId'], ['literal', idMap]],
+          0.15,
+          0.1,
+        ]);
         this.list = this.selectedTasks;
         this.$refs['table'].toggleAllSelection();
       }
