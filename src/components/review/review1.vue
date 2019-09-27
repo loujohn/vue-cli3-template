@@ -246,11 +246,7 @@ export default {
             this.addMarker(center);
             this.setGeojson(this.map, 'geo-symbol', center);
             const bbox = turf.bbox(geojson);
-            this.map.fitBounds(bbox);
-            this.map.once('zoomend', () => {
-              const zoom = this.map.getZoom();
-              this.map.flyTo({ zoom: zoom - 1 });
-            });
+            this.map.fitBounds(bbox, { padding: 200 });
           }
         }
       },
