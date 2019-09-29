@@ -14,7 +14,7 @@
         <el-breadcrumb-item>图斑详情</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="content">
+    <div class="content-box">
       <div class="operation-panel">
         <div class="tabs">
           <span
@@ -28,7 +28,7 @@
           </span>
         </div>
         <div class="content-view">
-          <base-info :fields="fieldList" v-show="activeTabIndex === 0" />
+          <dc-base-info :fields="fieldList" v-show="activeTabIndex === 0" />
           <v-image :imageObj="imageObj" v-show="activeTabIndex === 1" />
           <v-video :videos="videoList" v-show="activeTabIndex === 2" />
         </div>
@@ -45,7 +45,7 @@ import vMap from 'components/map/map';
 import geojsonEdit from 'components/geo-edit/geo-edit';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
-import baseInfo from 'components/base-info/baseInfo';
+import dcBaseInfo from 'components/base-info/dcBaseInfo';
 import { task } from 'api';
 import turf from 'turf';
 import iconLocation from 'assets/images/sj/location.png';
@@ -61,7 +61,7 @@ export default {
     geojsonEdit,
     vImage,
     vVideo,
-    baseInfo,
+    dcBaseInfo,
   },
   props: {
     id: {
@@ -210,7 +210,7 @@ export default {
   padding-top: 0;
   box-sizing: border-box;
   height: calc(100% - 10px);
-  .content {
+  .content-box {
     height: calc(100% - 30px);
     display: flex;
     justify-content: space-between;

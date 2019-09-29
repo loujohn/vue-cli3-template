@@ -56,8 +56,7 @@ export default {
         this.draw = this.map.draw();
       } else {
         this.draw = new this.D2c.draw({
-          styles: drawStyles,
-          displayControlsDefault: true,
+          displayControlsDefault: false,
         });
         this.map.addControl(this.draw);
       }
