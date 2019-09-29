@@ -280,7 +280,7 @@ export default {
         // case '矿山名称':
         //   return '350px';
         case '地块编号':
-          return '140px';
+          return '120px';
         case '行政区名称':
           return '100px';
         default:

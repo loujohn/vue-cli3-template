@@ -83,7 +83,7 @@
           v-for="(item, index) in fields"
         ></el-table-column>
         <el-table-column
-          width="100"
+          width="120"
           label="调查人员"
           prop="referenceInfo.surverUserName"
         ></el-table-column>
@@ -263,7 +263,7 @@ export default {
         // case '矿山名称':
         //   return '350px';
         case '地块编号':
-          return '140px';
+          return '120px';
         case '行政区名称':
           return '100px';
         default:
