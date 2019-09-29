@@ -3,7 +3,7 @@
     <div class="edit-trigger" v-if="canEdit">
       <span><svg-icon iconClass="edit" />编辑</span>
     </div>
-    <div v-if="showForm">
+    <div v-if="showForm" style="height: 100%;">
       <div class="base-info">
         <el-row :gutter="10">
           <el-col :span="12" v-for="item in fieldList" :key="item.id">
@@ -51,7 +51,7 @@
         </el-row>
       </div>
     </div>
-    <div v-else>
+    <div v-else style="height: 100%;">
       <div class="base-info">
         <el-row :gutter="10">
           <el-col :span="12" v-for="item in fieldList" :key="item.id">
@@ -74,7 +74,7 @@
       </div>
     </div>
     <div class="submit-box">
-      <button class="btn btn-back">返回</button>
+      <button class="btn btn-back" @click="back()">返回</button>
       <button class="btn btn-submit">提交</button>
     </div>
   </div>
@@ -125,6 +125,9 @@ export default {
     doEdit() {
       this.edit = true;
     },
+    back() {
+      this.$router.go(-1);
+    },
   },
 };
 </script>
@@ -132,6 +135,9 @@ export default {
 <style lang="scss">
 .baseinfo-wrapper {
   position: relative;
+  height: 100%;
+  padding-bottom: 56px;
+  box-sizing: border-box;
 }
 .edit-trigger {
   padding: 5px 10px;
@@ -143,6 +149,9 @@ export default {
 }
 .base-info {
   padding: 30px 20px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: auto;
   color: #000;
   overflow: auto;
   box-sizing: border-box;
@@ -174,14 +183,23 @@ export default {
 }
 .submit-box {
   text-align: right;
-  padding: 5px 10px;
+  padding: 10px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid #e6e6e6;
   .btn {
     height: 36px;
     width: 80px;
+    cursor: pointer;
+    outline: none;
     border-radius: 5px;
   }
   .btn-back {
     border: 1px solid #0e67f2;
+    color: #0e67f2;
     background-color: #fff;
   }
   .btn-submit {

@@ -236,6 +236,9 @@ export default {
           border-bottom: 3px solid #0094ec;
         }
       }
+      .content-view {
+        height: calc(100% - 42px);
+      }
     }
   }
   .my-breadcrumb {

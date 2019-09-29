@@ -88,7 +88,7 @@ export default {
   overflow: auto;
   box-sizing: border-box;
   .no-image {
-    height: calc(100% - 28px);
+    height: calc(100% - 44px);
     position: relative;
     span {
       font-size: 18px;
@@ -109,7 +109,7 @@ export default {
       padding: 10px 25px;
       border-radius: 45px;
     }
-    .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+    .el-radio-button__orig-radio:checked + .el-radio-button__inner {
       box-shadow: none;
       border-radius: 45px;
       background-color: #5d7b9a;
