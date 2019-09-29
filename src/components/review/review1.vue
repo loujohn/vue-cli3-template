@@ -170,7 +170,7 @@ export default {
       videoList: [],
       attachmentList: [],
       content: '',
-      suggestion: '通过',
+      suggestion: '',
       visible: false,
     };
   },
