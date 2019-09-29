@@ -20,9 +20,20 @@
 
 <script>
 import d2c from 'd2c';
+import drawStyles from './draw-style';
 export default {
   name: 'geo-edit',
-  props: ['map', 'geojson'],
+  props: {
+    map: {
+      type: Object,
+    },
+    originGeojson: {
+      type: String,
+    },
+    appGeojson: {
+      type: String,
+    },
+  },
   data() {
     return {
       D2c: d2c || window.d2c,
@@ -33,14 +44,6 @@ export default {
       show: false,
       featureId: 'geo-edit-id',
     };
-  },
-  watch: {
-    geojson: function(oldVal, newVal) {
-      if (oldVal) {
-        this.draw && this.draw.deleteAll();
-        this.draw.changeMode('simple_select');
-      }
-    },
   },
   mounted() {
     if (this.map) {
@@ -53,11 +56,12 @@ export default {
         this.draw = this.map.draw();
       } else {
         this.draw = new this.D2c.draw({
-          displayControlsDefault: false,
+          styles: drawStyles,
+          displayControlsDefault: true,
         });
         this.map.addControl(this.draw);
       }
-      this.bindEvent();
+      // this.bindEvent();
     },
     clearDraw() {
       this.draw && this.draw.deleteAll();
@@ -111,9 +115,6 @@ export default {
 
 <style lang="scss">
 .geo-edit {
-  // position: absolute;
-  // top: 10px;
-  // right: 10px;
   .btn {
     height: 30px;
     padding: 0 8px;
