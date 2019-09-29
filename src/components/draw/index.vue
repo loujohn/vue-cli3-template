@@ -53,6 +53,7 @@ export default {
       this.bindEvent();
     },
     bindEvent() {
+      this.map.doubleClickZoom.disable();
       this.map.on('draw.create', this.handleDraw);
       this.map.on('draw.update', this.handleDraw);
       this.map.on('draw.modechange', this.handleMode);

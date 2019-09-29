@@ -1,7 +1,10 @@
 <template>
   <div class="baseinfo-wrapper">
     <div class="edit-trigger" v-if="canEdit">
-      <span><svg-icon iconClass="edit" />编辑</span>
+      <span @click="doEdit()">
+        <svg-icon iconClass="edit" />
+        {{ edit ? '取消编辑' : '编辑' }}
+      </span>
     </div>
     <div v-if="showForm" style="height: 100%;">
       <div class="base-info">
@@ -39,6 +42,7 @@
                 type="datetime"
                 align="right"
                 :size="size"
+                style="width: 100%;"
                 unlink-panels
                 value-format="yyyy-MM-dd HH:mm:ss"
                 range-separator="至"
@@ -75,11 +79,14 @@
     </div>
     <div class="submit-box">
       <button class="btn btn-back" @click="back()">返回</button>
-      <button class="btn btn-submit">提交</button>
+      <button class="btn btn-submit" v-show="canEdit" @click="submit()">
+        提交
+      </button>
     </div>
   </div>
 </template>
 <script>
+import { survey } from 'api';
 export default {
   name: 'base-info',
   props: {
@@ -123,10 +130,22 @@ export default {
       }
     },
     doEdit() {
-      this.edit = true;
+      this.edit = !this.edit;
     },
     back() {
       this.$router.go(-1);
+    },
+    async submit() {
+      const params = {
+        taskRecordIds: this.$route.query.id,
+      };
+      const res = await survey.taskSubmit(params);
+      if (res.code === 200 && res.message === 'ok') {
+        this.$message({
+          type: 'success',
+          message: '成功',
+        });
+      }
     },
   },
 };
@@ -145,6 +164,7 @@ export default {
   span {
     color: #409eff;
     font-size: 14px;
+    cursor: pointer;
   }
 }
 .base-info {
@@ -190,6 +210,7 @@ export default {
   width: 100%;
   box-sizing: border-box;
   border-top: 1px solid #e6e6e6;
+  background-color: #fff;
   .btn {
     height: 36px;
     width: 80px;

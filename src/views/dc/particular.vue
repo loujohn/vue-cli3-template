@@ -28,14 +28,24 @@
           </span>
         </div>
         <div class="content-view">
-          <dc-base-info :fields="fieldList" v-show="activeTabIndex === 0" />
+          <dc-base-info
+            :fields="fieldList"
+            :canEdit="canEdit"
+            v-show="activeTabIndex === 0"
+          />
           <v-image :imageObj="imageObj" v-show="activeTabIndex === 1" />
           <v-video :videos="videoList" v-show="activeTabIndex === 2" />
         </div>
       </div>
       <div class="map-container">
         <v-map @load="handleMapLoad" />
-        <geojson-edit :map="map" v-if="map" @load="handleMapLoad" />
+        <geojson-edit
+          :map="map"
+          :originGeojson="originGeojson"
+          :appGeojson="appGeojson"
+          v-if="map"
+          @load="handleMapLoad"
+        />
       </div>
     </div>
   </div>
@@ -81,7 +91,13 @@ export default {
       originGeojson: '',
       pcGeojson: '',
       appGeojson: '',
+      surveyStatus: '',
     };
+  },
+  computed: {
+    canEdit() {
+      return this.surveyStatus == 1;
+    },
   },
   watch: {
     mapLoaded(val) {
@@ -111,6 +127,7 @@ export default {
       const data = await task.getTaskDetail(params);
       let {
         taskId,
+        surveyStage,
         referenceInfo: {
           fieldsList,
           farImageFiles,
@@ -121,6 +138,7 @@ export default {
         },
       } = data;
       this.taskId = taskId;
+      this.surveyStatus = surveyStage;
       this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
       this.videoList = vedioFiles;
       fieldsList = fieldsList.map(e => {
