@@ -1,13 +1,15 @@
 <template>
   <div class="dc-detail">
     <div class="my-breadcrumb">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item><i class="el-icon-s-home"></i> 调查员</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ name: 'dc-list' }"
-        >任务列表</el-breadcrumb-item
-      >
-      <el-breadcrumb-item>任务详情</el-breadcrumb-item>
-    </el-breadcrumb>
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item
+          ><i class="el-icon-s-home"></i> 调查员</el-breadcrumb-item
+        >
+        <el-breadcrumb-item :to="{ name: 'dc-list' }"
+          >任务列表</el-breadcrumb-item
+        >
+        <el-breadcrumb-item>任务详情</el-breadcrumb-item>
+      </el-breadcrumb>
     </div>
     <div class="cards">
       <customer-card
@@ -34,6 +36,7 @@
                 v-model="params.surveyStage"
                 :size="size"
                 @change="handleSelectChange"
+                clearable
               >
                 <el-option
                   v-for="(item, index) in surveyStatusList"
@@ -44,10 +47,11 @@
               </el-select>
             </el-col>
             <el-col :span="8" style="text-align: right;">
-              <span class="count">已选择0项</span>
+              <span class="count">已选择{{ count }}项</span>
               <el-button
                 :size="size"
                 style="margin-left: 8px; background-color:#0094ec;color: #fff;"
+                @click="submit()"
               >
                 <svg-icon iconClass="upload"></svg-icon>
                 全部提交
@@ -59,6 +63,10 @@
           header-row-class-name="customer-table-header"
           :data="list"
           style="width: 100%;"
+          ref="table"
+          @row-click="handleRowClick"
+          @select="handleTaskSelect"
+          @select-all="handleTaskSelectAll"
         >
           <el-table-column
             type="selection"
@@ -144,12 +152,28 @@ export default {
       params: {
         pageIndex: 1,
         pageSize: 10,
-        surveyStage: 1,
+        // surveyStage: 1,
+        surveyState: '',
         keyword: '',
       },
+      selectedTasks: [],
       fields: [],
       size: 'small',
     };
+  },
+  computed: {
+    count() {
+      return this.selectedTasks.length;
+    },
+  },
+  watch: {
+    id(val) {
+      this.getTaskField();
+      this.$nextTick(() => {
+        this.getList();
+        this.getTaskStatistic();
+      });
+    },
   },
   created() {
     this.getTaskField();
@@ -178,6 +202,13 @@ export default {
       const { dataList, totalCount } = data;
       this.list = dataList;
       this.totalCount = totalCount;
+      this.$nextTick(() => {
+        this.list.forEach(row => {
+          if (this.selectedTasks.find(e => e.id === row.id)) {
+            this.$refs['table'].toggleRowSelection(row, true);
+          }
+        });
+      });
     },
     async getTaskStatistic() {
       const params = {
@@ -198,8 +229,48 @@ export default {
       this.params.pageIndex = val;
       this.getList();
     },
+    handleMapLoad(e) {
+      this.map = e.target;
+    },
+    handleRowClick(row) {
+      console.log(row);
+    },
     toParticular(id) {
       this.$router.push({ name: 'dc-particular', query: { id } });
+    },
+    handleTaskSelect(selection, row) {
+      const existed = this.selectedTasks.find(e => e.id === row.id);
+      if (existed) {
+        this.selectedTasks = this.selectedTasks.filter(e => e.id !== row.id);
+      } else {
+        this.selectedTasks.push(row);
+      }
+    },
+    handleTaskSelectAll(selection) {
+      this.selectedTasks = selection;
+    },
+    async submit() {
+      if (this.count === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请至少选择一个任务',
+        });
+        return false;
+      }
+      const ids = this.selectedTasks.map(task => task.id);
+      const params = {
+        taskRecordIds: ids.toString(),
+      };
+      const res = await survey.taskSubmit(params);
+      if (res.code === 200 && res.message === 'ok') {
+        this.$message({
+          type: 'success',
+          message: '成功',
+        });
+        this.selectedTasks = [];
+        this.params.pageIndex = 1;
+        this.getList();
+      }
     },
   },
 };
@@ -209,7 +280,7 @@ export default {
 .dc-detail {
   padding: 30px 40px;
   padding-top: 0;
-  height: 100%;
+  height: calc(100% - 10px);
   box-sizing: border-box;
   .content {
     display: flex;
@@ -257,45 +328,44 @@ export default {
       padding: 0px;
     }
     .el-breadcrumb__item {
-      color:#FFF;
-      display:block;
-      position:relative;
+      color: #fff;
+      display: block;
+      position: relative;
       text-decoration: none;
       background: #0094ec;
       height: 40px;
       width: 60px;
-      line-height:40px;
+      line-height: 40px;
       padding: 0 10px 0 5px;
       text-align: center;
       margin-right: 23px;
-      &:first-child{
-        padding-left:15px;
+      &:first-child {
+        padding-left: 15px;
         border-radius: 4px 0 0 4px;
-        &:before{
-          border:none;
+        &:before {
+          border: none;
         }
       }
 
       &:before,
-      &:after{
-        content: "";
-        position:absolute;
+      &:after {
+        content: '';
+        position: absolute;
         top: 0;
-        border:0 solid #0094ec;
-        border-width:20px 10px;
+        border: 0 solid #0094ec;
+        border-width: 20px 10px;
         width: 0;
         height: 0;
       }
-      &:before{
-        left:-20px;
-        border-left-color:transparent;
+      &:before {
+        left: -20px;
+        border-left-color: transparent;
       }
-      &:after{
-        left:100%;
-        border-color:transparent;
-        border-left-color:#0094ec;
+      &:after {
+        left: 100%;
+        border-color: transparent;
+        border-left-color: #0094ec;
       }
-
 
       .el-breadcrumb__inner {
         color: #fff;

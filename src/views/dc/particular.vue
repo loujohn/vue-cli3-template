@@ -2,7 +2,9 @@
   <div class="dc-particular">
     <div class="my-breadcrumb">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item><i class="el-icon-s-home"></i> 调查员</el-breadcrumb-item>
+        <el-breadcrumb-item
+          ><i class="el-icon-s-home"></i> 调查员</el-breadcrumb-item
+        >
         <el-breadcrumb-item :to="{ name: 'dc-list' }"
           >任务列表</el-breadcrumb-item
         >
@@ -33,7 +35,7 @@
       </div>
       <div class="map-container">
         <v-map @load="handleMapLoad" />
-        <geojson-edit :map="map" v-if="map" />
+        <geojson-edit :map="map" v-if="map" @load="handleMapLoad" />
       </div>
     </div>
   </div>
@@ -45,6 +47,13 @@ import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
 import baseInfo from 'components/base-info/baseInfo';
 import { task } from 'api';
+import turf from 'turf';
+import iconLocation from 'assets/images/sj/location.png';
+const imgLocation = new Image();
+imgLocation.src = iconLocation;
+imgLocation.style.width = '20px';
+imgLocation.style.width = '20px';
+
 export default {
   name: 'dc-particular',
   components: {
@@ -68,7 +77,23 @@ export default {
       fieldList: [],
       imageObj: {},
       videoList: [],
+      mapLoaded: false,
+      originGeojson: '',
+      pcGeojson: '',
+      appGeojson: '',
     };
+  },
+  watch: {
+    mapLoaded(val) {
+      if (val) {
+        if (this.originGeojson) {
+          this.initMapLayer(this.map, this.originGeojson);
+        }
+      }
+    },
+    id(val) {
+      this.getTaskDetail();
+    },
   },
   mounted() {
     this.getTaskDetail();
@@ -76,6 +101,7 @@ export default {
   methods: {
     handleMapLoad(e) {
       this.map = e.target;
+      this.mapLoaded = true;
     },
     handleTabClick(index) {
       this.activeTabIndex = index;
@@ -91,6 +117,7 @@ export default {
           nearImageFiles,
           otherImageFiles,
           vedioFiles,
+          geojsons,
         },
       } = data;
       this.taskId = taskId;
@@ -108,6 +135,70 @@ export default {
         }
       });
       this.fieldList = fieldsList.filter(e => !e.isSpace);
+      this.originGeojson = fieldsList.find(e => e.isSpace).fieldValue;
+      if (this.mapLoaded) {
+        this.setGeojson(this.map, this.originGeojson);
+      }
+      if (geojsons) {
+        const { pcGeojson, appGeojson } = geojsons;
+        this.pcGeojson = pcGeojson;
+        this.appGeojson = appGeojson;
+      }
+    },
+    initMapLayer(map, geojson) {
+      geojson =
+        typeof geojson === 'string'
+          ? { type: 'Feature', geometry: JSON.parse(geojson) }
+          : geojson;
+      this.map.addImage('icon-location', imgLocation);
+      map.addSource('geo-source', {
+        type: 'geojson',
+        data: geojson,
+      });
+      map.addLayer({
+        id: 'geo-fill',
+        type: 'fill',
+        source: 'geo-source',
+        paint: {
+          'fill-opacity': 0.3,
+        },
+      });
+      map.addLayer({
+        id: 'geo-line',
+        type: 'line',
+        source: 'geo-source',
+        paint: {
+          'line-color': '#c08f01',
+          'line-width': 2,
+        },
+      });
+      const center = turf.center(geojson);
+      map.addSource('symbol-source', {
+        type: 'geojson',
+        data: center,
+      });
+      map.addLayer({
+        id: 'symbol-layer',
+        type: 'symbol',
+        source: 'symbol-source',
+        layout: {
+          'icon-image': 'icon-location',
+          'icon-size': 0.1,
+        },
+      });
+      const bbox = turf.bbox(geojson);
+      this.map.fitBounds(bbox, { padding: 200 });
+    },
+    setGeojson(map, geojson) {
+      geojson =
+        typeof geojson === 'string'
+          ? { type: 'Feature', geometry: JSON.parse(geojson) }
+          : geojson;
+      this.map.getSource('geo-source').setData(geojson);
+      const center = turf.center(geojson);
+      this.map.getSource('symbol-source').setData(center);
+      const bbox = turf.bbox(geojson);
+      this.map.fitBounds(bbox, { padding: 200 });
     },
   },
 };
@@ -118,7 +209,7 @@ export default {
   padding: 30px 40px;
   padding-top: 0;
   box-sizing: border-box;
-  height: 100%;
+  height: calc(100% - 10px);
   .content {
     height: calc(100% - 30px);
     display: flex;
@@ -155,45 +246,44 @@ export default {
       padding: 0px;
     }
     .el-breadcrumb__item {
-      color:#FFF;
-      display:block;
-      position:relative;
+      color: #fff;
+      display: block;
+      position: relative;
       text-decoration: none;
       background: #0094ec;
       height: 40px;
       width: 60px;
-      line-height:40px;
+      line-height: 40px;
       padding: 0 10px 0 5px;
       text-align: center;
       margin-right: 23px;
-      &:first-child{
-        padding-left:15px;
+      &:first-child {
+        padding-left: 15px;
         border-radius: 4px 0 0 4px;
-        &:before{
-          border:none;
+        &:before {
+          border: none;
         }
       }
 
       &:before,
-      &:after{
-        content: "";
-        position:absolute;
+      &:after {
+        content: '';
+        position: absolute;
         top: 0;
-        border:0 solid #0094ec;
-        border-width:20px 10px;
+        border: 0 solid #0094ec;
+        border-width: 20px 10px;
         width: 0;
         height: 0;
       }
-      &:before{
-        left:-20px;
-        border-left-color:transparent;
+      &:before {
+        left: -20px;
+        border-left-color: transparent;
       }
-      &:after{
-        left:100%;
-        border-color:transparent;
-        border-left-color:#0094ec;
+      &:after {
+        left: 100%;
+        border-color: transparent;
+        border-left-color: #0094ec;
       }
-
 
       .el-breadcrumb__inner {
         color: #fff;

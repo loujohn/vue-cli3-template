@@ -1,7 +1,20 @@
 <template>
   <div class="geo-edit">
-    <el-button size="mini" @click="handleEdit()">编辑</el-button>
-    <!-- <el-button size="mini" @click="clearDraw()">清除</el-button> -->
+    <button class="btn btn-toggle">
+      <svg-icon
+        style="fill: #409eff; height: 1.5em; width: 1.5em;"
+        iconClass="aim"
+      />下发范围
+    </button>
+    <div class="btns">
+      <button class="btn btn-trigger">
+        <svg-icon
+          iconClass="draw"
+          style="height: 1.5em; width: 1.5em;"
+        />空间编辑
+      </button>
+      <button class="btn btn-save">保存</button>
+    </div>
   </div>
 </template>
 
@@ -98,8 +111,36 @@ export default {
 
 <style lang="scss">
 .geo-edit {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  // position: absolute;
+  // top: 10px;
+  // right: 10px;
+  .btn {
+    height: 30px;
+    padding: 0 8px;
+    outline: 0;
+    border-radius: 5px;
+    border: 1px solid #e6e6e6;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0094ec;
+    cursor: pointer;
+  }
+  .btn-toggle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+  .btns {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    .btn-trigger {
+      margin-right: 10px;
+    }
+  }
 }
 </style>

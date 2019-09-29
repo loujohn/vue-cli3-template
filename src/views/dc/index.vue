@@ -1,12 +1,19 @@
 <template>
   <div class="dc-container">
-    <router-view></router-view>
+    <keep-alive :include="keepAliveComponents">
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
 export default {
   name: 'dc-container',
+  data() {
+    return {
+      keepAliveComponents: ['dc-detail', 'dc-particular'],
+    };
+  },
 };
 </script>
 <style lang="scss">
