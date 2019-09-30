@@ -40,6 +40,7 @@
       <div class="map-container">
         <v-map @load="handleMapLoad" />
         <geojson-edit
+          ref="geo-edit"
           :map="map"
           :originGeojson="originGeojson"
           :appGeojson="appGeojson"
@@ -218,6 +219,11 @@ export default {
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox, { padding: 200 });
     },
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
+    this.$refs['geo-edit'].isDrawing = false;
+    next();
   },
 };
 </script>

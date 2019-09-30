@@ -13,10 +13,14 @@
       >
     </button>
     <div class="btns">
-      <button class="btn btn-trigger" @click="geoEdit()">
+      <button
+        class="btn btn-trigger"
+        @click="geoEdit()"
+        :class="{ active: isDrawing }"
+      >
         <svg-icon
           iconClass="draw"
-          style="height: 1.5em; width: 1.5em;"
+          :style="{ height: '1.5em', width: '1.5em' }"
         />空间编辑
       </button>
       <button class="btn btn-save" v-show="showSave">保存</button>
@@ -145,14 +149,20 @@ export default {
       }
     },
     geoEdit() {
-      this.draw && this.draw.deleteAll();
-      if (this.showAppGeojson) {
-        this.appGeojson && this.handleEdit(this.appGeojson);
+      this.isDrawing = !this.isDrawing;
+      if (this.isDrawing) {
+        this.draw && this.draw.deleteAll();
+        if (this.showAppGeojson) {
+          this.appGeojson && this.handleEdit(this.appGeojson);
+        } else {
+          this.originGeojson && this.handleEdit(this.originGeojson);
+        }
       } else {
-        this.originGeojson && this.handleEdit(this.originGeojson);
+        this.draw && this.draw.deleteAll();
       }
     },
     bindEvent() {
+      this.map.doubleClickZoom.disable();
       this.map.on('draw.create', this.handleDraw);
       this.map.on('draw.update', this.handleDraw);
       this.map.on('draw.modechange', this.handleMode);
@@ -212,6 +222,10 @@ export default {
     justify-content: center;
     .btn-trigger {
       margin-right: 10px;
+      color: #606266;
+    }
+    .btn-trigger.active {
+      color: #0094ec;
     }
   }
 }

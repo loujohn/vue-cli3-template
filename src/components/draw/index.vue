@@ -105,6 +105,7 @@ export default {
       this.offEvent();
       this.draw.changeMode('simple_select');
     },
+    save() {},
   },
 };
 </script>
