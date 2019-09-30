@@ -23,7 +23,9 @@
           :style="{ height: '1.5em', width: '1.5em' }"
         />空间编辑
       </button>
-      <button class="btn btn-save" v-show="isDrawing">保存</button>
+      <button class="btn btn-save" v-show="isDrawing" @click="save()">
+        保存
+      </button>
     </div>
   </div>
 </template>
@@ -31,6 +33,7 @@
 <script>
 import d2c from 'd2c';
 // import drawStyles from './draw-style';
+import { survey } from 'api';
 export default {
   name: 'geo-edit',
   props: {
@@ -177,8 +180,10 @@ export default {
         this.draw && this.draw.deleteAll();
         if (this.showAppGeojson) {
           this.appGeojson && this.handleEdit(this.appGeojson);
+          this.pcGeojson = this.appGeojson;
         } else {
           this.originGeojson && this.handleEdit(this.originGeojson);
+          this.pcGeojson = this.originGeojson;
         }
       } else {
         this.draw && this.draw.deleteAll();
@@ -192,7 +197,29 @@ export default {
     },
     handleDraw() {
       const data = this.draw.getAll();
-      console.log(data);
+      const { features } = data;
+      if (features.length === 0) {
+        return false;
+      }
+      const feature = features[0];
+      const { geometry } = feature;
+      this.pcGeojson = JSON.stringify(geometry);
+    },
+    async save() {
+      const params = {
+        taskRecordId: this.$route.query.id,
+        pcGeojson: this.pcGeojson,
+      };
+      const res = await survey.saveTaskRecordInfo(params);
+      if (res.code === 200 && res.message === 'ok') {
+        this.$message({
+          type: 'success',
+          message: '保存成功',
+        });
+        this.pcGeojson = '';
+        this.draw && this.draw.deleteAll();
+        this.isDrawing = false;
+      }
     },
     clear() {
       this.draw.deleteAll();
