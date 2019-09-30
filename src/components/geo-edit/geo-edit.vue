@@ -12,7 +12,7 @@
         >调查范围</span
       >
     </button>
-    <div class="btns">
+    <div class="btns" v-if="canEdit">
       <button
         class="btn btn-trigger"
         @click="geoEdit()"
@@ -23,7 +23,7 @@
           :style="{ height: '1.5em', width: '1.5em' }"
         />空间编辑
       </button>
-      <button class="btn btn-save" v-show="showSave">保存</button>
+      <button class="btn btn-save" v-show="isDrawing">保存</button>
     </div>
   </div>
 </template>
@@ -43,6 +43,10 @@ export default {
     appGeojson: {
       type: String,
     },
+    canEdit: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -55,7 +59,7 @@ export default {
       featureId: 'geo-edit-id',
       showAppGeojson: false,
       isDrawing: false,
-      showSave: false,
+      pcGeojson: '',
     };
   },
   mounted() {
@@ -72,12 +76,21 @@ export default {
               this.addGeoLayer(this.map, this.appGeojson);
               this.showAppGeojson = true;
             }
+          } else {
+            if (this.appGeojson) {
+              this.handleEdit(this.appGeojson);
+              this.showAppGeojson = true;
+            }
           }
           break;
         }
         case '下发范围': {
           if (!this.isDrawing) {
             this.clearGeoLayer(this.map);
+            this.showAppGeojson = false;
+          } else {
+            this.clearGeoLayer(this.map);
+            this.handleEdit(this.originGeojson);
             this.showAppGeojson = false;
           }
         }
@@ -92,7 +105,7 @@ export default {
         this.setGeojson(map, geojson);
         return true;
       }
-      map.addSource('app-geo-layer', {
+      map.addSource('app-geo-source', {
         type: 'geojson',
         data: geojson,
       });
@@ -101,8 +114,17 @@ export default {
         type: 'fill',
         source: 'app-geo-source',
         paint: {
-          'fill-opaity': 0.3,
+          'fill-opacity': 0.3,
           'fill-color': '#0087D7',
+        },
+      });
+      map.addLayer({
+        id: 'app-geo-line',
+        type: 'line',
+        source: 'app-geo-source',
+        paint: {
+          'line-width': 2,
+          'line-color': '#F56C6C',
         },
       });
     },
@@ -111,7 +133,7 @@ export default {
         typeof geojson === 'string'
           ? { type: 'Feature', geometry: JSON.parse(geojson) }
           : geojson;
-      map.getSource('app-geo-layer').setData(geojson);
+      map.getSource('app-geo-source').setData(geojson);
     },
     clearGeoLayer(map) {
       map.getSource('app-geo-source').setData({
@@ -134,6 +156,7 @@ export default {
       this.draw && this.draw.deleteAll();
     },
     handleEdit(geojson) {
+      this.draw && this.draw.deleteAll();
       if (geojson) {
         geojson = JSON.parse(geojson);
         const feature = {

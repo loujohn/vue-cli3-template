@@ -93,7 +93,7 @@
               <el-button
                 size="mini"
                 type="text"
-                @click="toParticular(scope.row.id)"
+                @click.stop="toParticular(scope.row.id)"
                 >详情</el-button
               >
             </template>
@@ -233,7 +233,7 @@ export default {
       this.map = e.target;
     },
     handleRowClick(row) {
-      console.log(row);
+      // console.log(row);
     },
     toParticular(id) {
       this.$router.push({ name: 'dc-particular', query: { id } });

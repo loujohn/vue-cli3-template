@@ -32,8 +32,9 @@
             :fields="fieldList"
             :canEdit="canEdit"
             v-show="activeTabIndex === 0"
+            @submit="handleSubmit"
           />
-          <v-image :imageObj="imageObj" v-show="activeTabIndex === 1" />
+          <dc-image :imageObj="imageObj" v-show="activeTabIndex === 1" />
           <v-video :videos="videoList" v-show="activeTabIndex === 2" />
         </div>
       </div>
@@ -44,6 +45,7 @@
           :map="map"
           :originGeojson="originGeojson"
           :appGeojson="appGeojson"
+          :canEdit="canEdit"
           v-if="map"
           @load="handleMapLoad"
         />
@@ -54,10 +56,10 @@
 <script>
 import vMap from 'components/map/map';
 import geojsonEdit from 'components/geo-edit/geo-edit';
-import vImage from 'components/image/image';
+import dcImage from 'components/image/dcImage';
 import vVideo from 'components/video/video';
 import dcBaseInfo from 'components/base-info/dcBaseInfo';
-import { task } from 'api';
+import { task, survey } from 'api';
 import turf from 'turf';
 import iconLocation from 'assets/images/sj/location.png';
 const imgLocation = new Image();
@@ -70,7 +72,7 @@ export default {
   components: {
     vMap,
     geojsonEdit,
-    vImage,
+    dcImage,
     vVideo,
     dcBaseInfo,
   },
@@ -93,6 +95,11 @@ export default {
       pcGeojson: '',
       appGeojson: '',
       surveyStatus: '',
+      form: {
+        taskRecordId: this.id,
+        recordJsonStr: '',
+        pcGeojson: '',
+      },
     };
   },
   computed: {
@@ -109,6 +116,7 @@ export default {
       }
     },
     id(val) {
+      this.form.taskRecordId = val;
       this.getTaskDetail();
     },
   },
@@ -122,6 +130,37 @@ export default {
     },
     handleTabClick(index) {
       this.activeTabIndex = index;
+    },
+    handleSubmit(recordJsonStr) {
+      this.form.recordJsonStr = recordJsonStr;
+      if (this.$refs['geo-edit'].pcGeojson) {
+        this.form.pcGeojson = this.$refs['geo-edit'].pcGeojson;
+      }
+      survey.saveTaskRecordInfo(this.form).then(async res => {
+        if (res.code === 200 && res.message === 'ok') {
+          const response = await survey.taskSubmit({ taskRecordIds: this.id });
+          if (response.code === 200 && response.message === 'ok') {
+            this.$message({
+              type: 'success',
+              message: '提交成功',
+            });
+            this.getTaskDetail();
+            this.$refs['geo-edit'].pcGeojson = '';
+          } else {
+            this.$message({
+              type: 'error',
+              message: response.message,
+            });
+            return false;
+          }
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message,
+          });
+          return false;
+        }
+      });
     },
     async getTaskDetail() {
       const params = { id: this.id };

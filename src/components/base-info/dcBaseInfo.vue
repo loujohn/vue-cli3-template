@@ -9,7 +9,7 @@
     <div v-if="showForm" style="height: 100%;">
       <div class="base-info">
         <el-row :gutter="10">
-          <el-col :span="12" v-for="item in fieldList" :key="item.id">
+          <el-col :span="12" v-for="item in constFieldList" :key="item.id">
             <template v-if="item.fieldType === 0">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <el-input
@@ -86,7 +86,6 @@
   </div>
 </template>
 <script>
-import { survey } from 'api';
 export default {
   name: 'base-info',
   props: {
@@ -101,6 +100,7 @@ export default {
   },
   data() {
     return {
+      constFieldList: [],
       fieldList: [],
       size: 'small',
       edit: false,
@@ -116,6 +116,11 @@ export default {
       handler: function(val) {
         if (val) {
           this.fieldList = Object.assign([], this.fieldList, this.fields);
+          this.constFieldList = Object.assign(
+            [],
+            this.constFieldList,
+            this.fields,
+          );
         }
       },
       immediate: true,
@@ -135,17 +140,15 @@ export default {
     back() {
       this.$router.go(-1);
     },
-    async submit() {
-      const params = {
-        taskRecordIds: this.$route.query.id,
-      };
-      const res = await survey.taskSubmit(params);
-      if (res.code === 200 && res.message === 'ok') {
-        this.$message({
-          type: 'success',
-          message: '成功',
-        });
-      }
+    submit() {
+      const fieldList = this.fieldList.map(item => {
+        const { id, fieldValue } = item;
+        return {
+          taskFieldsId: id,
+          fieldValue,
+        };
+      });
+      this.$emit('submit', JSON.stringify(fieldList));
     },
   },
 };

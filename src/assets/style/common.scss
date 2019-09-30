@@ -23,3 +23,33 @@ $font-xx: 32px;
   padding: 30px 10px;
   text-align: right;
 }
+
+* {
+  scrollbar-arrow-color: #f2f2f3;
+  /*上下箭头*/
+  scrollbar-track-color: #1589ce;
+  /*底层背景色*/
+  scrollbar-face-color: #27aeff;
+  /*滚动条前景色*/
+  scrollbar-shadow-color: #1589ce;
+  /*滚动条边线色*/
+}
+
+/*chrome滚动条颜色设置*/
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+*::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+*::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 10px;
+}

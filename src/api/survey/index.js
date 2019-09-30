@@ -40,7 +40,9 @@ export default {
    * params { taskRecordIds }
    */
   async taskSubmit(params) {
-    const res = await http.post(url.taskSubmit, qs.stringify(params));
+    const res = await http.post(url.taskSubmit, qs.stringify(params), {
+      hideLoading: true,
+    });
     return res;
   },
 };
