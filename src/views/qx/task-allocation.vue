@@ -155,21 +155,11 @@ import vMap from 'components/map/map';
 import vDraw from 'components/draw';
 import list from 'mixins/list';
 import { distributionStatus, distribution } from 'filters';
-import iconLocationRed from 'assets/images/sj/location.png';
-import iconLocationBlue from 'assets/images/sj/location-blue.png';
-import iconLocationYellow from 'assets/images/sj/location-yellow.png';
-const locationRed = new Image();
-locationRed.src = iconLocationRed;
-locationRed.style.height = '20px';
-locationRed.style.width = '20px';
-const locationBlue = new Image();
-locationBlue.src = iconLocationBlue;
-locationBlue.style.height = '20px';
-locationBlue.style.width = '20px';
-const locationYellow = new Image();
-locationYellow.src = iconLocationYellow;
-locationYellow.style.height = '20px';
-locationYellow.style.width = '20px';
+import {
+  locationRed,
+  locationBlue,
+  locationYellow,
+} from '../../configs/icon.config';
 export default {
   name: 'task-allocation',
   components: {

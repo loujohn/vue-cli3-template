@@ -110,11 +110,7 @@ import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
 import { task } from 'api';
 import turf from 'turf';
-import iconLocation from 'assets/images/sj/location.png';
-const img = new Image();
-img.src = iconLocation;
-img.style.height = '20px';
-img.style.width = '20px';
+import { locationRed } from '../../configs/icon.config';
 export default {
   name: 'review',
   components: {
@@ -286,7 +282,7 @@ export default {
       }
     },
     addSymbolLayer(map) {
-      map.addImage('icon-location', img);
+      map.addImage('icon-location', locationRed);
       map.addSource('geo-symbol', {
         type: 'geojson',
         data: {

@@ -85,7 +85,9 @@
           ></el-table-column>
           <el-table-column label="状态" width="80px">
             <template slot-scope="scope">
-              {{ scope.row.surveyStage | surveyStatus }}
+              <span :class="getClass(scope.row.surveyStage)">
+                {{ scope.row.surveyStage | surveyStatus }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="80px">
@@ -153,7 +155,7 @@ export default {
         pageIndex: 1,
         pageSize: 10,
         // surveyStage: 1,
-        surveyState: '',
+        surveyStage: '',
         keyword: '',
       },
       selectedTasks: [],
@@ -168,11 +170,13 @@ export default {
   },
   watch: {
     id(val) {
-      this.getTaskField();
-      this.$nextTick(() => {
-        this.getList();
-        this.getTaskStatistic();
-      });
+      if (val) {
+        this.getTaskField();
+        this.$nextTick(() => {
+          this.getList();
+          this.getTaskStatistic();
+        });
+      }
     },
   },
   created() {
@@ -188,6 +192,26 @@ export default {
     surveyStatus,
   },
   methods: {
+    getClass(val) {
+      try {
+        val = val.toString();
+      } catch (error) {
+        console.log('dc getClass', error);
+        return '';
+      }
+      switch (val) {
+        case '0':
+          return 'no-survey';
+        case '1':
+          return 'no-submit';
+        case '2':
+          return 'checking';
+        case '3':
+          return 'check-failed';
+        case '4':
+          return 'finished';
+      }
+    },
     async getTaskField() {
       const params = { taskId: this.id };
       const fields = await task.getTaskField(params);
@@ -233,7 +257,7 @@ export default {
       this.map = e.target;
     },
     handleRowClick(row) {
-      // console.log(row);
+      console.log(row);
     },
     toParticular(id) {
       this.$router.push({ name: 'dc-particular', query: { id } });
@@ -318,6 +342,21 @@ export default {
           font-size: 14px;
         }
       }
+    }
+    .no-survey {
+      color: #909399;
+    }
+    .no-submit {
+      color: #e6a23c;
+    }
+    .checking {
+      color: #409eff;
+    }
+    .check-failed {
+      color: #f56c6c;
+    }
+    .finished {
+      color: #67c23a;
     }
   }
   .my-breadcrumb {

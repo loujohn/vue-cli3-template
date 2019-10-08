@@ -87,7 +87,11 @@
           label="调查人员"
           prop="referenceInfo.surverUserName"
         ></el-table-column>
-        <el-table-column label="调查时间" prop="surveyTime" width="180"></el-table-column>
+        <el-table-column
+          label="调查时间"
+          prop="surveyTime"
+          width="180"
+        ></el-table-column>
         <el-table-column label="阶段" width="120">
           <template slot-scope="scope">
             <span :class="getClass(scope.row.checkFlowStage)">{{
