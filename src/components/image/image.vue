@@ -23,6 +23,12 @@
     <div v-show="isEmpty" class="no-image">
       <span>暂无图片</span>
     </div>
+    <div class="preview" v-show="showImage">
+      <div class="close">
+        <span class="el-icon-circle-close" @click="close()"></span>
+      </div>
+      <img style="max-width: 100%;" :src="fullPath" alt="" />
+    </div>
   </div>
 </template>
 
@@ -55,6 +61,8 @@ export default {
       staticUrl,
       activeKey: 'farImageFiles',
       images: this.imageObj['farImageFiles'],
+      fullPath: '',
+      showImage: false,
     };
   },
   methods: {
@@ -67,14 +75,17 @@ export default {
       if (info) {
         azimuth = info.azimuth;
       }
-      const fullPath = `${staticUrl}${filePath}`;
+      this.fullPath = `${staticUrl}${filePath}`;
+      this.showImage = true;
       this.$emit('file-path', {
-        fullPath,
         azimuth,
       });
     },
     handleChange(val) {
       this.images = this.imageObj[val];
+    },
+    close() {
+      this.showImage = false;
     },
   },
 };
@@ -84,9 +95,30 @@ export default {
 .image {
   padding: 10px;
   overflow: auto;
-  height: 550px;
+  height: 560px;
   overflow: auto;
   box-sizing: border-box;
+  position: relative;
+  .preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    .close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      span {
+        display: inline-block;
+        margin-right: 10px;
+        color: #fff;
+        cursor: pointer;
+        font-size: 16px;
+      }
+    }
+  }
   .no-image {
     height: calc(100% - 44px);
     position: relative;

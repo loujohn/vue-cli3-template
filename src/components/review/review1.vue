@@ -9,9 +9,9 @@
         />
         <span class="title">空间查看</span>
       </div>
-      <div class="image-container" v-show="showImage">
+      <!-- <div class="image-container" v-show="showImage">
         <img :src="imagePath" alt="图片" />
-      </div>
+      </div> -->
     </div>
     <div class="right">
       <div class="head">
@@ -103,6 +103,7 @@
         v-show="activeTabIndex === 1"
         :imageObj="imageObj"
         @file-path="handleImage"
+        ref="image-preview"
       />
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
       <manual-upload
@@ -165,7 +166,7 @@ export default {
       fieldList: [],
       imageObj: {},
       containerHeight: '600px',
-      imagePath: '',
+      // imagePath: '',
       showImage: false,
       videoList: [],
       attachmentList: [],
@@ -255,9 +256,11 @@ export default {
     },
     activeTabIndex: function(val) {
       if (val !== 1) {
-        this.showImage = false;
-        this.imagePath = '';
+        // this.showImage = false;
+        // this.imagePath = '';
         this.map.setLayoutProperty('direction-symbol', 'visibility', 'none');
+        this.$refs['image-preview'].showImage = false;
+        this.$refs['image-preview'].activeKey = 'farImageFiles';
         if (this.containerHeight !== '600px') this.containerHeight = '600px';
       }
     },
@@ -355,10 +358,10 @@ export default {
       });
     },
     handleImage(data) {
-      const { fullPath, azimuth } = data;
-      this.containerHeight = '300px';
-      this.imagePath = fullPath;
-      this.showImage = true;
+      const { azimuth } = data;
+      // this.containerHeight = '300px';
+      // this.imagePath = fullPath;
+      // this.showImage = true;
 
       if (azimuth) {
         this.map.setLayoutProperty(
