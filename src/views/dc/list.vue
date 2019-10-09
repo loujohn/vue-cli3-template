@@ -37,7 +37,10 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="截止日期" prop="completeTime"></el-table-column>
+        <el-table-column
+          label="要求完成时间"
+          prop="completeTime"
+        ></el-table-column>
         <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"

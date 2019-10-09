@@ -66,7 +66,7 @@
                 size="small"
                 @click="handleTaskAll()"
               >
-                <svg-icon iconClass="分发"></svg-icon> 全部分发
+                <svg-icon iconClass="分发"></svg-icon> 全部分派
               </el-button>
               <el-button
                 @click="handleTaskAll()"
@@ -93,14 +93,15 @@
           :key="index"
           :label="item.fieldAlias"
           :prop="`referenceInfo.fields[${item.fieldName}]`"
+          :width="getWidth(item.fieldAlias)"
         >
         </el-table-column>
         <el-table-column
           label="调查人员"
           prop="referenceInfo.surverUserName"
-          width="150px"
+          width="100px"
         ></el-table-column>
-        <el-table-column label="分发状态" width="150px">
+        <el-table-column label="分发状态" width="80px">
           <template slot-scope="scope">
             <span
               :class="{
@@ -175,15 +176,15 @@ export default {
   data() {
     return {
       distributionStatusList: [
-        { name: '已分发', value: 1 },
-        { name: '未分发', value: 0 },
+        { name: '已分派', value: 1 },
+        { name: '未分派', value: 0 },
       ],
       size: 'small',
       map: null,
       cards: [
         { name: '总图斑数', icon: '图斑', value: 300 },
-        { name: '未分发', icon: '未分发', value: 300 },
-        { name: '已分发', icon: '已分发', value: 300 },
+        { name: '未分派', icon: '未分发', value: 300 },
+        { name: '已分派', icon: '已分发', value: 300 },
       ],
       status: 0,
       form: {
@@ -218,6 +219,15 @@ export default {
     distribution,
   },
   methods: {
+    getWidth(name) {
+      switch (name) {
+        case '地块编号':
+        case '行政区名称':
+          return '100px';
+        default:
+          return null;
+      }
+    },
     async getTuBanStatistic() {
       let data = await task.getTuBanStatistic({ taskId: this.id });
       this.cards[0].value = data.total;
@@ -556,6 +566,7 @@ export default {
           align-items: center;
         }
         .value {
+          font-size: 20px;
           font-weight: 600;
         }
       }
@@ -598,6 +609,7 @@ export default {
     background-color: #fff;
     border-radius: 4px;
     margin: 10px 0;
+    margin-left: 20px;
     .el-breadcrumb {
       padding: 0px;
     }

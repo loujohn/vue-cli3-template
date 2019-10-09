@@ -1,9 +1,9 @@
 const distributionStatus = val => {
-  return val ? '已分发' : '未分发';
+  return val ? '已分派' : '未分派';
 };
 
 const distribution = val => {
-  return val ? '撤回' : '分发';
+  return val ? '撤回' : '分派';
 };
 
 const checkStatus = val => {

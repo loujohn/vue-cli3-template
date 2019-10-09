@@ -1,10 +1,12 @@
 <template>
   <div class="progress-list">
     <div class="my-breadcrumb">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item><i class="el-icon-s-home"></i> 区县</el-breadcrumb-item>
-      <el-breadcrumb-item>任务列表</el-breadcrumb-item>
-    </el-breadcrumb>
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item
+          ><i class="el-icon-s-home"></i> 区县</el-breadcrumb-item
+        >
+        <el-breadcrumb-item>任务列表</el-breadcrumb-item>
+      </el-breadcrumb>
     </div>
     <div class="cards">
       <customer-card
@@ -37,7 +39,11 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="截止日期" prop="completeTime" width="160"></el-table-column>
+        <el-table-column
+          label="要求完成时间"
+          prop="completeTime"
+          width="160"
+        ></el-table-column>
         <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
@@ -137,45 +143,44 @@ export default {
       padding: 0px;
     }
     .el-breadcrumb__item {
-      color:#FFF;
-      display:block;
-      position:relative;
+      color: #fff;
+      display: block;
+      position: relative;
       text-decoration: none;
       background: #0094ec;
       height: 40px;
       width: 60px;
-      line-height:40px;
+      line-height: 40px;
       padding: 0 10px 0 5px;
       text-align: center;
       margin-right: 23px;
-      &:first-child{
-        padding-left:15px;
+      &:first-child {
+        padding-left: 15px;
         border-radius: 4px 0 0 4px;
-        &:before{
-          border:none;
+        &:before {
+          border: none;
         }
       }
 
       &:before,
-      &:after{
-        content: "";
-        position:absolute;
+      &:after {
+        content: '';
+        position: absolute;
         top: 0;
-        border:0 solid #0094ec;
-        border-width:20px 10px;
+        border: 0 solid #0094ec;
+        border-width: 20px 10px;
         width: 0;
         height: 0;
       }
-      &:before{
-        left:-20px;
-        border-left-color:transparent;
+      &:before {
+        left: -20px;
+        border-left-color: transparent;
       }
-      &:after{
-        left:100%;
-        border-color:transparent;
-        border-left-color:#0094ec;
+      &:after {
+        left: 100%;
+        border-color: transparent;
+        border-left-color: #0094ec;
       }
-
 
       .el-breadcrumb__inner {
         color: #fff;

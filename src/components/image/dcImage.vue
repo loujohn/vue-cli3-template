@@ -2,13 +2,13 @@
   <div class="dc-image">
     <div class="my-radio-group">
       <el-radio-group v-model="activeKey" @change="handleChange">
-        <el-radio-button label="farImageFiles">远 景</el-radio-button>
         <el-radio-button label="nearImageFiles">近 景</el-radio-button>
+        <el-radio-button label="farImageFiles">远 景</el-radio-button>
         <el-radio-button label="otherImageFiles">其 它</el-radio-button>
       </el-radio-group>
     </div>
     <el-row :gutter="10" v-show="!isEmpty">
-      <el-col :span="8" v-for="(image, index) in images" :key="index">
+      <el-col :span="6" v-for="(image, index) in images" :key="index">
         <el-image
           fit="scale-down"
           :src="`${staticUrl}${image.filePath}`"
@@ -44,7 +44,7 @@ export default {
   watch: {
     imageObj: {
       handler: function(val) {
-        this.activeKey = 'farImageFiles';
+        this.activeKey = 'nearImageFiles';
         this.images = val[this.activeKey];
       },
       deep: true,
@@ -53,8 +53,8 @@ export default {
   data() {
     return {
       staticUrl,
-      activeKey: 'farImageFiles',
-      images: this.imageObj['farImageFiles'],
+      activeKey: 'nearImageFiles',
+      images: this.imageObj['nearImageFiles'],
     };
   },
   methods: {

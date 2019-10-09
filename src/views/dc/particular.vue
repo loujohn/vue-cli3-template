@@ -305,7 +305,6 @@ export default {
               source: 'pc-geo-source',
               paint: {
                 'fill-opacity': 0.3,
-                'fill-color': '#0087D7',
               },
             });
             this.map.addLayer({
@@ -314,7 +313,7 @@ export default {
               source: 'pc-geo-source',
               paint: {
                 'line-width': 2,
-                'line-color': '#F56C6C',
+                'line-color': '#409EFF',
               },
             });
           }
@@ -344,7 +343,6 @@ export default {
               source: 'app-geo-source',
               paint: {
                 'fill-opacity': 0.3,
-                'fill-color': '#0087D7',
               },
             });
             this.map.addLayer({
