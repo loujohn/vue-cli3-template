@@ -105,10 +105,14 @@
           label="调查人员"
           prop="referenceInfo.surverUserName"
         ></el-table-column>
-        <el-table-column label="调查时间" prop="surveyTime" width="180"></el-table-column>
+        <el-table-column
+          label="调查时间"
+          prop="surveyTime"
+          width="180"
+        ></el-table-column>
         <el-table-column label="阶段" width="120">
           <template slot-scope="scope">
-            <span :class="getClass(scope.row.checkFlowStage)">{{
+            <span class="status" :class="getClass(scope.row.checkFlowStage)">{{
               scope.row.checkFlowStage | checkStatus
             }}</span>
           </template>
@@ -394,23 +398,33 @@ export default {
       padding: 0;
     }
   }
+  .status {
+    display: inline-block;
+    color: #fff;
+    width: 80px;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 3px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
   .no-survey {
-    color: #909399;
+    background-color: #909399;
   }
   .qx-no-check {
-    color: #e6a23c;
+    background-color: #e6a23c;
   }
   .qx-no-pass {
-    color: #f56c6c;
+    background-color: #f56c6c;
   }
   .qx-has-passed {
-    color: #409eff;
+    background-color: #409eff;
   }
   .sj-no-pass {
-    color: #f56c6c;
+    background-color: #f56c6c;
   }
   .sj-has-passed {
-    color: #67c23a;
+    background-color: #67c23a;
   }
   .my-breadcrumb {
     background-color: #fff;

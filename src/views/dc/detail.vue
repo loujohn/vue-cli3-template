@@ -86,7 +86,7 @@
           ></el-table-column>
           <el-table-column label="状态" width="90px">
             <template slot-scope="scope">
-              <span :class="getClass(scope.row.surveyStage)">
+              <span class="status" :class="getClass(scope.row.surveyStage)">
                 {{ scope.row.surveyStage | surveyStatus }}
               </span>
             </template>
@@ -353,20 +353,30 @@ export default {
         }
       }
     }
+    .status {
+      display: inline-block;
+      color: #fff;
+      width: 80px;
+      box-sizing: border-box;
+      text-align: center;
+      padding: 3px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
     .no-survey {
-      color: #909399;
+      background-color: #909399;
     }
     .no-submit {
-      color: #e6a23c;
+      background-color: #e6a23c;
     }
     .checking {
-      color: #409eff;
+      background-color: #409eff;
     }
     .check-failed {
-      color: #f56c6c;
+      background-color: #f56c6c;
     }
     .finished {
-      color: #67c23a;
+      background-color: #67c23a;
     }
   }
   .my-breadcrumb {

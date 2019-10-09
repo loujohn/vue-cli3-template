@@ -64,7 +64,7 @@ import vVideo from 'components/video/video';
 import dcBaseInfo from 'components/base-info/dcBaseInfo';
 import { task, survey } from 'api';
 import turf from 'turf';
-import { locationRed } from '../../configs/icon.config';
+import { locationRed, direction } from '../../configs/icon.config';
 
 export default {
   name: 'dc-particular',
