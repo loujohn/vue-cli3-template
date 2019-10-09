@@ -355,13 +355,16 @@ export default {
     }
     .status {
       display: inline-block;
-      color: #fff;
-      width: 80px;
-      box-sizing: border-box;
-      text-align: center;
-      padding: 3px;
-      border-radius: 3px;
+      padding: 0 10px;
+      height: 32px;
+      line-height: 30px;
       font-size: 12px;
+      color: #409eff;
+      border-radius: 4px;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      color: #fff;
+      white-space: nowrap;
     }
     .no-survey {
       background-color: #909399;
