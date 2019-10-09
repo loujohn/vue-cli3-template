@@ -1,18 +1,39 @@
 <template>
   <div class="geo-edit">
     <div class="ranges">
-      <button
-        class="btn btn-toggle"
-        v-for="(item, index) in toggleList"
-        :key="index"
-        v-show="item.show"
-        :class="{ active: item.active }"
-      >
+      <button class="btn btn-toggle active" v-show="originGeojson">
         <svg-icon
-          style="fill: #409eff; height: 1.5em; width: 1.5em;"
+          class="svg-icon"
+          style="height: 1.5em; width: 1.5em;"
           iconClass="aim"
         />
-        <span @click="handleToggle('下发范围')">{{ item.name }}</span>
+        <span>下发范围</span>
+      </button>
+      <button
+        class="btn btn-toggle"
+        :class="{ active: btnCheckActive }"
+        v-show="pcGeojson"
+        @click="handleToggle('调查范围')"
+      >
+        <svg-icon
+          class="svg-icon"
+          style="height: 1.5em; width: 1.5em;"
+          iconClass="aim"
+        />
+        <span>调查范围</span>
+      </button>
+      <button
+        class="btn btn-toggle"
+        :class="{ active: btnAssistActive }"
+        v-show="appGeojson"
+        @click="handleToggle('辅助范围')"
+      >
+        <svg-icon
+          class="svg-icon"
+          style="height: 1.5em; width: 1.5em;"
+          iconClass="aim"
+        />
+        <span>辅助范围</span>
       </button>
     </div>
     <div class="btns" v-if="canEdit">
@@ -71,11 +92,8 @@ export default {
       form: {
         pcGeojson: '',
       },
-      toggleList: [
-        { name: '下发范围', show: this.originGeojson, active: true },
-        { name: '调查范围', show: this.pcGeojson, active: false },
-        { name: '辅助范围', show: this.appGeojson, active: false },
-      ],
+      btnAssistActive: false,
+      btnCheckActive: false,
     };
   },
   mounted() {
@@ -84,50 +102,18 @@ export default {
     }
   },
   methods: {
-    handleToggle(name) {},
-    addGeoLayer(map, geojson) {
-      geojson =
-        typeof geojson === 'string'
-          ? { type: 'Feature', geometry: JSON.parse(geojson) }
-          : geojson;
-      if (map.getSource('app-geo-source')) {
-        this.setGeojson(map, geojson);
-        return true;
+    handleToggle(name) {
+      let active;
+      if (name === '调查范围') {
+        this.btnCheckActive = !this.btnCheckActive;
+        active = this.btnCheckActive;
+      } else if (name === '辅助范围') {
+        this.btnAssistActive = !this.btnAssistActive;
+        active = this.btnAssistActive;
       }
-      map.addSource('app-geo-source', {
-        type: 'geojson',
-        data: geojson,
-      });
-      map.addLayer({
-        id: 'app-geo-fill',
-        type: 'fill',
-        source: 'app-geo-source',
-        paint: {
-          'fill-opacity': 0.3,
-          'fill-color': '#0087D7',
-        },
-      });
-      map.addLayer({
-        id: 'app-geo-line',
-        type: 'line',
-        source: 'app-geo-source',
-        paint: {
-          'line-width': 2,
-          'line-color': '#F56C6C',
-        },
-      });
-    },
-    setGeojson(map, geojson) {
-      geojson =
-        typeof geojson === 'string'
-          ? { type: 'Feature', geometry: JSON.parse(geojson) }
-          : geojson;
-      map.getSource('app-geo-source').setData(geojson);
-    },
-    clearGeoLayer(map) {
-      map.getSource('app-geo-source').setData({
-        type: 'FeatureCollection',
-        features: [],
+      this.$emit('toggle-geo-layer', {
+        name,
+        active,
       });
     },
     initDraw() {
@@ -164,12 +150,14 @@ export default {
       this.isDrawing = !this.isDrawing;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
-        if (this.showAppGeojson) {
-          this.appGeojson && this.handleEdit(this.appGeojson);
-          this.pcGeojson = this.appGeojson;
+        if (this.appGeojson) {
+          this.handleEdit(this.appGeojson);
+          return true;
+        } else if (this.originGeojson) {
+          this.handleEdit(this.originGeojson);
+          return true;
         } else {
-          this.originGeojson && this.handleEdit(this.originGeojson);
-          this.pcGeojson = this.originGeojson;
+          return false;
         }
       } else {
         this.draw && this.draw.deleteAll();
@@ -202,7 +190,7 @@ export default {
           type: 'success',
           message: '保存成功',
         });
-        this.pcGeojson = '';
+        this.form.pcGeojson = '';
         this.draw && this.draw.deleteAll();
         this.isDrawing = false;
       }
@@ -242,8 +230,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0094ec;
     cursor: pointer;
+  }
+  .btn.active {
+    color: #409eff;
   }
   .ranges {
     position: absolute;

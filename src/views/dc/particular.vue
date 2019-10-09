@@ -45,9 +45,11 @@
           :map="map"
           :originGeojson="originGeojson"
           :appGeojson="appGeojson"
+          :pcGeojson="pcGeojson"
           :canEdit="canEdit"
           v-if="map"
           @load="handleMapLoad"
+          @toggle-geo-layer="toggleGeoLayer"
         />
       </div>
     </div>
@@ -253,6 +255,116 @@ export default {
       this.map.getSource('symbol-source').setData(center);
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox, { padding: 200 });
+    },
+    addGeoSource(map, geojson, sourceId) {
+      let data;
+      if (!geojson) {
+        data = {
+          type: 'FeatureCollection',
+          features: [],
+        };
+      } else {
+        data =
+          typeof geojson === 'string'
+            ? { type: 'Feature', geometry: JSON.parse(geojson) }
+            : geojson;
+      }
+      !map.getSource(sourceId) &&
+        map.addSource(sourceId, {
+          type: 'geojson',
+          data,
+        });
+    },
+    addLayer(map, layerId, { source, type, paint, layout }) {
+      !map.getLayer(layerId) &&
+        map.addLayer({
+          id: layerId,
+          type,
+          source,
+          paint,
+          layout,
+        });
+    },
+    toggleGeoLayer({ name, active }) {
+      if (name === '调查范围') {
+        const data = {
+          type: 'Feature',
+          geometry: JSON.parse(this.pcGeojson),
+        };
+        if (active) {
+          if (this.map.getSource('pc-geo-source')) {
+            this.map.getSource('pc-geo-source').setData(data);
+          } else {
+            this.map.addSource('pc-geo-source', {
+              type: 'geojson',
+              data: data,
+            });
+            this.map.addLayer({
+              id: 'pc-geo-fill',
+              type: 'fill',
+              source: 'pc-geo-source',
+              paint: {
+                'fill-opacity': 0.3,
+                'fill-color': '#0087D7',
+              },
+            });
+            this.map.addLayer({
+              id: 'pc-geo-line',
+              type: 'line',
+              source: 'pc-geo-source',
+              paint: {
+                'line-width': 2,
+                'line-color': '#F56C6C',
+              },
+            });
+          }
+        } else {
+          this.map.getSource('pc-geo-source') &&
+            this.map.getSource('pc-geo-source').setData({
+              type: 'FeatureCollection',
+              features: [],
+            });
+        }
+      } else if (name === '辅助范围') {
+        const data = {
+          type: 'Feature',
+          geometry: JSON.parse(this.appGeojson),
+        };
+        if (active) {
+          if (this.map.getSource('app-geo-source')) {
+            this.map.getSource('app-geo-source').setData(data);
+          } else {
+            this.map.addSource('app-geo-source', {
+              type: 'geojson',
+              data: data,
+            });
+            this.map.addLayer({
+              id: 'app-geo-fill',
+              type: 'fill',
+              source: 'app-geo-source',
+              paint: {
+                'fill-opacity': 0.3,
+                'fill-color': '#0087D7',
+              },
+            });
+            this.map.addLayer({
+              id: 'app-geo-line',
+              type: 'line',
+              source: 'app-geo-source',
+              paint: {
+                'line-width': 2,
+                'line-color': '#F56C6C',
+              },
+            });
+          }
+        } else {
+          this.map.getSource('app-geo-source') &&
+            this.map.getSource('app-geo-source').setData({
+              type: 'FeatureCollection',
+              features: [],
+            });
+        }
+      }
     },
   },
   beforeRouteLeave(to, from, next) {

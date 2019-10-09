@@ -84,7 +84,7 @@
             prop="referenceInfo.surverUserName"
             width="80px"
           ></el-table-column>
-          <el-table-column label="状态" width="80px">
+          <el-table-column label="状态" width="90px">
             <template slot-scope="scope">
               <span :class="getClass(scope.row.surveyStage)">
                 {{ scope.row.surveyStage | surveyStatus }}
@@ -149,7 +149,7 @@ export default {
         { name: '未调查', value: 0 },
         { name: '未提交', value: 1 },
         { name: '审核中', value: 2 },
-        { name: '审核失败', value: 3 },
+        { name: '审核未通过', value: 3 },
         { name: '已完成', value: 4 },
       ],
       params: {
