@@ -112,7 +112,7 @@
         ></el-table-column>
         <el-table-column label="阶段" width="120">
           <template slot-scope="scope">
-            <span class="status" :class="getClass(scope.row.checkFlowStage)">{{
+            <span class="state" :class="getClass(scope.row.checkFlowStage)">{{
               scope.row.checkFlowStage | checkStatus
             }}</span>
           </template>
@@ -398,7 +398,7 @@ export default {
       padding: 0;
     }
   }
-  .status {
+  .state {
     display: inline-block;
     padding: 0 10px;
     height: 32px;
@@ -411,22 +411,22 @@ export default {
     color: #fff;
     white-space: nowrap;
   }
-  .no-survey {
+  .state.no-survey {
     background-color: #909399;
   }
-  .qx-no-check {
+  .state.qx-no-check {
     background-color: #e6a23c;
   }
-  .qx-no-pass {
+  .state.qx-no-pass {
     background-color: #f56c6c;
   }
-  .qx-has-passed {
+  .state.qx-has-passed {
     background-color: #409eff;
   }
-  .sj-no-pass {
+  .state.sj-no-pass {
     background-color: #f56c6c;
   }
-  .sj-has-passed {
+  .state.sj-has-passed {
     background-color: #67c23a;
   }
   .my-breadcrumb {
