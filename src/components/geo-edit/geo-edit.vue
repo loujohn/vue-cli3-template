@@ -1,17 +1,20 @@
 <template>
   <div class="geo-edit">
-    <button class="btn btn-toggle">
-      <svg-icon
-        style="fill: #409eff; height: 1.5em; width: 1.5em;"
-        iconClass="aim"
-      />
-      <span v-show="showAppGeojson" @click="handleToggle('下发范围')"
-        >下发范围</span
+    <div class="ranges">
+      <button
+        class="btn btn-toggle"
+        v-for="(item, index) in toggleList"
+        :key="index"
+        v-show="item.show"
+        :class="{ active: item.active }"
       >
-      <span v-show="!showAppGeojson" @click="handleToggle('调查范围')"
-        >调查范围</span
-      >
-    </button>
+        <svg-icon
+          style="fill: #409eff; height: 1.5em; width: 1.5em;"
+          iconClass="aim"
+        />
+        <span @click="handleToggle('下发范围')">{{ item.name }}</span>
+      </button>
+    </div>
     <div class="btns" v-if="canEdit">
       <button
         class="btn btn-trigger"
@@ -46,6 +49,9 @@ export default {
     appGeojson: {
       type: String,
     },
+    pcGeojson: {
+      type: String,
+    },
     canEdit: {
       type: Boolean,
       default: false,
@@ -62,7 +68,14 @@ export default {
       featureId: 'geo-edit-id',
       showAppGeojson: false,
       isDrawing: false,
-      pcGeojson: '',
+      form: {
+        pcGeojson: '',
+      },
+      toggleList: [
+        { name: '下发范围', show: this.originGeojson, active: true },
+        { name: '调查范围', show: this.pcGeojson, active: false },
+        { name: '辅助范围', show: this.appGeojson, active: false },
+      ],
     };
   },
   mounted() {
@@ -71,34 +84,7 @@ export default {
     }
   },
   methods: {
-    handleToggle(name) {
-      switch (name) {
-        case '调查范围': {
-          if (!this.isDrawing) {
-            if (this.appGeojson) {
-              this.addGeoLayer(this.map, this.appGeojson);
-              this.showAppGeojson = true;
-            }
-          } else {
-            if (this.appGeojson) {
-              this.handleEdit(this.appGeojson);
-              this.showAppGeojson = true;
-            }
-          }
-          break;
-        }
-        case '下发范围': {
-          if (!this.isDrawing) {
-            this.clearGeoLayer(this.map);
-            this.showAppGeojson = false;
-          } else {
-            this.clearGeoLayer(this.map);
-            this.handleEdit(this.originGeojson);
-            this.showAppGeojson = false;
-          }
-        }
-      }
-    },
+    handleToggle(name) {},
     addGeoLayer(map, geojson) {
       geojson =
         typeof geojson === 'string'
@@ -203,12 +189,12 @@ export default {
       }
       const feature = features[0];
       const { geometry } = feature;
-      this.pcGeojson = JSON.stringify(geometry);
+      this.form.pcGeojson = JSON.stringify(geometry);
     },
     async save() {
       const params = {
         taskRecordId: this.$route.query.id,
-        pcGeojson: this.pcGeojson,
+        pcGeojson: this.form.pcGeojson,
       };
       const res = await survey.saveTaskRecordInfo(params);
       if (res.code === 200 && res.message === 'ok') {
@@ -259,10 +245,14 @@ export default {
     color: #0094ec;
     cursor: pointer;
   }
-  .btn-toggle {
+  .ranges {
     position: absolute;
     top: 10px;
     left: 10px;
+    display: flex;
+  }
+  .btn-toggle {
+    margin-right: 5px;
   }
   .btns {
     position: absolute;

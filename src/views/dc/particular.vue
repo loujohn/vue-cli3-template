@@ -61,11 +61,7 @@ import vVideo from 'components/video/video';
 import dcBaseInfo from 'components/base-info/dcBaseInfo';
 import { task, survey } from 'api';
 import turf from 'turf';
-import iconLocation from 'assets/images/sj/location.png';
-const imgLocation = new Image();
-imgLocation.src = iconLocation;
-imgLocation.style.width = '20px';
-imgLocation.style.width = '20px';
+import { locationRed } from '../../configs/icon.config';
 
 export default {
   name: 'dc-particular',
@@ -208,7 +204,7 @@ export default {
         typeof geojson === 'string'
           ? { type: 'Feature', geometry: JSON.parse(geojson) }
           : geojson;
-      this.map.addImage('icon-location', imgLocation);
+      this.map.addImage('icon-location', locationRed);
       map.addSource('geo-source', {
         type: 'geojson',
         data: geojson,

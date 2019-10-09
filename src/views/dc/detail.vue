@@ -77,11 +77,12 @@
             :key="index"
             :label="item.fieldAlias"
             :prop="`referenceInfo.fields[${item.fieldName}]`"
+            :width="getWidth(item.fieldAlias)"
           ></el-table-column>
           <el-table-column
             label="调查人员"
             prop="referenceInfo.surverUserName"
-            width="150px"
+            width="80px"
           ></el-table-column>
           <el-table-column label="状态" width="80px">
             <template slot-scope="scope">
@@ -90,7 +91,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="80px">
+          <el-table-column label="操作" width="60px">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -210,6 +211,15 @@ export default {
           return 'check-failed';
         case '4':
           return 'finished';
+      }
+    },
+    getWidth(name) {
+      switch (name) {
+        case '地块编号':
+        case '行政区名称':
+          return '100px';
+        default:
+          return null;
       }
     },
     async getTaskField() {
