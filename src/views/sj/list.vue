@@ -40,11 +40,11 @@
           label="完成数"
           prop="referenceInfo.completedRecord"
         ></el-table-column>
-        <el-table-column
-          label="要求完成时间"
-          prop="completeTime"
-          width="160"
-        ></el-table-column>
+        <el-table-column label="要求完成时间" width="160">
+          <template slot-scope="scope">
+            {{ scope.row.completeTime | dateFormatter }}
+          </template>
+        </el-table-column>
         <el-table-column label="进度" width="350px">
           <template slot-scope="scope">
             <v-progress
@@ -84,6 +84,7 @@ import customerCard from 'components/card/card';
 import vProgress from 'components/progress/progress';
 import { task } from 'api';
 import list from 'mixins/list';
+import { dateFormatter } from 'filters';
 export default {
   name: 'sj-list',
   components: {
@@ -104,6 +105,9 @@ export default {
   mounted() {
     this.getList();
     this.getStatistic();
+  },
+  filters: {
+    dateFormatter,
   },
   methods: {
     toDetail(id) {

@@ -73,10 +73,22 @@ const getClass = val => {
   }
 };
 
+const dateFormatter = time => {
+  const date = new Date(time);
+  const year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  month = month >= 10 ? month : `0${month}`;
+  day = day >= 10 ? day : `0${day}`;
+
+  return `${year}-${month}-${day}`;
+};
+
 export {
   distributionStatus,
   distribution,
   checkStatus,
   surveyStatus,
   getClass,
+  dateFormatter,
 };

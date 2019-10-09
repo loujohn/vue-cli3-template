@@ -44,6 +44,7 @@
                 :size="size"
                 style="width: 100%;"
                 unlink-panels
+                format="yyyy-MM-dd"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
