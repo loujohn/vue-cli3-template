@@ -28,6 +28,10 @@
           label="完成数"
           prop="referenceInfo.completedRecord"
         ></el-table-column>
+        <el-table-column
+          label="要求完成时间"
+          prop="completeTime"
+        ></el-table-column>
         <el-table-column label="进度" width="350px">
           <template slot-scope="scope">
             <v-progress
@@ -37,10 +41,6 @@
             />
           </template>
         </el-table-column>
-        <el-table-column
-          label="要求完成时间"
-          prop="completeTime"
-        ></el-table-column>
         <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
