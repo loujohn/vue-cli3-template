@@ -50,6 +50,7 @@
           v-if="map"
           @load="handleMapLoad"
           @toggle-geo-layer="toggleGeoLayer"
+          @finish-edit="getTaskDetail()"
         />
       </div>
     </div>

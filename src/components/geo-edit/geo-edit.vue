@@ -193,6 +193,7 @@ export default {
         this.form.pcGeojson = '';
         this.draw && this.draw.deleteAll();
         this.isDrawing = false;
+        this.$emit('finish-edit');
       }
     },
     clear() {

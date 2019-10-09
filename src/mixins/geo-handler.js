@@ -1,16 +1,6 @@
 import turf from 'turf';
 import d2c from 'd2c';
-import iconLocation from 'assets/images/sj/location.png';
-import iconDirection from 'assets/images/sj/direction.png';
-const imgLocation = new Image();
-imgLocation.src = iconLocation;
-imgLocation.style.height = '20px';
-imgLocation.style.width = '20px';
-
-const imgDirection = new Image();
-imgDirection.src = iconDirection;
-imgDirection.style.height = '20px';
-imgDirection.style.width = '20px';
+import { locationRed, direction } from '../configs/icon.config';
 
 export default {
   data() {
@@ -71,12 +61,12 @@ export default {
       const {
         geometry: { coordinates },
       } = geojson;
-      this.marker = new d2c.Marker(imgLocation)
+      this.marker = new d2c.Marker(locationRed)
         .setLngLat(coordinates)
         .addTo(this.map);
     },
     addSymbolLayer(map) {
-      map.addImage('icon-direction', imgDirection);
+      map.addImage('icon-direction', direction);
       map.addSource('geo-symbol', {
         type: 'geojson',
         data: {
