@@ -143,7 +143,7 @@ export default {
               message: '提交成功',
             });
             this.getTaskDetail();
-            this.$refs['geo-edit'].pcGeojson = '';
+            this.$refs['geo-edit'].form.pcGeojson = '';
           } else {
             this.$message({
               type: 'error',
