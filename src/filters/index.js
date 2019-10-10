@@ -45,7 +45,7 @@ const surveyStatus = val => {
       return '审核中';
     case '3':
       return '审核未通过';
-    case 4:
+    case '4':
       return '已完成';
   }
 };

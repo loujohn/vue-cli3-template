@@ -7,7 +7,17 @@
           :containerHeight="containerHeight"
           :geojson="geojson"
         />
-        <span class="title">空间查看</span>
+        <div class="ranges">
+          <button class="btn active">下发范围</button>
+          <button
+            class="btn"
+            :class="{ active: showPcGeojson }"
+            v-show="pcGeojson"
+            @click="handleToggle"
+          >
+            调查范围
+          </button>
+        </div>
       </div>
       <!-- <div class="image-container" v-show="showImage">
         <img :src="imagePath" alt="图片" />
@@ -173,6 +183,8 @@ export default {
       content: '',
       suggestion: '',
       visible: false,
+      pcGeojson: '',
+      showPcGeojson: false,
     };
   },
   computed: {
@@ -213,8 +225,12 @@ export default {
               otherImageFiles,
               vedioFiles,
               annexFiles,
+              geojsons,
             },
           } = val;
+          if (geojsons) {
+            this.pcGeojson = geojsons.pcGeojson;
+          }
           this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
           this.videoList = vedioFiles;
           this.attachmentList = annexFiles;
@@ -278,6 +294,13 @@ export default {
         this.form[key] = '';
       }
       this.visible = false;
+      this.pcGeojson = '';
+      this.showPcGeojson = false;
+      this.map.getSource('pc-geo-source') &&
+        this.map.getSource('pc-geo-source').setData({
+          type: 'FeatureCollection',
+          features: [],
+        });
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
@@ -372,6 +395,46 @@ export default {
         this.map.setLayoutProperty('direction-symbol', 'visibility', 'visible');
       }
     },
+    handleToggle() {
+      this.showPcGeojson = !this.showPcGeojson;
+      if (this.showPcGeojson) {
+        const data = {
+          type: 'Feature',
+          geometry: JSON.parse(this.pcGeojson),
+        };
+        if (this.map.getSource('pc-geo-source')) {
+          this.map.getSource('pc-geo-source').setData(data);
+        } else {
+          this.map.addSource('pc-geo-source', {
+            type: 'geojson',
+            data,
+          });
+          this.map.addLayer({
+            id: 'pc-geo-fill',
+            type: 'fill',
+            source: 'pc-geo-source',
+            paint: {
+              'fill-opacity': 0.3,
+            },
+          });
+          this.map.addLayer({
+            id: 'pc-geo-line',
+            type: 'line',
+            source: 'pc-geo-source',
+            paint: {
+              'line-width': 2,
+              'line-color': '#409eff',
+            },
+          });
+        }
+      } else {
+        this.map.getSource('pc-geo-source') &&
+          this.map.getSource('pc-geo-source').setData({
+            type: 'FeatureCollection',
+            features: [],
+          });
+      }
+    },
     async getFlowLog(params) {
       const res = await task.getFlowLog(params);
       const { sjLog, qxLog } = res;
@@ -431,14 +494,32 @@ export default {
   }
   .map-container {
     position: relative;
-    .title {
-      font-size: $font-xs;
-      display: block;
-      background-color: rgba(255, 255, 255, 0.8);
-      padding: 5px 8px;
+    // .title {
+    //   font-size: $font-xs;
+    //   display: block;
+    //   background-color: rgba(255, 255, 255, 0.8);
+    //   padding: 5px 8px;
+    //   position: absolute;
+    //   top: 0;
+    //   left: 0;
+    // }
+    .ranges {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 3px;
+      left: 3px;
+      .btn {
+        border-radius: 3px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #e6e6e6;
+        display: inline-block;
+        margin-right: 10px;
+        font-size: 12px;
+        cursor: pointer;
+        outline: none;
+      }
+      .btn.active {
+        color: #409eff;
+      }
     }
   }
   .image-container {

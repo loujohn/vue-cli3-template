@@ -367,6 +367,15 @@ export default {
       }
     },
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.name !== 'dc-particular') {
+      this.params.pageIndex = 1;
+      this.params.pageSize = 10;
+      this.params.surveyStage = '';
+      this.params.keyword = '';
+    }
+    next();
+  },
 };
 </script>
 
