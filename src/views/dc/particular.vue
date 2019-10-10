@@ -217,6 +217,9 @@ export default {
         const { pcGeojson, appGeojson } = geojsons;
         this.pcGeojson = pcGeojson;
         this.appGeojson = appGeojson;
+      } else {
+        this.pcGeojson = '';
+        this.appGeojson = '';
       }
     },
     initMapLayer(map, geojson) {

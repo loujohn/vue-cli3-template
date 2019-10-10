@@ -374,6 +374,7 @@ export default {
       this.params.surveyStage = '';
       this.params.keyword = '';
     }
+    this.getList();
     next();
   },
 };
