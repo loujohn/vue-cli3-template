@@ -117,11 +117,8 @@ export default {
       handler: function(val) {
         if (val) {
           this.fieldList = Object.assign([], this.fieldList, this.fields);
-          this.constFieldList = Object.assign(
-            [],
-            this.constFieldList,
-            this.fields,
-          );
+          const list = this.fieldList.filter(item => item.isEdit);
+          this.constFieldList = JSON.parse(JSON.stringify(list));
         }
       },
       immediate: true,

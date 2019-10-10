@@ -3,7 +3,7 @@
     <div v-if="showForm">
       <div class="base-info">
         <el-row :gutter="10">
-          <el-col :span="12" v-for="item in fieldList" :key="item.id">
+          <el-col :span="12" v-for="item in constFieldList" :key="item.id">
             <template v-if="item.fieldType === 0">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <el-input
@@ -91,6 +91,7 @@ export default {
   data() {
     return {
       fieldList: [],
+      constFieldList: [],
       size: 'small',
     };
   },
@@ -106,7 +107,10 @@ export default {
     fields: {
       handler: function(val) {
         if (val) {
+          // this.fieldList = Object.assign([], this.fieldList, this.fields);
           this.fieldList = Object.assign([], this.fieldList, this.fields);
+          const list = this.fieldList.filter(item => item.isEdit);
+          this.constFieldList = JSON.parse(JSON.stringify(list));
         }
       },
       immediate: true,
