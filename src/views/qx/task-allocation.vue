@@ -251,11 +251,17 @@ export default {
         this.selectedTasks.map(task => {
           idMap[task.id] = task.id;
         });
-        this.map.setLayoutProperty('symbol-layer', 'icon-image', [
+        // this.map.setLayoutProperty('symbol-layer', 'icon-image', [
+        //   'case',
+        //   ['has', ['get', 'taskRecordId'], ['literal', idMap]],
+        //   'icon-location-yellow',
+        //   'icon-location-red',
+        // ]);
+        this.map.setPaintProperty('circle-layer', 'circle-color', [
           'case',
           ['has', ['get', 'taskRecordId'], ['literal', idMap]],
-          'icon-location-yellow',
-          'icon-location-red',
+          'yellow',
+          '#d81e06',
         ]);
         this.list = this.selectedTasks;
         this.$refs['table'].toggleAllSelection();
@@ -266,11 +272,17 @@ export default {
       this.params.pageIndex = 1;
       this.getList();
       this.showPagination = true;
-      this.map.setLayoutProperty('symbol-layer', 'icon-image', [
+      // this.map.setLayoutProperty('symbol-layer', 'icon-image', [
+      //   'case',
+      //   ['==', ['get', 'distributionStatus'], 0],
+      //   'icon-location-red',
+      //   'icon-location-blue',
+      // ]);
+      this.map.setPaintProperty('circle-layer', 'circle-color', [
         'case',
         ['==', ['get', 'distributionStatus'], 0],
-        'icon-location-red',
-        'icon-location-blue',
+        '#d81e06',
+        '#1296db',
       ]);
     },
     async handleTaskAll() {
@@ -338,11 +350,17 @@ export default {
       this.params.distributionStatus = val;
       this.getList();
       if (this.map) {
-        this.map.setLayoutProperty('symbol-layer', 'icon-image', [
+        // this.map.setLayoutProperty('symbol-layer', 'icon-image', [
+        //   'case',
+        //   ['==', ['get', 'distributionStatus'], 0],
+        //   'icon-location-red',
+        //   'icon-location-blue',
+        // ]);
+        this.map.setPaintProperty('circle-layer', 'circle-color', [
           'case',
           ['==', ['get', 'distributionStatus'], 0],
-          'icon-location-red',
-          'icon-location-blue',
+          '#d81e06',
+          '#1296db',
         ]);
         this.map.setFilter('task-fill', [
           '==',
@@ -355,7 +373,12 @@ export default {
           ['get', 'distributionStatus'],
           val,
         ]);
-        this.map.setFilter('symbol-layer', [
+        // this.map.setFilter('symbol-layer', [
+        //   '==',
+        //   ['get', 'distributionStatus'],
+        //   val,
+        // ]);
+        this.map.setFilter('circle-layer', [
           '==',
           ['get', 'distributionStatus'],
           val,
@@ -426,7 +449,8 @@ export default {
       const res = await task.getGeojson({ taskId: this.id });
       if (res.code && res.code.toString() === '200') {
         this.addGeoLayer(res.data);
-        this.addSymbolLayer(res.data);
+        // this.addSymbolLayer(res.data);
+        this.addCircleLayer(res.data);
       } else {
         return false;
       }
@@ -469,6 +493,35 @@ export default {
       });
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox);
+    },
+    addCircleLayer(geojson) {
+      const featureCollection = this.getPointFeatures(geojson);
+      if (this.map.getSource('circle-source')) {
+        this.map.getSource('circle-source').setData(featureCollection);
+        return;
+      }
+      this.map.addSource('circle-source', {
+        type: 'geojson',
+        data: featureCollection,
+      });
+      this.map.addLayer({
+        id: 'circle-layer',
+        type: 'circle',
+        source: 'circle-source',
+        paint: {
+          'circle-radius': {
+            base: 5,
+            stops: [[12, 7], [22, 180]],
+          },
+          'circle-color': [
+            'case',
+            ['==', ['get', 'distributionStatus'], 0],
+            '#d81e06',
+            '#1296db',
+          ],
+        },
+        filter: ['==', ['get', 'distributionStatus'], this.status],
+      });
     },
     addSymbolLayer(geojson) {
       if (!this.map.hasImage('icon-location-red')) {
@@ -516,13 +569,18 @@ export default {
     this.map &&
       this.map.getSource('geo-task') &&
       this.map.removeSource('geo-task');
+    // this.map &&
+    //   this.map.getLayer('symbol-layer') &&
+    //   this.map.removeLayer('symbol-layer');
     this.map &&
-      this.map.getLayer('symbol-layer') &&
-      this.map.removeLayer('symbol-layer');
+      this.map.getLayer('circle-layer') &&
+      this.map.removeLayer('circle-layer');
+    // this.map &&
+    //   this.map.getSource('symbol-source') &&
+    // this.map && this.map.removeSource('symbol-source');
     this.map &&
-      this.map.getSource('symbol-source') &&
-      this.map &&
-      this.map.removeSource('symbol-source');
+      this.map.getSource('circle-source') &&
+      this.map.removeSource('cirlce-source');
   },
 };
 </script>
