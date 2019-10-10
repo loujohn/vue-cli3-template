@@ -34,7 +34,12 @@
             v-show="activeTabIndex === 0"
             @submit="handleSubmit"
           />
-          <dc-image :imageObj="imageObj" v-show="activeTabIndex === 1" />
+          <dc-image
+            :imageObj="imageObj"
+            ref="image-preview"
+            v-show="activeTabIndex === 1"
+            @file-path="handleImage"
+          />
           <v-video :videos="videoList" v-show="activeTabIndex === 2" />
         </div>
       </div>
@@ -64,6 +69,7 @@ import vVideo from 'components/video/video';
 import dcBaseInfo from 'components/base-info/dcBaseInfo';
 import { task, survey } from 'api';
 import turf from 'turf';
+import d2c from 'd2c';
 import { locationRed, direction } from '../../configs/icon.config';
 
 export default {
@@ -99,6 +105,7 @@ export default {
         recordJsonStr: '',
         pcGeojson: '',
       },
+      marker: null,
     };
   },
   computed: {
@@ -117,6 +124,16 @@ export default {
     id(val) {
       this.form.taskRecordId = val;
       this.getTaskDetail();
+    },
+    activeTabIndex: function(val) {
+      if (val !== 1) {
+        // this.showImage = false;
+        // this.imagePath = '';
+        this.map.setLayoutProperty('symbol-layer', 'visibility', 'none');
+        // this.$refs['image-preview'].showImage = false;
+        this.$refs['image-preview'].activeKey = 'farImageFiles';
+        // if (this.containerHeight !== '600px') this.containerHeight = '600px';
+      }
     },
   },
   mounted() {
@@ -207,7 +224,7 @@ export default {
         typeof geojson === 'string'
           ? { type: 'Feature', geometry: JSON.parse(geojson) }
           : geojson;
-      this.map.addImage('icon-location', locationRed);
+      this.map.addImage('icon-direction', direction);
       map.addSource('geo-source', {
         type: 'geojson',
         data: geojson,
@@ -239,10 +256,12 @@ export default {
         type: 'symbol',
         source: 'symbol-source',
         layout: {
-          'icon-image': 'icon-location',
-          'icon-size': 0.1,
+          'icon-image': 'icon-direction',
+          // 'icon-size': 0.1,
+          visibility: 'none',
         },
       });
+      this.addMarker(center);
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox, { padding: 200 });
     },
@@ -254,6 +273,8 @@ export default {
       this.map.getSource('geo-source').setData(geojson);
       const center = turf.center(geojson);
       this.map.getSource('symbol-source').setData(center);
+      this.addMarker(center);
+
       const bbox = turf.bbox(geojson);
       this.map.fitBounds(bbox, { padding: 200 });
     },
@@ -364,6 +385,24 @@ export default {
             });
         }
       }
+    },
+    addMarker(geojson) {
+      this.marker && this.marker.remove();
+      const {
+        geometry: { coordinates },
+      } = geojson;
+      this.marker = new d2c.Marker(locationRed)
+        .setLngLat(coordinates)
+        .addTo(this.map);
+    },
+    handleImage(data) {
+      const { azimuth } = data;
+      this.map.setLayoutProperty(
+        'symbol-layer',
+        'icon-rotate',
+        Number(azimuth),
+      );
+      this.map.setLayoutProperty('symbol-layer', 'visibility', 'visible');
     },
   },
   beforeRouteLeave(to, from, next) {
