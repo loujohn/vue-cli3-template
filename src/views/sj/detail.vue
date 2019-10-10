@@ -373,6 +373,9 @@ export default {
     padding: 0 10px;
     height: 32px;
     line-height: 30px;
+    text-align: center;
+    box-sizing: border-box;
+    width: 80px;
     font-size: 12px;
     color: #409eff;
     border-radius: 4px;

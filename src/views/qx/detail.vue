@@ -402,6 +402,9 @@ export default {
     display: inline-block;
     padding: 0 10px;
     height: 32px;
+    width: 80px;
+    text-align: center;
+    box-sizing: border-box;
     line-height: 30px;
     font-size: 12px;
     color: #409eff;

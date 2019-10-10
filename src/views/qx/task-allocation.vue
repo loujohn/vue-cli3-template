@@ -580,7 +580,7 @@ export default {
     // this.map && this.map.removeSource('symbol-source');
     this.map &&
       this.map.getSource('circle-source') &&
-      this.map.removeSource('cirlce-source');
+      this.map.removeSource('circle-source');
   },
 };
 </script>

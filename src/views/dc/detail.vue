@@ -114,7 +114,7 @@
         </div>
       </div>
       <div class="map-container">
-        <v-map style="border-radius: 3px;" />
+        <v-map style="border-radius: 3px;" @load="handleMapLoad" />
       </div>
     </div>
   </div>
@@ -125,6 +125,7 @@ import vMap from 'components/map/map';
 import list from 'mixins/list';
 import { surveyStatus } from 'filters';
 import { task, survey } from 'api';
+import turf from 'turf';
 export default {
   name: 'dc-detail',
   components: {
@@ -265,6 +266,65 @@ export default {
     },
     handleMapLoad(e) {
       this.map = e.target;
+      this.handleMap();
+    },
+    async handleMap() {
+      const res = await task.getGeojson({ taskId: this.id });
+      if (res.code && res.code.toString() === '200') {
+        // this.addGeoLayer(res.data);
+        // this.addSymbolLayer(res.data);
+        this.addCircleLayer(res.data);
+      } else {
+        return false;
+      }
+    },
+    addCircleLayer(geojson) {
+      const featureCollection = this.getPointFeatures(geojson);
+      if (this.map.getSource('circle-source')) {
+        this.map.getSource('circle-source').setData(featureCollection);
+        return;
+      }
+      this.map.addSource('circle-source', {
+        type: 'geojson',
+        data: featureCollection,
+      });
+      this.map.addLayer({
+        id: 'circle-layer',
+        type: 'circle',
+        source: 'circle-source',
+        paint: {
+          'circle-radius': {
+            base: 5,
+            stops: [[12, 7], [22, 180]],
+          },
+          'circle-color': [
+            'case',
+            ['==', ['get', 'surveyStage'], 1],
+            '#e6a23c',
+            ['==', ['get', 'surveyStage'], 2],
+            '#409eff',
+            ['==', ['get', 'surveyStage'], 3],
+            '#f56c6c',
+            ['==', ['get', 'surveyStage'], 4],
+            '#67c23a',
+            '#909399',
+          ],
+        },
+        // filter: ['==', ['get', 'distributionStatus'], this.status],
+      });
+    },
+    getPointFeatures(geojson) {
+      let featureCollection = {
+        type: 'FeatureCollection',
+        features: [],
+      };
+      const { features } = geojson;
+      featureCollection.features = features.map(feature => {
+        const point = turf.center(feature);
+        point.properties = { ...feature.properties };
+        return point;
+      });
+      return featureCollection;
     },
     handleRowClick(row) {
       console.log(row);
@@ -357,6 +417,9 @@ export default {
       display: inline-block;
       padding: 0 10px;
       height: 32px;
+      width: 80px;
+      box-sizing: border-box;
+      text-align: center;
       line-height: 30px;
       font-size: 12px;
       color: #409eff;
