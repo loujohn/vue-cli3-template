@@ -19,6 +19,8 @@
                 v-model="item.fieldValue"
                 size="small"
                 style="width: 100%;"
+                filterable
+                clearable
               >
                 <el-option
                   v-for="option in item.options"
