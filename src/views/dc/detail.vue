@@ -178,6 +178,7 @@ export default {
           this.getList();
           this.getTaskStatistic();
         });
+        this.handleMap();
       }
     },
   },
