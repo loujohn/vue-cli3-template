@@ -297,6 +297,8 @@ export default {
             base: 5,
             stops: [[12, 7], [22, 180]],
           },
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff',
           'circle-color': [
             'case',
             ['==', ['get', 'surveyStage'], 1],
