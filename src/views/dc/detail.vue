@@ -422,6 +422,7 @@ export default {
         this.selectedTasks = [];
         this.params.pageIndex = 1;
         this.getList();
+        this.getTaskStatistic();
       }
     },
   },
