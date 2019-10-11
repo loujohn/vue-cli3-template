@@ -23,12 +23,47 @@
     <div v-show="isEmpty" class="no-image">
       <span>暂无图片</span>
     </div>
-    <div class="preview" v-show="showImage">
+    <!-- <div class="preview" v-show="showImage">
       <div class="close">
         <span class="el-icon-circle-close" @click="close()"></span>
       </div>
       <img style="max-width: 100%;" :src="fullPath" alt="" />
-    </div>
+    </div> -->
+    <el-dialog
+      :append-to-body="true"
+      :visible="dialogVisible"
+      close="pic-dialog"
+      :before-close="close"
+    >
+      <div class="my-carousel">
+        <el-button
+          class="review-left"
+          type="primary"
+          icon="el-icon-arrow-left"
+          circle
+          @click="goPre"
+        ></el-button>
+        <el-button
+          class="review-right"
+          type="primary"
+          icon="el-icon-arrow-right"
+          circle
+          @click="goNext"
+        ></el-button>
+        <div class="review-pic">
+          <el-image :src="fullPath" fit="contain">
+            <div slot="placeholder" class="image-slot">
+              加载中
+              <span class="dot">...</span>
+            </div>
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
+              <a>加载失败</a>
+            </div>
+          </el-image>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -55,18 +90,8 @@ export default {
       },
       deep: true,
     },
-  },
-  data() {
-    return {
-      staticUrl,
-      activeKey: 'nearImageFiles',
-      images: this.imageObj['nearImageFiles'],
-      fullPath: '',
-      showImage: false,
-    };
-  },
-  methods: {
-    handleImageClick(image) {
+    current: function(val) {
+      const image = this.images[val];
       const {
         filePath,
         referenceInfo: { info },
@@ -76,16 +101,67 @@ export default {
         azimuth = info.azimuth;
       }
       this.fullPath = `${staticUrl}${filePath}`;
-      this.showImage = true;
+      // this.showImage = true;
       this.$emit('file-path', {
         azimuth,
       });
     },
+  },
+  data() {
+    return {
+      staticUrl,
+      activeKey: 'nearImageFiles',
+      images: this.imageObj['nearImageFiles'],
+      fullPath: '',
+      showImage: false,
+      dialogVisible: false,
+      current: 0,
+    };
+  },
+  methods: {
+    handleImageClick(image) {
+      const current = this.images.indexOf(image);
+      if (this.current === current) {
+        const {
+          filePath,
+          referenceInfo: { info },
+        } = image;
+        let azimuth;
+        if (info) {
+          azimuth = info.azimuth;
+        }
+        this.fullPath = `${staticUrl}${filePath}`;
+        // this.showImage = true;
+        this.$emit('file-path', {
+          azimuth,
+        });
+      } else {
+        this.current = current;
+      }
+      this.dialogVisible = true;
+    },
     handleChange(val) {
+      this.fullPath = '';
       this.images = this.imageObj[val];
     },
+    goPre() {
+      if (this.current > 0) {
+        this.current -= 1;
+      } else {
+        this.current = this.images.length - 1;
+      }
+    },
+    goNext() {
+      if (this.current < this.images.length - 1) {
+        this.current += 1;
+      } else {
+        this.current = 0;
+      }
+    },
     close() {
-      this.showImage = false;
+      // this.showImage = false;
+      this.dialogVisible = false;
+      this.fullPath = '';
     },
   },
 };
@@ -149,6 +225,59 @@ export default {
       // border-color: #5d7b9a;
       border-color: #0087d7;
       color: #fff;
+    }
+  }
+}
+.my-carousel {
+  .review-left {
+    left: 40px;
+  }
+  .review-right {
+    right: 40px;
+  }
+  .review-left,
+  .review-right {
+    position: fixed;
+    top: 50%;
+    font-size: 18px;
+    color: #fff;
+    background-color: #606266;
+    opacity: 0.8;
+    border-color: #fff;
+  }
+  .review-pic {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .image-slot {
+      color: rgba(231, 221, 221, 0.8);
+    }
+  }
+}
+.pic-dialog {
+  // display: flex;
+  // align-items: center;
+  .el-dialog__header {
+    padding: 0;
+  }
+  .el-dialog {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: none;
+    width: 30%;
+    .el-dialog__headerbtn {
+      position: fixed;
+      top: 40px;
+      right: 40px;
+      font-size: 35px;
+      .el-dialog__close {
+        color: rgba(245, 245, 245, 0.8);
+      }
+    }
+    .el-dialog__body {
+      padding: 0;
     }
   }
 }

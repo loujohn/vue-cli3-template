@@ -509,11 +509,6 @@ export default {
 </script>
 
 <style lang="scss">
-.suggestion-content {
-  // padding: 5px 20px;
-  // background-color: #f1f1f1;
-  // border-radius: 5px;
-}
 .sug-title {
   padding-right: 4px;
   color: #969696;
