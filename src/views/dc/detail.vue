@@ -23,13 +23,13 @@
       <div class="list">
         <div class="filter">
           <el-row :gutter="30">
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-input
                 :size="size"
                 placeholder="请输入关键字搜索"
                 v-model="params.keyword"
               ></el-input>
-            </el-col>
+            </el-col> -->
             <el-col :span="8">
               <span class="label">状态:</span>
               <el-select
@@ -46,7 +46,7 @@
                 ></el-option>
               </el-select>
             </el-col>
-            <el-col :span="8" style="text-align: right;">
+            <el-col :span="8" :offset="8" style="text-align: right;">
               <span class="count">已选择{{ count }}项</span>
               <el-button
                 :size="size"

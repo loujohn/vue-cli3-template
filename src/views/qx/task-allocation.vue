@@ -318,6 +318,7 @@ export default {
         this.params.pageIndex = 1;
         this.getList();
         this.handleMap();
+        this.getTuBanStatistic();
       }
     },
     async handleTaskOne(id) {
@@ -343,6 +344,7 @@ export default {
         this.params.pageIndex = 1;
         this.getList();
         this.handleMap();
+        this.getTuBanStatistic();
       }
     },
     handleStatusChange(val) {

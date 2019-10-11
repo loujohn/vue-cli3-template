@@ -8,12 +8,19 @@
           :geojson="geojson"
         />
         <div class="ranges">
-          <button class="btn active">下发范围</button>
+          <button
+            class="btn"
+            :class="{ active: showOriginGeojson }"
+            v-show="geojson"
+            @click="handleToggle('下发范围')"
+          >
+            下发范围
+          </button>
           <button
             class="btn"
             :class="{ active: showPcGeojson }"
             v-show="pcGeojson"
-            @click="handleToggle"
+            @click="handleToggle('调查范围')"
           >
             调查范围
           </button>
@@ -66,11 +73,10 @@
           <span>调查人员: {{ data.surveyUserName }}</span>
           <span>调查日期: {{ data.surveyTime }}</span>
           <el-popover
-            placement="top"
+            placement="top-end"
             ref="popover"
             trigger="manual"
             v-model="visible"
-            :content="content"
             width="200"
           >
             <span
@@ -82,13 +88,18 @@
                 data.checkFlowStage | checkStatus
               }}</strong></span
             >
+            <div class="suggestion-content">
+              <span class="sug-title">{{ contentTitle }}</span>
+              <span class="sug-content">{{ content }}</span>
+            </div>
           </el-popover>
         </div>
         <div class="action">
-          <div class="toggle">
+          <div class="toggle"></div>
+          <!-- <div class="toggle">
             <span>上一条</span>
             <span>下一条</span>
-          </div>
+          </div> -->
           <div class="operation" v-show="operator === 'check'">
             <span>审核:</span>
             <el-radio-group class="radio-group" v-model="form.status">
@@ -162,7 +173,7 @@ export default {
   data() {
     return {
       tabs: [
-        { name: '文 字' },
+        { name: '基本信息' },
         { name: '照 片' },
         { name: '视 频' },
         { name: '附 件' },
@@ -181,10 +192,12 @@ export default {
       videoList: [],
       attachmentList: [],
       content: '',
+      contentTitle: '',
       suggestion: '',
       visible: false,
       pcGeojson: '',
       showPcGeojson: false,
+      showOriginGeojson: true,
     };
   },
   computed: {
@@ -395,44 +408,69 @@ export default {
         this.map.setLayoutProperty('direction-symbol', 'visibility', 'visible');
       }
     },
-    handleToggle() {
-      this.showPcGeojson = !this.showPcGeojson;
-      if (this.showPcGeojson) {
-        const data = {
-          type: 'Feature',
-          geometry: JSON.parse(this.pcGeojson),
-        };
-        if (this.map.getSource('pc-geo-source')) {
-          this.map.getSource('pc-geo-source').setData(data);
+    handleToggle(name) {
+      if (name === '调查范围') {
+        this.showPcGeojson = !this.showPcGeojson;
+        if (this.showPcGeojson) {
+          const data = {
+            type: 'Feature',
+            geometry: JSON.parse(this.pcGeojson),
+          };
+          if (this.map.getSource('pc-geo-source')) {
+            this.map.getSource('pc-geo-source').setData(data);
+          } else {
+            this.map.addSource('pc-geo-source', {
+              type: 'geojson',
+              data,
+            });
+            this.map.addLayer({
+              id: 'pc-geo-fill',
+              type: 'fill',
+              source: 'pc-geo-source',
+              paint: {
+                'fill-opacity': 0.3,
+              },
+            });
+            this.map.addLayer({
+              id: 'pc-geo-line',
+              type: 'line',
+              source: 'pc-geo-source',
+              paint: {
+                'line-width': 2,
+                'line-color': '#409eff',
+              },
+            });
+          }
         } else {
-          this.map.addSource('pc-geo-source', {
-            type: 'geojson',
-            data,
-          });
-          this.map.addLayer({
-            id: 'pc-geo-fill',
-            type: 'fill',
-            source: 'pc-geo-source',
-            paint: {
-              'fill-opacity': 0.3,
-            },
-          });
-          this.map.addLayer({
-            id: 'pc-geo-line',
-            type: 'line',
-            source: 'pc-geo-source',
-            paint: {
-              'line-width': 2,
-              'line-color': '#409eff',
-            },
-          });
+          this.map.getSource('pc-geo-source') &&
+            this.map.getSource('pc-geo-source').setData({
+              type: 'FeatureCollection',
+              features: [],
+            });
         }
-      } else {
-        this.map.getSource('pc-geo-source') &&
-          this.map.getSource('pc-geo-source').setData({
+      } else if (name === '下发范围') {
+        this.showOriginGeojson = !this.showOriginGeojson;
+        if (!this.showOriginGeojson) {
+          this.marker && this.marker.remove();
+          this.setGeojson(this.map, 'geo-source', {
             type: 'FeatureCollection',
             features: [],
           });
+          this.setGeojson(this.map, 'geo-symbol', {
+            type: 'FeatureCollection',
+            features: [],
+          });
+        } else {
+          const geojson = JSON.parse(this.geojson);
+          const center = turf.center(geojson);
+
+          this.addMarker(center);
+          this.setGeojson(this.map, 'geo-source', {
+            type: 'Feature',
+            geometry: geojson,
+          });
+          this.setGeojson(this.map, 'geo-symbol', center);
+        }
       }
     },
     async getFlowLog(params) {
@@ -444,12 +482,16 @@ export default {
         if (this.data.checkFlowStage === 4 || this.data.checkFlowStage === 5) {
           this.form.suggestion = qxLog.suggestion;
           this.content = `市级审核意见: ${sjLog.suggestion || '无'}`;
+          this.contentTitle = '市级审核意见:';
+          this.content = sjLog.suggestion;
         }
       } else if (this.type === 'sj') {
         if (!sjLog) return false;
         this.suggestion = sjLog.suggestion;
         if (qxLog) {
-          this.content = `区县审核意见: ${qxLog.suggestion}`;
+          // this.content = `区县审核意见: ${qxLog.suggestion}`;
+          this.contentTitle = '区县审核意见:';
+          this.content = qxLog.suggestion;
         }
       }
     },
@@ -467,6 +509,15 @@ export default {
 </script>
 
 <style lang="scss">
+.suggestion-content {
+  // padding: 5px 20px;
+  // background-color: #f1f1f1;
+  // border-radius: 5px;
+}
+.sug-title {
+  padding-right: 4px;
+  color: #969696;
+}
 .sj-review {
   display: flex;
   .no-survey {
@@ -508,6 +559,7 @@ export default {
       top: 3px;
       left: 3px;
       .btn {
+        padding: 3px;
         border-radius: 3px;
         background-color: rgba(255, 255, 255, 0.8);
         border: 1px solid #e6e6e6;
@@ -535,7 +587,8 @@ export default {
     .head {
       padding: 0 20px;
       height: 40px;
-      background-color: #5d7b9a;
+      // background-color: #5d7b9a;
+      background-color: #0087d7;
       line-height: 40px;
       position: relative;
       .close {
@@ -543,6 +596,7 @@ export default {
         font-size: $font-lg;
         position: absolute;
         right: 10px;
+        color: #fff;
       }
       .tabs {
         width: 100%;
@@ -561,7 +615,8 @@ export default {
         }
         span.active {
           margin-top: 8px;
-          color: #5d7b9a;
+          // color: #5d7b9a;
+          color: #0087d7;
           font-weight: bold;
           background-color: #fff;
           // border-bottom: 3px solid #0094ec;
@@ -584,7 +639,8 @@ export default {
     }
     .action {
       height: 40px;
-      background-color: #5d7b9a;
+      // background-color: #5d7b9a;
+      background-color: #0087d7;
       padding: 0 20px;
       display: flex;
       justify-content: space-between;
@@ -602,7 +658,8 @@ export default {
         .radio-group {
           padding: 0 15px;
           .el-radio {
-            color: #ffffff40;
+            // color: #ffffff40;
+            color: #fff;
           }
           .el-radio__input.is-checked + .el-radio__label {
             color: #fff;

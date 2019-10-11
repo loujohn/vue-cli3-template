@@ -1,7 +1,12 @@
 <template>
   <div class="geo-edit">
     <div class="ranges">
-      <button class="btn btn-toggle active" v-show="originGeojson">
+      <button
+        class="btn btn-toggle"
+        :class="{ active: btnOriginActive }"
+        v-show="originGeojson"
+        @click="handleToggle('下发范围')"
+      >
         <svg-icon
           class="svg-icon"
           style="height: 1.5em; width: 1.5em;"
@@ -25,7 +30,7 @@
       <button
         class="btn btn-toggle"
         :class="{ active: btnAssistActive }"
-        v-show="appGeojson"
+        v-show="appGeojson && !pcGeojson"
         @click="handleToggle('辅助范围')"
       >
         <svg-icon
@@ -94,6 +99,7 @@ export default {
       },
       btnAssistActive: false,
       btnCheckActive: false,
+      btnOriginActive: true,
     };
   },
   mounted() {
@@ -110,6 +116,8 @@ export default {
       } else if (name === '辅助范围') {
         this.btnAssistActive = !this.btnAssistActive;
         active = this.btnAssistActive;
+      } else if (name === '下发范围') {
+        this.btnOriginActive = !this.btnOriginActive;
       }
       this.$emit('toggle-geo-layer', {
         name,
@@ -150,7 +158,10 @@ export default {
       this.isDrawing = !this.isDrawing;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
-        if (this.appGeojson) {
+        if (this.pcGeojson) {
+          this.handleEdit(this.pcGeojson);
+          return true;
+        } else if (this.appGeojson) {
           this.handleEdit(this.appGeojson);
           return true;
         } else if (this.originGeojson) {

@@ -144,8 +144,10 @@ export default {
     .el-radio-button__orig-radio:checked + .el-radio-button__inner {
       box-shadow: none;
       border-radius: 45px;
-      background-color: #5d7b9a;
-      border-color: #5d7b9a;
+      // background-color: #5d7b9a;
+      background-color: #0087d7;
+      // border-color: #5d7b9a;
+      border-color: #0087d7;
       color: #fff;
     }
   }

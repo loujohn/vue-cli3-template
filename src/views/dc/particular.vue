@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       map: null,
-      tabs: [{ name: '文字' }, { name: '照片' }, { name: '视频' }],
+      tabs: [{ name: '基本信息' }, { name: '照片' }, { name: '视频' }],
       activeTabIndex: 0,
       taskId: '',
       fieldList: [],
@@ -386,6 +386,31 @@ export default {
               type: 'FeatureCollection',
               features: [],
             });
+        }
+      } else if (name === '下发范围') {
+        if (!active) {
+          this.marker && this.marker.remove();
+          this.map.getSource('geo-source') &&
+            this.map.getSource('geo-source').setData({
+              type: 'FeatureCollection',
+              features: [],
+            });
+          this.map.getSource('symbol-source') &&
+            this.map.getSource('symbol-source').setData({
+              type: 'FeatureCollection',
+              features: [],
+            });
+        } else {
+          const geojson = JSON.parse(this.originGeojson);
+          const center = turf.center(geojson);
+          this.addMarker(center);
+          this.map.getSource('geo-source') &&
+            this.map.getSource('geo-source').setData({
+              type: 'Feature',
+              geometry: geojson,
+            });
+          this.map.getSource('symbol-source') &&
+            this.map.getSource('symbol-source').setData(center);
         }
       }
     },
