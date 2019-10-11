@@ -272,12 +272,58 @@ export default {
     async handleMap() {
       const res = await task.getGeojson({ taskId: this.id });
       if (res.code && res.code.toString() === '200') {
-        // this.addGeoLayer(res.data);
+        this.addGeoLayer(res.data);
         // this.addSymbolLayer(res.data);
         this.addCircleLayer(res.data);
       } else {
         return false;
       }
+    },
+    addGeoLayer(geojson) {
+      if (!geojson) return false;
+      if (this.map.getSource('geo-source')) {
+        this.map.getSource('geo-source').setData(geojson);
+        return;
+      }
+      this.map.addSource('geo-source', {
+        type: 'geojson',
+        data: geojson,
+      });
+      this.map.addLayer({
+        id: 'geo-fill',
+        minzoom: 10,
+        type: 'fill',
+        source: 'geo-source',
+        paint: {
+          'fill-color': '#888',
+          'fill-opacity': 0.7,
+        },
+        filter: ['==', 'distributionStatus', 0],
+      });
+      this.map.addLayer({
+        id: 'geo-line',
+        minzoom: 10,
+        type: 'line',
+        source: 'geo-source',
+        paint: {
+          'line-width': 2,
+          'line-color': [
+            'case',
+            ['==', ['get', 'surveyStage'], 1],
+            '#e6a23c',
+            ['==', ['get', 'surveyStage'], 2],
+            '#409eff',
+            ['==', ['get', 'surveyStage'], 3],
+            '#f56c6c',
+            ['==', ['get', 'surveyStage'], 4],
+            '#67c23a',
+            '#909399',
+          ],
+        },
+        // filter: ['==', ['get', 'distributionStatus'], this.status],
+      });
+      const bbox = turf.bbox(geojson);
+      this.map.fitBounds(bbox);
     },
     addCircleLayer(geojson) {
       const featureCollection = this.getPointFeatures(geojson);
@@ -296,7 +342,7 @@ export default {
         paint: {
           'circle-radius': {
             base: 5,
-            stops: [[12, 7], [22, 180]],
+            stops: [[12, 7], [22, 100]],
           },
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff',
@@ -329,8 +375,17 @@ export default {
       });
       return featureCollection;
     },
-    handleRowClick(row) {
-      console.log(row);
+    async handleRowClick(row) {
+      const { id } = row;
+      const params = {
+        taskRecordId: id,
+      };
+      const geojson = await task.getGeojsonById(params);
+      if (!geojson) return false;
+      const bbox = turf.bbox(JSON.parse(geojson));
+      this.map.fitBounds(bbox, {
+        padding: 200,
+      });
     },
     toParticular(id) {
       this.$router.push({ name: 'dc-particular', query: { id } });

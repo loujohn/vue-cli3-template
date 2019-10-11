@@ -2,7 +2,10 @@ var common = 'http://192.168.11.160:8083';
 // var common = 'http://172.16.4.195:8083';
 // var common = 'http://172.16.3.239:8083';//何鹏
 
-if (!parseInt(window.location.host)) {
+if (
+  !parseInt(window.location.host) &&
+  !/localhost/.test(window.location.host)
+) {
   common = 'http://zrzy.cqdlzx.com';
 }
 window.config = {

@@ -167,4 +167,16 @@ export default {
     });
     return res.data || {};
   },
+
+  /**
+   * 获取单个geojson
+   * params { taskReocrdId }
+   */
+  async getGeojsonById(params) {
+    const res = await http.get(url.getGeojson, {
+      params,
+      hideLoading: true,
+    });
+    return res.data || {};
+  },
 };

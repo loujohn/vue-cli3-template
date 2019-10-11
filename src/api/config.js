@@ -26,6 +26,7 @@ const url = {
   getFlowLog: baseUrl + '/manage/taskRecord/getFlowLog.do',
   saveTaskRecordInfo: baseUrl + '/manage/taskRecord/saveTaskRecordInfo.do',
   taskSubmit: baseUrl + '/manage/taskRecord/submit.do',
+  getGeojson: baseUrl + '/manage/taskRecord/getGeojson.do',
 };
 
 export default url;

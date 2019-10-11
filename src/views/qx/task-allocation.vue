@@ -104,6 +104,7 @@
         <el-table-column label="分发状态" width="80px">
           <template slot-scope="scope">
             <span
+              class="state"
               :class="{
                 not: !scope.row.distributionStatus,
                 'has-dispatch': scope.row.distributionStatus,
@@ -594,11 +595,29 @@ export default {
   display: flex;
   height: 100%;
   overflow: hidden;
+  .state {
+    display: inline-block;
+    padding: 0 10px;
+    height: 32px;
+    width: 60px;
+    text-align: center;
+    box-sizing: border-box;
+    line-height: 30px;
+    font-size: 12px;
+    color: #409eff;
+    border-radius: 4px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #fff;
+    white-space: nowrap;
+  }
   .not {
-    color: #f56c6c;
+    // color: #f56c6c;
+    background-color: #ff5566;
   }
   .has-dispatch {
-    color: #67c23a;
+    // color: #67c23a;
+    background-color: #67c23a;
   }
   .data {
     width: 50%;
