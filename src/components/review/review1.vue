@@ -316,7 +316,6 @@ export default {
     close() {
       this.$emit('close');
       this.activeTabIndex = 0;
-      this.containerHeight = '600px';
       for (let key in this.form) {
         this.form[key] = '';
       }

@@ -39,7 +39,7 @@ export default {
         return item.uid === file.uid;
       }, this.tempList);
       this.tempList = files;
-      this.$emit('update:fileList', this.tempList);
+      this.$emit('file-remove');
       return true;
     },
     onSuccess(res, file) {

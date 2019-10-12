@@ -63,7 +63,11 @@
             />
           </el-form-item>
           <el-form-item label="数据选择:" prop="gdbFilePath">
-            <upload ref="upload" @upload-success="handleUploadSuccess" />
+            <upload
+              ref="upload"
+              @upload-success="handleUploadSuccess"
+              @file-remove="handleFileRemove"
+            />
             <field
               ref="field"
               :fieldList="fieldList"
@@ -186,6 +190,9 @@ export default {
       if (!this.form.importType) {
         this.fieldList = fields;
       }
+    },
+    handleFileRemove() {
+      this.fieldList = [];
     },
     submit() {
       this.$refs['form'].validate(async valid => {
