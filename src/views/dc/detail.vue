@@ -126,13 +126,15 @@ import list from 'mixins/list';
 import { surveyStatus } from 'filters';
 import { task, survey } from 'api';
 import turf from 'turf';
+import mapHandler from 'mixins/map.handler';
+import { surveyUserGeo, surveyUserCircle } from '../../configs/layer.config';
 export default {
   name: 'dc-detail',
   components: {
     customerCard,
     vMap,
   },
-  mixins: [list],
+  mixins: [list, mapHandler],
   props: {
     id: {
       type: [Number, String],
@@ -156,13 +158,13 @@ export default {
       params: {
         pageIndex: 1,
         pageSize: 10,
-        // surveyStage: 1,
         surveyStage: '',
         keyword: '',
       },
       selectedTasks: [],
       fields: [],
       size: 'small',
+      mapLoaded: false,
     };
   },
   computed: {
@@ -268,112 +270,24 @@ export default {
     handleMapLoad(e) {
       this.map = e.target;
       this.handleMap();
+      this.mapLoaded = true;
     },
     async handleMap() {
       const res = await task.getGeojson({ taskId: this.id });
       if (res.code && res.code.toString() === '200') {
-        this.addGeoLayer(res.data);
-        // this.addSymbolLayer(res.data);
-        this.addCircleLayer(res.data);
+        this.initGeoLayers(this.map, surveyUserGeo);
+        this.setGeojson(this.map, surveyUserGeo, res.data);
+        this.initCircleLayer(this.map, surveyUserCircle);
+        const points = this.getPointFeatures(res.data);
+        this.setGeojson(this.map, surveyUserCircle, points);
+
+        const bbox = this.getBbox(res.data);
+        this.map.fitBounds(bbox, {
+          padding: 200,
+        });
       } else {
         return false;
       }
-    },
-    addGeoLayer(geojson) {
-      if (!geojson) return false;
-      if (this.map.getSource('geo-source')) {
-        this.map.getSource('geo-source').setData(geojson);
-        return;
-      }
-      this.map.addSource('geo-source', {
-        type: 'geojson',
-        data: geojson,
-      });
-      this.map.addLayer({
-        id: 'geo-fill',
-        minzoom: 10,
-        type: 'fill',
-        source: 'geo-source',
-        paint: {
-          'fill-color': '#888',
-          'fill-opacity': 0.7,
-        },
-        filter: ['==', 'distributionStatus', 0],
-      });
-      this.map.addLayer({
-        id: 'geo-line',
-        minzoom: 10,
-        type: 'line',
-        source: 'geo-source',
-        paint: {
-          'line-width': 2,
-          'line-color': [
-            'case',
-            ['==', ['get', 'surveyStage'], 1],
-            '#e6a23c',
-            ['==', ['get', 'surveyStage'], 2],
-            '#409eff',
-            ['==', ['get', 'surveyStage'], 3],
-            '#f56c6c',
-            ['==', ['get', 'surveyStage'], 4],
-            '#67c23a',
-            '#909399',
-          ],
-        },
-        // filter: ['==', ['get', 'distributionStatus'], this.status],
-      });
-      const bbox = turf.bbox(geojson);
-      this.map.fitBounds(bbox);
-    },
-    addCircleLayer(geojson) {
-      const featureCollection = this.getPointFeatures(geojson);
-      if (this.map.getSource('circle-source')) {
-        this.map.getSource('circle-source').setData(featureCollection);
-        return;
-      }
-      this.map.addSource('circle-source', {
-        type: 'geojson',
-        data: featureCollection,
-      });
-      this.map.addLayer({
-        id: 'circle-layer',
-        type: 'circle',
-        source: 'circle-source',
-        paint: {
-          'circle-radius': {
-            base: 5,
-            stops: [[12, 7], [22, 100]],
-          },
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
-          'circle-color': [
-            'case',
-            ['==', ['get', 'surveyStage'], 1],
-            '#e6a23c',
-            ['==', ['get', 'surveyStage'], 2],
-            '#409eff',
-            ['==', ['get', 'surveyStage'], 3],
-            '#f56c6c',
-            ['==', ['get', 'surveyStage'], 4],
-            '#67c23a',
-            '#909399',
-          ],
-        },
-        // filter: ['==', ['get', 'distributionStatus'], this.status],
-      });
-    },
-    getPointFeatures(geojson) {
-      let featureCollection = {
-        type: 'FeatureCollection',
-        features: [],
-      };
-      const { features } = geojson;
-      featureCollection.features = features.map(feature => {
-        const point = turf.center(feature);
-        point.properties = { ...feature.properties };
-        return point;
-      });
-      return featureCollection;
     },
     async handleRowClick(row) {
       const { id } = row;

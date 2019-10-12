@@ -7,10 +7,12 @@ const mapUtil = {
       features: [],
     };
     try {
-      map.addSource(sourceId, {
-        type: 'geojson',
-        data,
-      });
+      if (!this.sourceAdded(map, sourceId)) {
+        map.addSource(sourceId, {
+          type: 'geojson',
+          data,
+        });
+      }
     } catch (error) {
       console.error('init-geo-source', error);
     }
@@ -76,6 +78,19 @@ const mapUtil = {
       };
     }
     return geojson;
+  },
+  getPointFeatures(geojson) {
+    let featureCollection = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    const { features } = geojson;
+    featureCollection.features = features.map(feature => {
+      const point = turf.center(feature);
+      point.properties = { ...feature.properties };
+      return point;
+    });
+    return featureCollection;
   },
 };
 

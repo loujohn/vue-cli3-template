@@ -19,6 +19,14 @@ export default {
         },
       });
     },
+    initCircleLayer(map, { sourceId, circle }) {
+      mapUtil.initGeoSource(map, sourceId);
+      mapUtil.addLayer(map, sourceId, circle);
+    },
+    initLineLayer(map, { sourceId, line }) {
+      mapUtil.initGeoSource(map, sourceId);
+      mapUtil.addLayer(map, sourceId, line);
+    },
     setGeojson(map, { sourceId }, geojson) {
       const data = mapUtil.transferGeojson(geojson);
       mapUtil.setGeojson(map, sourceId, data);
@@ -34,6 +42,9 @@ export default {
     },
     getBbox(geojson) {
       return mapUtil.getBbox(geojson);
+    },
+    getPointFeatures(geojson) {
+      return mapUtil.getPointFeatures(geojson);
     },
   },
 };

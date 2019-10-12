@@ -2,16 +2,12 @@
   <div class="sj-review">
     <div class="left">
       <div class="map-container" :style="{ height: containerHeight }">
-        <v-map
-          @load="handleMapLoad"
-          :containerHeight="containerHeight"
-          :geojson="geojson"
-        />
+        <v-map @load="handleMapLoad" />
         <div class="ranges">
           <button
             class="btn"
             :class="{ active: showOriginGeojson }"
-            v-show="geojson"
+            v-show="originGeojson"
             @click="handleToggle('下发范围')"
           >
             下发范围
@@ -23,6 +19,14 @@
             @click="handleToggle('调查范围')"
           >
             调查范围
+          </button>
+          <button
+            class="btn"
+            :class="{ active: showTraceGeojson }"
+            v-show="traceGeojson"
+            @click="handleToggle('调查足迹')"
+          >
+            调查足迹
           </button>
         </div>
       </div>
@@ -146,10 +150,15 @@ import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
 import manualUpload from 'components/upload/manual-upload';
 import vAttachments from 'components/attachments/attachments';
-import geoHandler from 'mixins/geo-handler';
 import baseInfo from '../base-info/baseInfo';
 import { task } from 'api';
-import turf from 'turf';
+import mapHandler from 'mixins/map.handler';
+import {
+  originGeo,
+  pcGeo,
+  directionGeo,
+  surverUserTrace,
+} from '../../configs/layer.config';
 import { checkStatus, getClass } from 'filters';
 export default {
   name: 'review',
@@ -172,7 +181,7 @@ export default {
       type: String,
     },
   },
-  mixins: [geoHandler],
+  mixins: [mapHandler],
   data() {
     return {
       tabs: [
@@ -190,7 +199,6 @@ export default {
       fieldList: [],
       imageObj: {},
       containerHeight: '600px',
-      // imagePath: '',
       showImage: false,
       videoList: [],
       attachmentList: [],
@@ -198,9 +206,14 @@ export default {
       contentTitle: '',
       suggestion: '',
       visible: false,
+      map: null,
+      marker: null,
       pcGeojson: '',
       showPcGeojson: false,
+      originGeojson: '',
       showOriginGeojson: true,
+      traceGeojson: '',
+      showTraceGeojson: false,
     };
   },
   computed: {
@@ -242,11 +255,13 @@ export default {
               vedioFiles,
               annexFiles,
               geojsons,
+              traceGeojson,
             },
           } = val;
           if (geojsons) {
             this.pcGeojson = geojsons.pcGeojson;
           }
+          this.traceGeojson = traceGeojson;
           this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
           this.videoList = vedioFiles;
           this.attachmentList = annexFiles;
@@ -263,22 +278,17 @@ export default {
           });
           this.fieldList = fieldsList.filter(e => !e.isSpace);
           try {
-            this.geojson = fieldsList.find(e => e.isSpace).fieldValue;
+            this.originGeojson = fieldsList.find(e => e.isSpace).fieldValue;
           } catch (error) {
             console.error(error);
           }
-          if (!this.geojson) return false;
+          if (!this.originGeojson) return false;
           if (this.map) {
-            const geojson = JSON.parse(this.geojson);
-            const data = {
-              type: 'Feature',
-              geometry: geojson,
-            };
-            this.setGeojson(this.map, 'geo-source', data);
-            const center = turf.center(geojson);
-            this.addMarker(center);
-            this.setGeojson(this.map, 'geo-symbol', center);
-            const bbox = turf.bbox(geojson);
+            this.setGeojson(this.map, originGeo, this.originGeojson);
+            const center = this.getCenter(this.originGeojson);
+            this.setGeojson(this.map, directionGeo, center);
+            this.marker = this.addMarker(this.map, this.marker, { center });
+            const bbox = this.getBbox(this.originGeojson);
             this.map.fitBounds(bbox, { padding: 200 });
           }
         }
@@ -288,12 +298,13 @@ export default {
     },
     activeTabIndex: function(val) {
       if (val !== 1) {
-        // this.showImage = false;
-        // this.imagePath = '';
-        this.map.setLayoutProperty('direction-symbol', 'visibility', 'none');
+        this.map.setLayoutProperty(
+          directionGeo.symbol.id,
+          'visibility',
+          'none',
+        );
         this.$refs['image-preview'].showImage = false;
         this.$refs['image-preview'].activeKey = 'farImageFiles';
-        if (this.containerHeight !== '600px') this.containerHeight = '600px';
       }
     },
   },
@@ -398,81 +409,68 @@ export default {
     },
     handleImage(data) {
       const { azimuth } = data;
-      // this.containerHeight = '300px';
-      // this.imagePath = fullPath;
-      // this.showImage = true;
-
       if (azimuth) {
         this.map.setLayoutProperty(
-          'direction-symbol',
+          directionGeo.symbol.id,
           'icon-rotate',
           Number(azimuth),
         );
-        this.map.setLayoutProperty('direction-symbol', 'visibility', 'visible');
+        this.map.setLayoutProperty(
+          directionGeo.symbol.id,
+          'visibility',
+          'visible',
+        );
+      }
+    },
+    handleMapLoad(e) {
+      this.map = e.target;
+      this.initGeoLayers(this.map, originGeo);
+      this.initGeoLayers(this.map, pcGeo);
+      this.initSymbolLayer(this.map, directionGeo);
+      this.initLineLayer(this.map, surverUserTrace);
+      if (this.originGeojson) {
+        this.setGeojson(this.map, originGeo, this.originGeojson);
+        const center = this.getCenter(this.originGeojson);
+        this.setGeojson(this.map, directionGeo, center);
+        this.marker = this.addMarker(this.map, this.marker, { center });
+        const bbox = this.getBbox(this.originGeojson);
+        this.map.fitBounds(bbox, { padding: 200 });
       }
     },
     handleToggle(name) {
       if (name === '调查范围') {
         this.showPcGeojson = !this.showPcGeojson;
         if (this.showPcGeojson) {
-          const data = {
-            type: 'Feature',
-            geometry: JSON.parse(this.pcGeojson),
-          };
-          if (this.map.getSource('pc-geo-source')) {
-            this.map.getSource('pc-geo-source').setData(data);
-          } else {
-            this.map.addSource('pc-geo-source', {
-              type: 'geojson',
-              data,
-            });
-            this.map.addLayer({
-              id: 'pc-geo-fill',
-              type: 'fill',
-              source: 'pc-geo-source',
-              paint: {
-                'fill-opacity': 0.3,
-              },
-            });
-            this.map.addLayer({
-              id: 'pc-geo-line',
-              type: 'line',
-              source: 'pc-geo-source',
-              paint: {
-                'line-width': 2,
-                'line-color': '#409eff',
-              },
-            });
-          }
+          this.setGeojson(this.map, pcGeo, this.pcGeojson);
         } else {
-          this.map.getSource('pc-geo-source') &&
-            this.map.getSource('pc-geo-source').setData({
-              type: 'FeatureCollection',
-              features: [],
-            });
+          this.clearGeojson(this.map, pcGeo);
+        }
+      } else if (name === '调查足迹') {
+        this.showTraceGeojson = !this.showTraceGeojson;
+        if (this.showTraceGeojson) {
+          this.setGeojson(this.map, surverUserTrace, this.traceGeojson);
+          const bbox = this.getBbox(this.traceGeojson);
+          this.map.fitBounds(bbox, {
+            padding: 200,
+          });
+        } else {
+          this.clearGeojson(this.map, surverUserTrace);
+          const bbox = this.getBbox(this.originGeojson);
+          this.map.fitBounds(bbox, {
+            padding: 200,
+          });
         }
       } else if (name === '下发范围') {
         this.showOriginGeojson = !this.showOriginGeojson;
         if (!this.showOriginGeojson) {
           this.marker && this.marker.remove();
-          this.setGeojson(this.map, 'geo-source', {
-            type: 'FeatureCollection',
-            features: [],
-          });
-          this.setGeojson(this.map, 'geo-symbol', {
-            type: 'FeatureCollection',
-            features: [],
-          });
+          this.clearGeojson(this.map, originGeo);
+          this.clearGeojson(this.map, directionGeo);
         } else {
-          const geojson = JSON.parse(this.geojson);
-          const center = turf.center(geojson);
-
-          this.addMarker(center);
-          this.setGeojson(this.map, 'geo-source', {
-            type: 'Feature',
-            geometry: geojson,
-          });
-          this.setGeojson(this.map, 'geo-symbol', center);
+          this.setGeojson(this.map, originGeo, this.originGeojson);
+          const center = this.getCenter(this.originGeojson);
+          this.setGeojson(this.map, directionGeo, center);
+          this.marker = this.addMarker(this.map, this.marker, { center });
         }
       }
     },
@@ -492,7 +490,6 @@ export default {
         if (!sjLog) return false;
         this.suggestion = sjLog.suggestion;
         if (qxLog) {
-          // this.content = `区县审核意见: ${qxLog.suggestion}`;
           this.contentTitle = '区县审核意见:';
           this.content = qxLog.suggestion;
         }
