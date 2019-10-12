@@ -323,11 +323,10 @@ export default {
       this.visible = false;
       this.pcGeojson = '';
       this.showPcGeojson = false;
-      this.map.getSource('pc-geo-source') &&
-        this.map.getSource('pc-geo-source').setData({
-          type: 'FeatureCollection',
-          features: [],
-        });
+      this.traceGeojson = '';
+      this.showTraceGeojson = false;
+      this.clearGeojson(this.map, pcGeo);
+      this.clearGeojson(this.map, surverUserTrace);
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
