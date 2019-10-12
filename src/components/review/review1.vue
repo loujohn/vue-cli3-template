@@ -108,13 +108,19 @@
             <span>下一条</span>
           </div> -->
           <div class="operation" v-show="operator === 'check'">
-            <span>审核:</span>
-            <el-radio-group class="radio-group" v-model="form.status">
+            <!-- <span>审核:</span> -->
+            <!-- <el-radio-group class="radio-group" v-model="form.status">
               <el-radio :label="1">通过</el-radio>
               <el-radio :label="0">不通过</el-radio>
             </el-radio-group>
             <el-button size="mini" @click="check()" class="submit-botton"
               >提交</el-button
+            > -->
+            <el-button size="mini" type="primary" @click="handleCheck('通过')"
+              >通过</el-button
+            >
+            <el-button size="mini" type="warning" @click="handleCheck('不通过')"
+              >不通过</el-button
             >
           </div>
           <div class="operation" v-show="operator === 'recheck'">
@@ -329,6 +335,14 @@ export default {
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
+    },
+    handleCheck(info) {
+      if (info === '通过') {
+        this.form.status = 1;
+      } else if (info === '不通过') {
+        this.form.status = 0;
+      }
+      this.check();
     },
     check() {
       const files = this.$refs['manual-upload'].fileList;
