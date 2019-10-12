@@ -68,9 +68,13 @@ import dcImage from 'components/image/dcImage';
 import vVideo from 'components/video/video';
 import dcBaseInfo from 'components/base-info/dcBaseInfo';
 import { task, survey } from 'api';
-import turf from 'turf';
-import d2c from 'd2c';
-import { locationRed, direction } from '../../configs/icon.config';
+import mapHandler from 'mixins/map.handler';
+import {
+  originGeo,
+  pcGeo,
+  appGeo,
+  directionGeo,
+} from '../../configs/layer.config';
 
 export default {
   name: 'dc-particular',
@@ -86,6 +90,7 @@ export default {
       type: [Number, String],
     },
   },
+  mixins: [mapHandler],
   data() {
     return {
       map: null,
@@ -127,12 +132,8 @@ export default {
     },
     activeTabIndex: function(val) {
       if (val !== 1) {
-        // this.showImage = false;
-        // this.imagePath = '';
         this.map.setLayoutProperty('symbol-layer', 'visibility', 'none');
-        // this.$refs['image-preview'].showImage = false;
         this.$refs['image-preview'].activeKey = 'farImageFiles';
-        // if (this.containerHeight !== '600px') this.containerHeight = '600px';
       }
     },
   },
@@ -211,7 +212,12 @@ export default {
       this.fieldList = fieldsList.filter(e => !e.isSpace);
       this.originGeojson = fieldsList.find(e => e.isSpace).fieldValue;
       if (this.mapLoaded) {
-        this.setGeojson(this.map, this.originGeojson);
+        this.setGeojson(this.map, originGeo, this.originGeojson);
+        const center = this.getCenter(this.originGeojson);
+        this.setGeojson(this.map, directionGeo, center);
+        this.marker = this.addMarker(this.map, this.marker, { center });
+        const bbox = this.getBbox(this.originGeojson);
+        this.map.fitBounds(bbox, { padding: 200 });
       }
       if (geojsons) {
         const { pcGeojson, appGeojson } = geojsons;
@@ -223,205 +229,42 @@ export default {
       }
     },
     initMapLayer(map, geojson) {
-      geojson =
-        typeof geojson === 'string'
-          ? { type: 'Feature', geometry: JSON.parse(geojson) }
-          : geojson;
-      this.map.addImage('icon-direction', direction);
-      map.addSource('geo-source', {
-        type: 'geojson',
-        data: geojson,
-      });
-      map.addLayer({
-        id: 'geo-fill',
-        type: 'fill',
-        source: 'geo-source',
-        paint: {
-          'fill-opacity': 0.3,
-        },
-      });
-      map.addLayer({
-        id: 'geo-line',
-        type: 'line',
-        source: 'geo-source',
-        paint: {
-          'line-color': '#c08f01',
-          'line-width': 2,
-        },
-      });
-      const center = turf.center(geojson);
-      map.addSource('symbol-source', {
-        type: 'geojson',
-        data: center,
-      });
-      map.addLayer({
-        id: 'symbol-layer',
-        type: 'symbol',
-        source: 'symbol-source',
-        layout: {
-          'icon-image': 'icon-direction',
-          // 'icon-size': 0.1,
-          visibility: 'none',
-        },
-      });
-      this.addMarker(center);
-      const bbox = turf.bbox(geojson);
+      this.initGeoLayers(map, originGeo);
+      this.initGeoLayers(map, pcGeo);
+      this.initGeoLayers(map, appGeo);
+      this.setGeojson(map, originGeo, geojson);
+      this.initSymbolLayer(map, directionGeo);
+      const center = this.getCenter(geojson);
+      this.setGeojson(map, directionGeo, center);
+      this.marker = this.addMarker(this.map, this.marker, { center });
+      const bbox = this.getBbox(geojson);
       this.map.fitBounds(bbox, { padding: 200 });
-    },
-    setGeojson(map, geojson) {
-      geojson =
-        typeof geojson === 'string'
-          ? { type: 'Feature', geometry: JSON.parse(geojson) }
-          : geojson;
-      this.map.getSource('geo-source').setData(geojson);
-      const center = turf.center(geojson);
-      this.map.getSource('symbol-source').setData(center);
-      this.addMarker(center);
-
-      const bbox = turf.bbox(geojson);
-      this.map.fitBounds(bbox, { padding: 200 });
-    },
-    addGeoSource(map, geojson, sourceId) {
-      let data;
-      if (!geojson) {
-        data = {
-          type: 'FeatureCollection',
-          features: [],
-        };
-      } else {
-        data =
-          typeof geojson === 'string'
-            ? { type: 'Feature', geometry: JSON.parse(geojson) }
-            : geojson;
-      }
-      !map.getSource(sourceId) &&
-        map.addSource(sourceId, {
-          type: 'geojson',
-          data,
-        });
-    },
-    addLayer(map, layerId, { source, type, paint, layout }) {
-      !map.getLayer(layerId) &&
-        map.addLayer({
-          id: layerId,
-          type,
-          source,
-          paint,
-          layout,
-        });
     },
     toggleGeoLayer({ name, active }) {
       if (name === '调查范围') {
-        const data = {
-          type: 'Feature',
-          geometry: JSON.parse(this.pcGeojson),
-        };
         if (active) {
-          if (this.map.getSource('pc-geo-source')) {
-            this.map.getSource('pc-geo-source').setData(data);
-          } else {
-            this.map.addSource('pc-geo-source', {
-              type: 'geojson',
-              data: data,
-            });
-            this.map.addLayer({
-              id: 'pc-geo-fill',
-              type: 'fill',
-              source: 'pc-geo-source',
-              paint: {
-                'fill-opacity': 0.3,
-              },
-            });
-            this.map.addLayer({
-              id: 'pc-geo-line',
-              type: 'line',
-              source: 'pc-geo-source',
-              paint: {
-                'line-width': 2,
-                'line-color': '#409EFF',
-              },
-            });
-          }
+          this.setGeojson(this.map, pcGeo, this.pcGeojson);
         } else {
-          this.map.getSource('pc-geo-source') &&
-            this.map.getSource('pc-geo-source').setData({
-              type: 'FeatureCollection',
-              features: [],
-            });
+          this.clearGeojson(this.map, pcGeo);
         }
       } else if (name === '辅助范围') {
-        const data = {
-          type: 'Feature',
-          geometry: JSON.parse(this.appGeojson),
-        };
         if (active) {
-          if (this.map.getSource('app-geo-source')) {
-            this.map.getSource('app-geo-source').setData(data);
-          } else {
-            this.map.addSource('app-geo-source', {
-              type: 'geojson',
-              data: data,
-            });
-            this.map.addLayer({
-              id: 'app-geo-fill',
-              type: 'fill',
-              source: 'app-geo-source',
-              paint: {
-                'fill-opacity': 0.3,
-              },
-            });
-            this.map.addLayer({
-              id: 'app-geo-line',
-              type: 'line',
-              source: 'app-geo-source',
-              paint: {
-                'line-width': 2,
-                'line-color': '#F56C6C',
-              },
-            });
-          }
+          this.setGeojson(this.map, appGeo, this.appGeojson);
         } else {
-          this.map.getSource('app-geo-source') &&
-            this.map.getSource('app-geo-source').setData({
-              type: 'FeatureCollection',
-              features: [],
-            });
+          this.clearGeojson(this.map, appGeo);
         }
       } else if (name === '下发范围') {
         if (!active) {
           this.marker && this.marker.remove();
-          this.map.getSource('geo-source') &&
-            this.map.getSource('geo-source').setData({
-              type: 'FeatureCollection',
-              features: [],
-            });
-          this.map.getSource('symbol-source') &&
-            this.map.getSource('symbol-source').setData({
-              type: 'FeatureCollection',
-              features: [],
-            });
+          this.clearGeojson(this.map, originGeo);
+          this.clearGeojson(this.map, directionGeo);
         } else {
-          const geojson = JSON.parse(this.originGeojson);
-          const center = turf.center(geojson);
-          this.addMarker(center);
-          this.map.getSource('geo-source') &&
-            this.map.getSource('geo-source').setData({
-              type: 'Feature',
-              geometry: geojson,
-            });
-          this.map.getSource('symbol-source') &&
-            this.map.getSource('symbol-source').setData(center);
+          this.setGeojson(this.map, originGeo, this.originGeojson);
+          const center = this.getCenter(this.originGeojson);
+          this.setGeojson(this.map, directionGeo, center);
+          this.marker = this.addMarker(this.map, this.marker, { center });
         }
       }
-    },
-    addMarker(geojson) {
-      this.marker && this.marker.remove();
-      const {
-        geometry: { coordinates },
-      } = geojson;
-      this.marker = new d2c.Marker(locationRed)
-        .setLngLat(coordinates)
-        .addTo(this.map);
     },
     handleImage(data) {
       const { azimuth } = data;

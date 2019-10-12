@@ -70,7 +70,10 @@
           </el-row>
         </div>
         <div class="people">
-          <span>调查人员: {{ data.surveyUserName }}</span>
+          <span
+            >调查人员:
+            {{ data.referenceInfo && data.referenceInfo.userRealName }}</span
+          >
           <span>调查日期: {{ data.surveyTime }}</span>
           <el-popover
             placement="top-end"

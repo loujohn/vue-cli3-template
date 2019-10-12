@@ -87,7 +87,10 @@
         @select="handleTaskSelect"
         @select-all="handleTaskSelectAll"
       >
-        <el-table-column type="selection"></el-table-column>
+        <el-table-column
+          type="selection"
+          :selectable="selectable"
+        ></el-table-column>
         <el-table-column
           v-for="(item, index) in fields"
           :key="index"
@@ -289,7 +292,10 @@ export default {
     async handleTaskAll() {
       this.showPagination = true;
       this.$refs['draw'].showCancel = false;
-      if (!this.form.surveyUserId) {
+      if (this.status === 1) {
+        this.form.surveyUserId = '';
+      }
+      if (!this.form.surveyUserId && this.status === 0) {
         this.$message({
           type: 'warning',
           message: '请选择调查员',
@@ -323,7 +329,10 @@ export default {
       }
     },
     async handleTaskOne(id) {
-      if (!this.form.surveyUserId) {
+      if (this.status === 1) {
+        this.form.surveyUserId = '';
+      }
+      if (!this.form.surveyUserId && this.status === 0) {
         this.$message({
           type: 'warning',
           message: '请选择调查员',
@@ -562,6 +571,9 @@ export default {
         },
         filter: ['==', ['get', 'distributionStatus'], this.status],
       });
+    },
+    selectable(row, index) {
+      return row.surveyStage === 0;
     },
   },
   beforeDestroy() {

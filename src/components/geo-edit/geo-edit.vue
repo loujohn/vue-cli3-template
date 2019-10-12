@@ -118,6 +118,7 @@ export default {
         active = this.btnAssistActive;
       } else if (name === '下发范围') {
         this.btnOriginActive = !this.btnOriginActive;
+        active = this.btnOriginActive;
       }
       this.$emit('toggle-geo-layer', {
         name,
