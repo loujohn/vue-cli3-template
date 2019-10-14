@@ -118,9 +118,9 @@ export default {
     fields: {
       handler: function(val) {
         if (val) {
-          this.fieldList = Object.assign([], this.fieldList, this.fields);
-          const list = this.fieldList.filter(item => item.isEdit);
-          this.constFieldList = JSON.parse(JSON.stringify(list));
+          this.constFieldList = JSON.parse(JSON.stringify(this.fields));
+          const list = this.fields.filter(item => item.isEdit);
+          this.fieldList = JSON.parse(JSON.stringify(list));
         }
       },
       immediate: true,
@@ -135,7 +135,31 @@ export default {
       }
     },
     doEdit() {
-      this.edit = !this.edit;
+      if (this.edit) {
+        this.$confirm('是否自动同步?', '提示', {
+          confirmButtonText: '是',
+          cancelButtonText: '否',
+          type: 'info',
+        })
+          .then(() => {
+            const fieldList = this.fieldList.map(item => {
+              const { id, fieldValue } = item;
+              return {
+                taskFieldsId: id,
+                fieldValue,
+              };
+            });
+            this.$emit('save-info', JSON.stringify(fieldList));
+            this.edit = !this.edit;
+          })
+          .catch(() => {
+            const list = this.fields.filter(item => item.isEdit);
+            this.fieldList = JSON.parse(JSON.stringify(list));
+            this.edit = !this.edit;
+          });
+      } else {
+        this.edit = !this.edit;
+      }
     },
     back() {
       this.$router.go(-1);

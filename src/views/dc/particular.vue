@@ -32,6 +32,7 @@
             :fields="fieldList"
             :canEdit="canEdit"
             v-show="activeTabIndex === 0"
+            @save-info="handleSave"
             @submit="handleSubmit"
           />
           <dc-image
@@ -151,6 +152,21 @@ export default {
     },
     handleTabClick(index) {
       this.activeTabIndex = index;
+    },
+    handleSave(recordJsonStr) {
+      const params = {
+        taskRecordId: this.id,
+        recordJsonStr,
+      };
+      survey.saveTaskRecordInfo(params).then(async res => {
+        if (res.code === 200 && res.message === 'ok') {
+          this.$message({
+            type: 'success',
+            message: '同步成功',
+          });
+        }
+        this.getTaskDetail();
+      });
     },
     handleSubmit(recordJsonStr) {
       this.form.recordJsonStr = recordJsonStr;
