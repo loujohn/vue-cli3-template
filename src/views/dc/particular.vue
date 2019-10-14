@@ -132,7 +132,11 @@ export default {
     },
     activeTabIndex: function(val) {
       if (val !== 1) {
-        this.map.setLayoutProperty('symbol-layer', 'visibility', 'none');
+        this.map.setLayoutProperty(
+          directionGeo.symbol.id,
+          'visibility',
+          'none',
+        );
         this.$refs['image-preview'].activeKey = 'farImageFiles';
       }
     },
@@ -269,11 +273,15 @@ export default {
     handleImage(data) {
       const { azimuth } = data;
       this.map.setLayoutProperty(
-        'symbol-layer',
+        directionGeo.symbol.id,
         'icon-rotate',
         Number(azimuth),
       );
-      this.map.setLayoutProperty('symbol-layer', 'visibility', 'visible');
+      this.map.setLayoutProperty(
+        directionGeo.symbol.id,
+        'visibility',
+        'visible',
+      );
     },
   },
   beforeRouteLeave(to, from, next) {
