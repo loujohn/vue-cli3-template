@@ -70,7 +70,7 @@ const surveyUserGeo = {
     id: 'survey-user-fill',
     type: 'fill',
     paint: {
-      'fill-opacity': 0.7,
+      'fill-opacity': 0.3,
     },
   },
   line: {
