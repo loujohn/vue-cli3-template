@@ -33,16 +33,16 @@ export default {
    * params { taskRecordId, pcGeojson, recordJsonStr }
    */
   async saveTaskRecordInfo(params) {
-    const res = await http.post(url.saveTaskRecordInfo, qs.stringify(params));
+    const res = await http.post(url.saveTaskRecordInfo, qs.stringify(params), {
+      hideLoading: true,
+    });
     return res;
   },
   /**
    * params { taskRecordIds }
    */
   async taskSubmit(params) {
-    const res = await http.post(url.taskSubmit, qs.stringify(params), {
-      hideLoading: true,
-    });
+    const res = await http.post(url.taskSubmit, qs.stringify(params));
     return res;
   },
 };
