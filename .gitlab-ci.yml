@@ -5,8 +5,8 @@ cache:
 build:
     script:
         - yarn config get registry
-        - yarn install
-        - yarn build
+        - npm install
+        - npm run build
         - cp -r dist/* /opt/apache-tomcat-8.5.35/webapps/dc/
     tags:
         - master
