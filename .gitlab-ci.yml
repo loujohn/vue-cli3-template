@@ -5,7 +5,6 @@ cache:
 build:
     script:
         - yarn config get registry
-        - yarn config set registry 'https://registry.npm.taobao.org'
         - yarn install
         - yarn build
         - cp -r dist/* /opt/apache-tomcat-8.5.35/webapps/dc/
