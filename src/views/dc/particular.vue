@@ -301,8 +301,10 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
-    this.$refs['geo-edit'].isDrawing = false;
+    if (this.$refs['geo-edit']) {
+      this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
+      this.$refs['geo-edit'].isDrawing = false;
+    }
     next();
   },
 };
