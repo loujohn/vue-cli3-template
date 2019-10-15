@@ -6,14 +6,18 @@
       icon="el-icon-plus"
       @click="centerDialogVisible = true && getDictionaryKey()"
       v-if="btnText === '新增模版'"
-    >{{ btnText }}</el-button>
+      >{{ btnText }}</el-button
+    >
     <el-button type="text" size="small" @click="getTemplate" v-else>
-      {{
-      btnText
-      }}
+      {{ btnText }}
     </el-button>
 
-    <el-dialog :title="btnText" :visible.sync="centerDialogVisible" width="1000px" center>
+    <el-dialog
+      :title="btnText"
+      :visible.sync="centerDialogVisible"
+      width="1000px"
+      center
+    >
       <el-form :model="form" :label-width="formLabelWidth" ref="template">
         <div class="form-card">
           <div class="form-title">
@@ -26,7 +30,11 @@
           <div class="form-content">
             <el-row :gutter="0">
               <el-col :md="24" :lg="24" :xl="24">
-                <el-form-item label="模版名称：" :rules="rules.tempName" prop="name">
+                <el-form-item
+                  label="模版名称："
+                  :rules="rules.tempName"
+                  prop="name"
+                >
                   <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
               </el-col>
@@ -61,17 +69,27 @@
                 <tr v-for="(item, index) in form.params" :key="index">
                   <td>
                     <el-form-item>
-                      <el-input v-model="item.fieldAlias" @change="updateFieldName(index)"></el-input>
+                      <el-input
+                        v-model="item.fieldAlias"
+                        @change="updateFieldName(index)"
+                      ></el-input>
                     </el-form-item>
                   </td>
                   <td>
-                    <el-form-item :prop="'params.' + index + '.fieldName'" :rules="rules.name">
+                    <el-form-item
+                      :prop="'params.' + index + '.fieldName'"
+                      :rules="rules.name"
+                    >
                       <el-input v-model="item.fieldName"></el-input>
                     </el-form-item>
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isXzqh'">
-                      <el-select v-model="item.isXzqh" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isXzqh"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -83,7 +101,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isEdit'">
-                      <el-select v-model="item.isEdit" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isEdit"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -95,7 +117,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isRequired'">
-                      <el-select v-model="item.isRequired" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isRequired"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -107,7 +133,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isPcShow'">
-                      <el-select v-model="item.isPcShow" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isPcShow"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -119,7 +149,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.isAppShow'">
-                      <el-select v-model="item.isAppShow" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.isAppShow"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -131,7 +165,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.fieldType'">
-                      <el-select v-model="item.fieldType" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.fieldType"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in fieldTypeList"
                           :key="item.value"
@@ -143,7 +181,11 @@
                   </td>
                   <td>
                     <el-form-item :prop="'params.' + index + '.dictionaryKey'">
-                      <el-select v-model="item.dictionaryKey" placeholder="请选择" style="width:100%">
+                      <el-select
+                        v-model="item.dictionaryKey"
+                        placeholder="请选择"
+                        style="width:100%"
+                      >
                         <el-option
                           v-for="item in dictionaryKeyList"
                           :key="item.dictionaryKey"
@@ -161,7 +203,11 @@
                     </el-form-item>
                   </td>
                   <td>
-                    <el-button type="text" style="color: #F56C6C;" @click="removeParam(index)">
+                    <el-button
+                      type="text"
+                      style="color: #F56C6C;"
+                      @click="removeParam(index)"
+                    >
                       <i class="el-icon-remove"></i> 删除
                     </el-button>
                   </td>
@@ -169,7 +215,9 @@
               </tbody>
             </table>
             <div class="table-add-fk">
-              <el-button @click="addParma" icon="el-icon-plus">新增字段</el-button>
+              <el-button @click="addParma" icon="el-icon-plus"
+                >新增字段</el-button
+              >
             </div>
           </div>
         </div>
