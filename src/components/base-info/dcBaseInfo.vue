@@ -132,6 +132,8 @@ export default {
       let item = options.filter(option => option.optionKey === value);
       if (item[0]) {
         return item[0].optionValue;
+      } else {
+        return value;
       }
     },
     doEdit() {
