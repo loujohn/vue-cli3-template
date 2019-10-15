@@ -2,7 +2,7 @@
   <div class="geo-edit">
     <div class="ranges">
       <button
-        class="btn btn-toggle"
+        class="btn origin btn-toggle"
         :class="{ active: btnOriginActive }"
         v-show="originGeojson"
         @click="handleToggle('下发范围')"
@@ -15,7 +15,7 @@
         <span>下发范围</span>
       </button>
       <button
-        class="btn btn-toggle"
+        class="btn pc btn-toggle"
         :class="{ active: btnCheckActive }"
         v-show="pcGeojson"
         @click="handleToggle('调查范围')"
@@ -28,7 +28,7 @@
         <span>调查范围</span>
       </button>
       <button
-        class="btn btn-toggle"
+        class="btn app btn-toggle"
         :class="{ active: btnAssistActive }"
         v-show="appGeojson && !pcGeojson"
         @click="handleToggle('辅助范围')"
@@ -159,18 +159,23 @@ export default {
       this.isDrawing = !this.isDrawing;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
-        if (this.pcGeojson) {
-          this.handleEdit(this.pcGeojson);
-          return true;
-        } else if (this.appGeojson) {
-          this.handleEdit(this.appGeojson);
-          return true;
-        } else if (this.originGeojson) {
+        if (this.originGeojson) {
           this.handleEdit(this.originGeojson);
-          return true;
         } else {
           return false;
         }
+        // if (this.pcGeojson) {
+        //   this.handleEdit(this.pcGeojson);
+        //   return true;
+        // } else if (this.appGeojson) {
+        //   this.handleEdit(this.appGeojson);
+        //   return true;
+        // } else if (this.originGeojson) {
+        //   this.handleEdit(this.originGeojson);
+        //   return true;
+        // } else {
+        //   return false;
+        // }
       } else {
         this.draw && this.draw.deleteAll();
       }
@@ -245,8 +250,14 @@ export default {
     justify-content: center;
     cursor: pointer;
   }
-  .btn.active {
+  .origin.active {
+    color: #c08f01;
+  }
+  .pc.active {
     color: #409eff;
+  }
+  .app.active {
+    color: #f56c6c;
   }
   .ranges {
     position: absolute;
