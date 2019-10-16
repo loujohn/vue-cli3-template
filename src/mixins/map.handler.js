@@ -15,6 +15,7 @@ export default {
         ...symbol,
         layout: {
           'icon-image': iconName,
+          'icon-size': 0.15,
           visibility: 'none',
         },
       });

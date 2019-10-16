@@ -6,6 +6,9 @@
         <el-radio-button label="farImageFiles">远 景</el-radio-button>
         <el-radio-button label="otherImageFiles">其 它</el-radio-button>
       </el-radio-group>
+      <span class="show-big-picture" @click="showBigPicture()" v-show="fullPath"
+        >查看大图</span
+      >
     </div>
     <el-row :gutter="10" v-show="!isEmpty">
       <el-col :span="6" v-for="(image, index) in images" :key="index">
@@ -91,13 +94,18 @@ export default {
         referenceInfo: { info },
       } = image;
       let azimuth;
+      let dimension;
+      let longitude;
       if (info) {
         azimuth = info.azimuth;
+        dimension = info.dimension;
+        longitude = info.longitude;
       }
       this.fullPath = `${staticUrl}${filePath}`;
       // this.showImage = true;
       this.$emit('file-path', {
         azimuth,
+        position: [longitude, dimension],
       });
     },
   },
@@ -121,18 +129,21 @@ export default {
           referenceInfo: { info },
         } = image;
         let azimuth;
+        let dimension;
+        let longitude;
         if (info) {
           azimuth = info.azimuth;
+          dimension = info.dimension;
+          longitude = info.longitude;
         }
         this.fullPath = `${staticUrl}${filePath}`;
-        // this.showImage = true;
         this.$emit('file-path', {
           azimuth,
+          position: [longitude, dimension],
         });
       } else {
         this.current = current;
       }
-      this.dialogVisible = true;
     },
     handleChange(val) {
       this.fullPath = '';
@@ -151,6 +162,9 @@ export default {
       } else {
         this.current = 0;
       }
+    },
+    showBigPicture() {
+      this.dialogVisible = true;
     },
     close() {
       // this.showImage = false;
@@ -183,6 +197,13 @@ export default {
   }
   .my-radio-group {
     margin: 0 0 10px 0;
+    display: flex;
+    justify-content: space-between;
+    .show-big-picture {
+      font-size: 14px;
+      color: #409eff;
+      cursor: pointer;
+    }
     .el-radio-button__inner {
       color: #9aa3ae;
       border: none;

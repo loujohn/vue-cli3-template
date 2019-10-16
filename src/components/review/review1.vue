@@ -119,7 +119,7 @@
             <el-button size="mini" type="primary" @click="handleCheck('通过')"
               >通过</el-button
             >
-            <el-button size="mini" type="warning" @click="handleCheck('不通过')"
+            <el-button size="mini" type="danger" @click="handleCheck('不通过')"
               >不通过</el-button
             >
           </div>
@@ -309,6 +309,8 @@ export default {
           'visibility',
           'none',
         );
+        const bbox = this.getBbox(this.originGeojson);
+        this.map.fitBounds(bbox, { padding: 200 });
         this.$refs['image-preview'].showImage = false;
         this.$refs['image-preview'].activeKey = 'farImageFiles';
       }
@@ -420,7 +422,7 @@ export default {
       });
     },
     handleImage(data) {
-      const { azimuth } = data;
+      const { azimuth, position } = data;
       if (azimuth) {
         this.map.setLayoutProperty(
           directionGeo.symbol.id,
@@ -433,6 +435,17 @@ export default {
           'visible',
         );
       }
+      if (position) {
+        const point = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: position,
+          },
+        };
+        this.setGeojson(this.map, directionGeo, point);
+        this.map.flyTo({ center: position });
+      }
     },
     handleMapLoad(e) {
       this.map = e.target;
@@ -443,7 +456,7 @@ export default {
       if (this.originGeojson) {
         this.setGeojson(this.map, originGeo, this.originGeojson);
         const center = this.getCenter(this.originGeojson);
-        this.setGeojson(this.map, directionGeo, center);
+        // this.setGeojson(this.map, directionGeo, center);
         this.marker = this.addMarker(this.map, this.marker, { center });
         const bbox = this.getBbox(this.originGeojson);
         this.map.fitBounds(bbox, { padding: 200 });

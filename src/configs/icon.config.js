@@ -3,7 +3,7 @@ import iconLocationBlue from 'assets/images/sj/location-blue.png';
 import iconLocationYellow from 'assets/images/sj/location-yellow.png';
 import iconLocationGreen from 'assets/images/sj/location-green.png';
 import iconLocationGrey from 'assets/images/sj/location-grey.png';
-import iconDirection from 'assets/images/sj/direction.png';
+import iconDirection from 'assets/images/sj/single-direction.png';
 
 function generateImage(icon, height = '20px', width = '20px') {
   const image = new Image();

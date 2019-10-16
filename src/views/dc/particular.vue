@@ -138,6 +138,8 @@ export default {
           'visibility',
           'none',
         );
+        const bbox = this.getBbox(this.originGeojson);
+        this.map.fitBounds(bbox, { padding: 200 });
         this.$refs['image-preview'].activeKey = 'farImageFiles';
       }
     },
@@ -255,7 +257,7 @@ export default {
       this.setGeojson(map, originGeo, geojson);
       this.initSymbolLayer(map, directionGeo);
       const center = this.getCenter(geojson);
-      this.setGeojson(map, directionGeo, center);
+      // this.setGeojson(map, directionGeo, center);
       this.marker = this.addMarker(this.map, this.marker, { center });
       const bbox = this.getBbox(geojson);
       this.map.fitBounds(bbox, { padding: 200 });
@@ -287,17 +289,30 @@ export default {
       }
     },
     handleImage(data) {
-      const { azimuth } = data;
-      this.map.setLayoutProperty(
-        directionGeo.symbol.id,
-        'icon-rotate',
-        Number(azimuth),
-      );
-      this.map.setLayoutProperty(
-        directionGeo.symbol.id,
-        'visibility',
-        'visible',
-      );
+      const { azimuth, position } = data;
+      if (azimuth) {
+        this.map.setLayoutProperty(
+          directionGeo.symbol.id,
+          'icon-rotate',
+          Number(azimuth),
+        );
+        this.map.setLayoutProperty(
+          directionGeo.symbol.id,
+          'visibility',
+          'visible',
+        );
+      }
+      if (position) {
+        const point = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: position,
+          },
+        };
+        this.setGeojson(this.map, directionGeo, point);
+        this.map.flyTo({ center: position });
+      }
     },
   },
   beforeRouteLeave(to, from, next) {
