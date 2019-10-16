@@ -546,7 +546,7 @@ export default {
         filter: ['==', ['get', 'distributionStatus'], this.status],
       });
     },
-    selectable(row, index) {
+    selectable(row) {
       return row.surveyStage === 0;
     },
   },

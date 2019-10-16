@@ -8,71 +8,70 @@
     </div>
     <div v-if="showForm" style="height: 100%;">
       <div class="base-info">
-        <el-row :gutter="10">
-          <el-col :span="12" v-for="item in fieldList" :key="item.id">
-            <template v-if="item.fieldType === 0">
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <el-input
-                size="small"
-                class="content-edit"
-                v-model="item.fieldValue"
-              ></el-input>
-            </template>
-            <template v-else-if="item.fieldType === 1">
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <el-select
-                class="content-edit"
-                v-model="item.fieldValue"
-                size="small"
-                style="width: 100%;"
-                filterable
-                clearable
+        <el-form label-position="top" ref="form" :model="form" :rules="rules">
+          <el-row :gutter="10">
+            <el-col :span="12" v-for="(value, key) in form" :key="key">
+              <el-form-item
+                :label="`${formConfig[key]['fieldAlias']}:`"
+                :prop="key"
               >
-                <el-option
-                  v-for="option in item.options"
-                  :key="option.optionKey"
-                  :label="option.optionValue"
-                  :value="option.optionKey"
+                <template
+                  v-if="
+                    formConfig[key]['fieldType'] === 0 ||
+                      formConfig[key]['fieldType'] === 3
+                  "
                 >
-                </el-option>
-              </el-select>
-            </template>
-            <template v-else-if="item.fieldType === 2">
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <el-date-picker
-                v-model="item.fieldValue"
-                type="datetime"
-                align="right"
-                :size="size"
-                style="width: 100%;"
-                unlink-panels
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              >
-              </el-date-picker>
-            </template>
-          </el-col>
-        </el-row>
+                  <el-input v-model="form[key]" size="small"></el-input>
+                </template>
+                <template v-else-if="formConfig[key]['fieldType'] === 1">
+                  <el-select
+                    v-model="form[key]"
+                    size="small"
+                    style="width:100%"
+                    filterable
+                    clearable
+                  >
+                    <el-option
+                      v-for="option in formConfig[key]['options']"
+                      :key="option.optionKey"
+                      :label="option.optionValue"
+                      :value="option.optionKey"
+                    ></el-option>
+                  </el-select>
+                </template>
+                <template v-else-if="formConfig[key]['fieldType'] === 2">
+                  <el-date-picker
+                    v-model="form[key]"
+                    type="datetime"
+                    align="right"
+                    :size="size"
+                    style="width:100%;"
+                    unlink-panels
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  >
+                  </el-date-picker>
+                </template>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </div>
     </div>
     <div v-else style="height: 100%;">
       <div class="base-info">
         <el-row :gutter="10">
           <el-col :span="12" v-for="item in constFieldList" :key="item.id">
-            <template v-if="item.fieldType === 0">
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <span class="content">{{ item.fieldValue }}</span>
-            </template>
-            <template v-else-if="item.fieldType === 1">
+            <template v-if="item.fieldType === 1">
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{
                 getValue(item.fieldValue, item.options)
               }}</span>
             </template>
-            <template v-else-if="item.fieldType === 2">
+            <template v-else>
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
@@ -107,6 +106,9 @@ export default {
       fieldList: [],
       size: 'small',
       edit: false,
+      form: {},
+      rules: {},
+      formConfig: {},
     };
   },
   computed: {
@@ -120,7 +122,11 @@ export default {
         if (val) {
           this.constFieldList = JSON.parse(JSON.stringify(this.fields));
           const list = this.fields.filter(item => item.isEdit);
-          this.fieldList = JSON.parse(JSON.stringify(list));
+          this.fieldList = list;
+          const { form, formConfig, rules } = this.getFormConfig(list);
+          this.rules = rules;
+          this.formConfig = formConfig;
+          this.form = form;
         }
       },
       immediate: true,
@@ -136,9 +142,55 @@ export default {
         return value;
       }
     },
+    getFormConfig(fields) {
+      const form = {};
+      const formConfig = {};
+      const rules = {};
+      fields.forEach(field => {
+        let config = {};
+        let rule = [];
+        const {
+          fieldAlias,
+          fieldName,
+          fieldValue,
+          fieldType,
+          isRequired,
+          options,
+        } = field;
+        config['fieldType'] = fieldType;
+        config['fieldAlias'] = fieldAlias;
+        form[fieldName] = fieldValue;
+        if (isRequired) {
+          rule.push({
+            required: true,
+            message: `${fieldAlias}不能为空`,
+            trigger: 'blur',
+          });
+        }
+        if (fieldType === 3) {
+          rule.push({
+            pattern: /^[+-]?[\d]+([.][\d]*)?([Ee][+-]?[\d]+)?$/,
+            message: `${fieldAlias}必须为数字`,
+            trigger: 'blur',
+          });
+        }
+
+        rules[fieldName] = rule;
+        if (fieldType === 1) {
+          config['options'] = options;
+        }
+
+        formConfig[fieldName] = config;
+      });
+      return {
+        form,
+        rules,
+        formConfig,
+      };
+    },
     doEdit() {
       if (this.edit) {
-        this.$confirm('是否自动同步?', '提示', {
+        this.$confirm('是否保存当前编辑?', '提示', {
           confirmButtonText: '是',
           cancelButtonText: '否',
           type: 'info',
@@ -156,7 +208,9 @@ export default {
           })
           .catch(() => {
             const list = this.fields.filter(item => item.isEdit);
-            this.fieldList = JSON.parse(JSON.stringify(list));
+            this.fieldList = list;
+            const { form } = this.getFormConfig(list);
+            this.form = form;
             this.edit = !this.edit;
           });
       } else {
@@ -167,14 +221,18 @@ export default {
       this.$router.go(-1);
     },
     submit() {
-      const fieldList = this.fieldList.map(item => {
-        const { id, fieldValue } = item;
-        return {
-          taskFieldsId: id,
-          fieldValue,
-        };
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          const fieldList = this.fieldList.map(item => {
+            const { id, fieldName } = item;
+            return {
+              taskFieldsId: id,
+              fieldValue: this.form[fieldName],
+            };
+          });
+          this.$emit('submit', JSON.stringify(fieldList));
+        }
       });
-      this.$emit('submit', JSON.stringify(fieldList));
     },
   },
 };
@@ -200,11 +258,14 @@ export default {
   padding: 30px 20px;
   height: 100%;
   box-sizing: border-box;
-  overflow: auto;
   color: #000;
   overflow: auto;
   box-sizing: border-box;
   font-size: 14px;
+  .el-form-item__label {
+    padding: 0;
+    line-height: 0;
+  }
   .label {
     display: inline-block;
     padding-bottom: 25px;
