@@ -108,8 +108,8 @@
             <span>下一条</span>
           </div> -->
           <div class="operation" v-show="operator === 'check'">
-            <!-- <span>审核:</span> -->
-            <!-- <el-radio-group class="radio-group" v-model="form.status">
+            <!-- <span>审核:</span>
+            <el-radio-group class="radio-group" v-model="form.status">
               <el-radio :label="1">通过</el-radio>
               <el-radio :label="0">不通过</el-radio>
             </el-radio-group>
