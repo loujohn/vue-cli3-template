@@ -118,7 +118,7 @@ export default {
         taskName: '',
         taskDataTypeId: '28ba2788-71a1-4897-ad8b-9ddcdfdf3ead',
         completeTime: '',
-        importType: 0,
+        importType: 1,
       },
       rules: {
         taskName: [
@@ -142,7 +142,7 @@ export default {
         { name: '通过GDB创建', value: 0 },
       ],
       fieldList: [],
-      showTemplate: false,
+      showTemplate: true,
       loading: false,
       options: [],
       style: {

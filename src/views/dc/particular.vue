@@ -32,6 +32,7 @@
             :fields="fieldList"
             :canEdit="canEdit"
             v-show="activeTabIndex === 0"
+            @save-info="handleSave"
             @submit="handleSubmit"
           />
           <dc-image
@@ -132,7 +133,11 @@ export default {
     },
     activeTabIndex: function(val) {
       if (val !== 1) {
-        this.map.setLayoutProperty('symbol-layer', 'visibility', 'none');
+        this.map.setLayoutProperty(
+          directionGeo.symbol.id,
+          'visibility',
+          'none',
+        );
         this.$refs['image-preview'].activeKey = 'farImageFiles';
       }
     },
@@ -147,6 +152,21 @@ export default {
     },
     handleTabClick(index) {
       this.activeTabIndex = index;
+    },
+    handleSave(recordJsonStr) {
+      const params = {
+        taskRecordId: this.id,
+        recordJsonStr,
+      };
+      survey.saveTaskRecordInfo(params).then(async res => {
+        if (res.code === 200 && res.message === 'ok') {
+          this.$message({
+            type: 'success',
+            message: '同步成功',
+          });
+        }
+        this.getTaskDetail();
+      });
     },
     handleSubmit(recordJsonStr) {
       this.form.recordJsonStr = recordJsonStr;
@@ -269,16 +289,22 @@ export default {
     handleImage(data) {
       const { azimuth } = data;
       this.map.setLayoutProperty(
-        'symbol-layer',
+        directionGeo.symbol.id,
         'icon-rotate',
         Number(azimuth),
       );
-      this.map.setLayoutProperty('symbol-layer', 'visibility', 'visible');
+      this.map.setLayoutProperty(
+        directionGeo.symbol.id,
+        'visibility',
+        'visible',
+      );
     },
   },
   beforeRouteLeave(to, from, next) {
-    this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
-    this.$refs['geo-edit'].isDrawing = false;
+    if (this.$refs['geo-edit']) {
+      this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
+      this.$refs['geo-edit'].isDrawing = false;
+    }
     next();
   },
 };

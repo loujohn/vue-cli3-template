@@ -59,7 +59,10 @@
     </div>
     <div class="content">
       <div class="content-logo">
-        <img class="logo" :src="logo" alt />
+        <div class="title">
+          <img class="title-logo" :src="titleLogo" alt="" />
+          <img class="logo" :src="logo" alt />
+        </div>
       </div>
       <div class="content-login">
         <div class="login-form" @keyup.enter="handleLogin">
@@ -107,8 +110,8 @@
     </div>
     <div class="footer">
       <div class="base">
-      <span v-for="item in base" :key="item.name"
-        >{{ item.name }}: {{ item.text }}</span
+        <span v-for="item in base" :key="item.name"
+          >{{ item.name }}: {{ item.text }}</span
         >
       </div>
       <div class="contact">
@@ -123,6 +126,7 @@
 import { title } from 'config';
 import Verify from 'vue2-verify';
 const logo = require('@/assets/images/login/logo.png');
+const titleLogo = require('assets/images/sj/kuangshan .png');
 const loginbg = require('@/assets/images/login/background.png');
 export default {
   name: 'Login',
@@ -134,6 +138,7 @@ export default {
       title,
       loginbg,
       logo,
+      titleLogo,
       loginForm: {
         username: '',
         password: '',
@@ -334,8 +339,14 @@ $light_gray: #eee;
       height: 20%;
       display: flex;
       align-items: flex-end;
-      img {
+      .title {
         margin-left: 20%;
+        display: flex;
+        align-items: center;
+      }
+      .title-logo {
+        height: 60px;
+        // margin-left: 20%;
       }
     }
     .content-login {

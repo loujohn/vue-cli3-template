@@ -1,8 +1,15 @@
 <template>
   <div>
-    <el-button type="text" size="small" @click="getTemplate">{{btnText}}</el-button>
+    <el-button type="text" size="small" @click="getTemplate">
+      {{ btnText }}
+    </el-button>
 
-    <el-dialog :title="btnText" :visible.sync="centerDialogVisible" width="900px" center>
+    <el-dialog
+      :title="btnText"
+      :visible.sync="centerDialogVisible"
+      width="900px"
+      center
+    >
       <div class="form-card">
         <div class="form-title">
           <div class="form-rectangle">
@@ -33,25 +40,47 @@
         <div class="form-content">
           <el-table :data="form.referenceInfo.fields">
             <el-table-column label="别名" prop="fieldAlias"></el-table-column>
-            <el-table-column label="字段名称" prop="fieldName"></el-table-column>
+            <el-table-column
+              label="字段名称"
+              prop="fieldName"
+            ></el-table-column>
             <el-table-column label="是否行政区划">
-              <template slot-scope="scope">{{scope.row.isXzqh === 1 ? '是' : '否'}}</template>
+              <template slot-scope="scope">
+                {{ scope.row.isXzqh === 1 ? '是' : '否' }}
+              </template>
             </el-table-column>
             <el-table-column label="是否可编辑">
-              <template slot-scope="scope">{{scope.row.isEdit === 1 ? '是' : '否'}}</template>
+              <template slot-scope="scope">
+                {{ scope.row.isEdit === 1 ? '是' : '否' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="是否可必填">
+              <template slot-scope="scope">
+                {{ scope.row.isRequired === 1 ? '是' : '否' }}
+              </template>
             </el-table-column>
             <el-table-column label="是否在PC展示">
-              <template slot-scope="scope">{{scope.row.isPcShow === 1 ? '是' : '否'}}</template>
+              <template slot-scope="scope">
+                {{ scope.row.isPcShow === 1 ? '是' : '否' }}
+              </template>
             </el-table-column>
             <el-table-column label="是否在APP展示">
-              <template slot-scope="scope">{{scope.row.isAppShow === 1 ? '是' : '否'}}</template>
+              <template slot-scope="scope">
+                {{ scope.row.isAppShow === 1 ? '是' : '否' }}
+              </template>
             </el-table-column>
             <el-table-column label="字段类型">
-              <template slot-scope="scope">{{scope.row.fieldType === 1 ? '下拉框' : '输入框'}}</template>
+              <template slot-scope="scope">
+                {{ scope.row.fieldType === 1 ? '下拉框' : '输入框' }}
+              </template>
             </el-table-column>
             <el-table-column label="枚举值">
               <template slot-scope="scope">
-                <el-tooltip effect="dark" :content="getDictionaryInfo(scope)" placement="top">
+                <el-tooltip
+                  effect="dark"
+                  :content="getDictionaryInfo(scope)"
+                  placement="top"
+                >
                   <span>{{ getDictionaryKey(scope) }}</span>
                 </el-tooltip>
               </template>
@@ -111,10 +140,14 @@ export default {
     getDictionaryInfo(scope) {
       for (let item of this.dictionaryKeyList) {
         if (item.dictionaryKey === scope.row.dictionaryKey) {
-          return item.referenceInfo.map(item=>{return item.optionValue}).join(';');
+          return item.referenceInfo
+            .map(item => {
+              return item.optionValue;
+            })
+            .join(';');
         }
       }
-    }
+    },
   },
 };
 </script>

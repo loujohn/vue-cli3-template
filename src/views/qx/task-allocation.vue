@@ -247,25 +247,17 @@ export default {
       if (res.code.toString() === '200' && res.message === 'ok') {
         this.showPagination = false;
         this.selectedTasks = res.data.filter(
-          e => e.distributionStatus === this.status,
+          e => e.distributionStatus === this.status && e.surveyStage === 0,
         );
-        // const ids = this.selectedTasks.map(e => e.id);
-        // this.map.setLayoutProperty()
         let idMap = {};
         this.selectedTasks.map(task => {
           idMap[task.id] = task.id;
         });
-        // this.map.setLayoutProperty('symbol-layer', 'icon-image', [
-        //   'case',
-        //   ['has', ['get', 'taskRecordId'], ['literal', idMap]],
-        //   'icon-location-yellow',
-        //   'icon-location-red',
-        // ]);
         this.map.setPaintProperty('circle-layer', 'circle-color', [
           'case',
           ['has', ['get', 'taskRecordId'], ['literal', idMap]],
           'yellow',
-          '#d81e06',
+          this.status ? '#1296db' : '#d81e06',
         ]);
         this.list = this.selectedTasks;
         this.$refs['table'].toggleAllSelection();
@@ -276,12 +268,6 @@ export default {
       this.params.pageIndex = 1;
       this.getList();
       this.showPagination = true;
-      // this.map.setLayoutProperty('symbol-layer', 'icon-image', [
-      //   'case',
-      //   ['==', ['get', 'distributionStatus'], 0],
-      //   'icon-location-red',
-      //   'icon-location-blue',
-      // ]);
       this.map.setPaintProperty('circle-layer', 'circle-color', [
         'case',
         ['==', ['get', 'distributionStatus'], 0],
@@ -362,12 +348,6 @@ export default {
       this.params.distributionStatus = val;
       this.getList();
       if (this.map) {
-        // this.map.setLayoutProperty('symbol-layer', 'icon-image', [
-        //   'case',
-        //   ['==', ['get', 'distributionStatus'], 0],
-        //   'icon-location-red',
-        //   'icon-location-blue',
-        // ]);
         this.map.setPaintProperty('circle-layer', 'circle-color', [
           'case',
           ['==', ['get', 'distributionStatus'], 0],
@@ -385,11 +365,6 @@ export default {
           ['get', 'distributionStatus'],
           val,
         ]);
-        // this.map.setFilter('symbol-layer', [
-        //   '==',
-        //   ['get', 'distributionStatus'],
-        //   val,
-        // ]);
         this.map.setFilter('circle-layer', [
           '==',
           ['get', 'distributionStatus'],
@@ -461,7 +436,6 @@ export default {
       const res = await task.getGeojson({ taskId: this.id });
       if (res.code && res.code.toString() === '200') {
         this.addGeoLayer(res.data);
-        // this.addSymbolLayer(res.data);
         this.addCircleLayer(res.data);
       } else {
         return false;
@@ -586,15 +560,10 @@ export default {
     this.map &&
       this.map.getSource('geo-task') &&
       this.map.removeSource('geo-task');
-    // this.map &&
-    //   this.map.getLayer('symbol-layer') &&
-    //   this.map.removeLayer('symbol-layer');
+
     this.map &&
       this.map.getLayer('circle-layer') &&
       this.map.removeLayer('circle-layer');
-    // this.map &&
-    //   this.map.getSource('symbol-source') &&
-    // this.map && this.map.removeSource('symbol-source');
     this.map &&
       this.map.getSource('circle-source') &&
       this.map.removeSource('circle-source');
