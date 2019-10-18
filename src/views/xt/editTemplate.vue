@@ -1,3 +1,10 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-19 10:45:31
+ * @LastEditTime: 2019-09-19 10:45:31
+ * @LastEditors: your name
+ -->
 <template>
   <div class="template-edit">
     <el-button
@@ -45,7 +52,8 @@
                   <th style="width: 10%">别名</th>
                   <th style="width: 12%">行政区划</th>
                   <th style="width: 10%">可编辑</th>
-                  <th style="width: 10%">必填</th>
+                  <th style="width: 10%">APP必填</th>
+                  <th style="width: 10%">PC必填</th>
                   <th style="width: 10%">在pc展示</th>
                   <th style="width: 10%">在app展示</th>
                   <th style="width: 10%">字段类型</th>
@@ -90,8 +98,20 @@
                     </el-form-item>
                   </td>
                   <td>
-                    <el-form-item :prop="'params.' + index + '.isRequired'">
-                      <el-select v-model="item.isRequired" placeholder="请选择" style="width:100%">
+                    <el-form-item :prop="'params.' + index + '.isAppRequired'">
+                      <el-select v-model="item.isAppRequired" placeholder="请选择" style="width:100%">
+                        <el-option
+                          v-for="item in showList"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item :prop="'params.' + index + '.isPcRequired'">
+                      <el-select v-model="item.isPcRequired" placeholder="请选择" style="width:100%">
                         <el-option
                           v-for="item in showList"
                           :key="item.value"
@@ -265,7 +285,8 @@ export default {
         isAppShow: 0,
         fieldType: 0,
         fieldAlias: '',
-        isRequired: 0,
+        isAppRequired: 0,
+        isPcRequired:0,
         isXzqh: 0,
         isEdit: 0,
       };
