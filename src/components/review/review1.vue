@@ -312,7 +312,7 @@ export default {
         const bbox = this.getBbox(this.originGeojson);
         this.map.fitBounds(bbox, { padding: 200 });
         this.$refs['image-preview'].showImage = false;
-        this.$refs['image-preview'].activeKey = 'farImageFiles';
+        this.$refs['image-preview'].activeKey = 'nearImageFiles';
       }
     },
   },
@@ -355,15 +355,8 @@ export default {
         });
       }
       if (this.type === 'qx') {
-        const fieldList = this.$refs['baseInfo'].fieldList;
-        const list = fieldList.map(item => {
-          const { id, fieldValue } = item;
-          return {
-            taskFieldsId: id,
-            fieldValue,
-          };
-        });
-        formData.append('recordJsonStr', JSON.stringify(list));
+        const recordJsonStr = this.handleFieldList();
+        formData.append('recordJsonStr', recordJsonStr);
       }
       for (let key in this.form) {
         formData.append(key, this.form[key]);
@@ -379,15 +372,8 @@ export default {
         formData.append('annex', file.raw);
       });
       formData.append('deleteAnnexIdStr', deletedFileIds.toString());
-      const fieldList = this.$refs['baseInfo'].fieldList;
-      const list = fieldList.map(item => {
-        const { id, fieldValue } = item;
-        return {
-          taskFieldsId: id,
-          fieldValue,
-        };
-      });
-      formData.append('recordJsonStr', JSON.stringify(list));
+      const recordJsonStr = this.handleFieldList();
+      formData.append('recordJsonStr', recordJsonStr);
       this.form = {
         ...this.form,
         status: 1,
@@ -461,6 +447,18 @@ export default {
         const bbox = this.getBbox(this.originGeojson);
         this.map.fitBounds(bbox, { padding: 200 });
       }
+    },
+    handleFieldList() {
+      const form = this.$refs['baseInfo'].form;
+      const fieldList = this.$refs['baseInfo'].fieldList;
+      const fields = fieldList.map(field => {
+        const { id, fieldName } = field;
+        return {
+          taskFieldsId: id,
+          fieldValue: form[fieldName],
+        };
+      });
+      return JSON.stringify(fields);
     },
     handleToggle(name) {
       if (name === '调查范围') {

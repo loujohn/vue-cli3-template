@@ -88,8 +88,10 @@
   </div>
 </template>
 <script>
+import baseinfoCommon from './baseinfo.common';
 export default {
   name: 'base-info',
+  mixins: [baseinfoCommon],
   props: {
     fields: {
       type: Array,
@@ -102,13 +104,7 @@ export default {
   },
   data() {
     return {
-      constFieldList: [],
-      fieldList: [],
-      size: 'small',
       edit: false,
-      form: {},
-      rules: {},
-      formConfig: {},
     };
   },
   computed: {
@@ -116,78 +112,7 @@ export default {
       return this.edit && this.canEdit;
     },
   },
-  watch: {
-    fields: {
-      handler: function(val) {
-        if (val) {
-          this.constFieldList = JSON.parse(JSON.stringify(this.fields));
-          const list = this.fields.filter(item => item.isEdit);
-          this.fieldList = list;
-          const { form, formConfig, rules } = this.getFormConfig(list);
-          this.rules = rules;
-          this.formConfig = formConfig;
-          this.form = form;
-        }
-      },
-      immediate: true,
-      deep: true,
-    },
-  },
   methods: {
-    getValue(value, options) {
-      let item = options.filter(option => option.optionKey === value);
-      if (item[0]) {
-        return item[0].optionValue;
-      } else {
-        return value;
-      }
-    },
-    getFormConfig(fields) {
-      const form = {};
-      const formConfig = {};
-      const rules = {};
-      fields.forEach(field => {
-        let config = {};
-        let rule = [];
-        const {
-          fieldAlias,
-          fieldName,
-          fieldValue,
-          fieldType,
-          isRequired,
-          options,
-        } = field;
-        config['fieldType'] = fieldType;
-        config['fieldAlias'] = fieldAlias;
-        form[fieldName] = fieldValue;
-        if (isRequired) {
-          rule.push({
-            required: true,
-            message: `${fieldAlias}不能为空`,
-            trigger: 'blur',
-          });
-        }
-        if (fieldType === 3) {
-          rule.push({
-            pattern: /^[+-]?[\d]+([.][\d]*)?([Ee][+-]?[\d]+)?$/,
-            message: `${fieldAlias}必须为数字`,
-            trigger: 'blur',
-          });
-        }
-
-        rules[fieldName] = rule;
-        if (fieldType === 1) {
-          config['options'] = options;
-        }
-
-        formConfig[fieldName] = config;
-      });
-      return {
-        form,
-        rules,
-        formConfig,
-      };
-    },
     doEdit() {
       if (this.edit) {
         this.$confirm('是否保存当前编辑?', '提示', {
@@ -197,10 +122,10 @@ export default {
         })
           .then(() => {
             const fieldList = this.fieldList.map(item => {
-              const { id, fieldValue } = item;
+              const { id, fieldName } = item;
               return {
                 taskFieldsId: id,
-                fieldValue,
+                fieldValue: this.form[fieldName],
               };
             });
             this.$emit('save-info', JSON.stringify(fieldList));
@@ -221,6 +146,10 @@ export default {
       this.$router.go(-1);
     },
     submit() {
+      if (!this.$refs['form']) {
+        this.$emit('submit');
+        return true;
+      }
       this.$refs['form'].validate(valid => {
         if (valid) {
           const fieldList = this.fieldList.map(item => {

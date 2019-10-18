@@ -30,10 +30,10 @@ export default {
     return res.data;
   },
   /**
-   * params { taskRecordId, pcGeojson, recordJsonStr }
+   * params { taskRecordId, pcGeojson, recordJsonStr, annex, delete, deleteAnnexIdStr }
    */
   async saveTaskRecordInfo(params) {
-    const res = await http.post(url.saveTaskRecordInfo, qs.stringify(params), {
+    const res = await http.post(url.saveTaskRecordInfo, params, {
       hideLoading: true,
     });
     return res;

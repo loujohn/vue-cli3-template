@@ -42,6 +42,15 @@
             @file-path="handleImage"
           />
           <v-video :videos="videoList" v-show="activeTabIndex === 2" />
+          <manual-upload
+            :files="attachmentList"
+            ref="manual-upload"
+            v-show="showUpload"
+          />
+          <v-attachments
+            :attachments="attachmentList"
+            v-show="showAttachments"
+          />
         </div>
       </div>
       <div class="map-container">
@@ -67,7 +76,9 @@ import vMap from 'components/map/map';
 import geojsonEdit from 'components/geo-edit/geo-edit';
 import dcImage from 'components/image/dcImage';
 import vVideo from 'components/video/video';
+import manualUpload from 'components/upload/manual-upload';
 import dcBaseInfo from 'components/base-info/dcBaseInfo';
+import vAttachments from 'components/attachments/attachments';
 import { task, survey } from 'api';
 import mapHandler from 'mixins/map.handler';
 import {
@@ -85,22 +96,33 @@ export default {
     dcImage,
     vVideo,
     dcBaseInfo,
+    vAttachments,
+    manualUpload,
   },
   props: {
     id: {
       type: [Number, String],
+    },
+    type: {
+      type: String,
     },
   },
   mixins: [mapHandler],
   data() {
     return {
       map: null,
-      tabs: [{ name: '基本信息' }, { name: '照片' }, { name: '视频' }],
+      tabs: [
+        { name: '基本信息' },
+        { name: '照片' },
+        { name: '视频' },
+        { name: '附件' },
+      ],
       activeTabIndex: 0,
       taskId: '',
       fieldList: [],
       imageObj: {},
       videoList: [],
+      attachmentList: [],
       mapLoaded: false,
       originGeojson: '',
       pcGeojson: '',
@@ -117,6 +139,12 @@ export default {
   computed: {
     canEdit() {
       return this.surveyStatus == 1;
+    },
+    showUpload() {
+      return this.activeTabIndex === 3 && this.surveyStatus === 1;
+    },
+    showAttachments() {
+      return this.activeTabIndex === 3 && this.surveyStage !== 1;
     },
   },
   watch: {
@@ -140,7 +168,7 @@ export default {
         );
         const bbox = this.getBbox(this.originGeojson);
         this.map.fitBounds(bbox, { padding: 200 });
-        this.$refs['image-preview'].activeKey = 'farImageFiles';
+        this.$refs['image-preview'].activeKey = 'nearImageFiles';
       }
     },
   },
@@ -156,11 +184,10 @@ export default {
       this.activeTabIndex = index;
     },
     handleSave(recordJsonStr) {
-      const params = {
-        taskRecordId: this.id,
-        recordJsonStr,
-      };
-      survey.saveTaskRecordInfo(params).then(async res => {
+      const formData = new FormData();
+      formData.append('taskRecordId', this.id);
+      formData.append('recordJsonStr', recordJsonStr);
+      survey.saveTaskRecordInfo(formData).then(async res => {
         if (res.code === 200 && res.message === 'ok') {
           this.$message({
             type: 'success',
@@ -171,11 +198,20 @@ export default {
       });
     },
     handleSubmit(recordJsonStr) {
-      this.form.recordJsonStr = recordJsonStr;
-      if (this.$refs['geo-edit'].pcGeojson) {
-        this.form.pcGeojson = this.$refs['geo-edit'].pcGeojson;
+      const formData = new FormData();
+      const files = this.$refs['manual-upload'].fileList;
+      const pcGeojson = this.$refs['geo-edit'].pcGeojson;
+      if (files.length !== 0) {
+        files.forEach(file => {
+          formData.append('annex', file.raw);
+        });
       }
-      survey.saveTaskRecordInfo(this.form).then(async res => {
+      recordJsonStr && formData.append('recordJsonStr', recordJsonStr);
+      if (pcGeojson) {
+        formData.append('pcGeojson', pcGeojson);
+      }
+      formData.append('taskRecordId', this.id);
+      survey.saveTaskRecordInfo(formData).then(async res => {
         if (res.code === 200 && res.message === 'ok') {
           const response = await survey.taskSubmit({ taskRecordIds: this.id });
           if (response.code === 200 && response.message === 'ok') {
@@ -213,6 +249,7 @@ export default {
           nearImageFiles,
           otherImageFiles,
           vedioFiles,
+          annexFiles,
           geojsons,
         },
       } = data;
@@ -220,6 +257,7 @@ export default {
       this.surveyStatus = surveyStage;
       this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
       this.videoList = vedioFiles;
+      this.attachmentList = annexFiles;
       fieldsList = fieldsList.map(e => {
         if (e.fieldName === 'centerPoint') {
           const { fieldValue } = e;

@@ -2,53 +2,57 @@
   <div>
     <div v-if="showForm">
       <div class="base-info">
-        <el-row :gutter="10">
-          <el-col :span="12" v-for="item in fieldList" :key="item.id">
-            <template v-if="item.fieldType === 0">
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <el-input
-                size="small"
-                class="content-edit"
-                v-model="item.fieldValue"
-              ></el-input>
-            </template>
-            <template v-else-if="item.fieldType === 1">
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <el-select
-                class="content-edit"
-                v-model="item.fieldValue"
-                size="small"
-                style="width: 100%;"
-                filterable
-                clearable
+        <el-form label-position="top" ref="form" :model="form" :rules="rules">
+          <el-row :gutter="10">
+            <el-col :span="12" v-for="(value, key) in form" :key="key">
+              <el-form-item
+                :label="`${formConfig[key]['fieldAlias']}:`"
+                :prop="key"
               >
-                <el-option
-                  v-for="option in item.options"
-                  :key="option.optionKey"
-                  :label="option.optionValue"
-                  :value="option.optionKey"
+                <template
+                  v-if="
+                    formConfig[key]['fieldType'] === 0 ||
+                      formConfig[key]['fieldType'] === 3
+                  "
                 >
-                </el-option>
-              </el-select>
-            </template>
-            <template v-else-if="item.fieldType === 2">
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <el-date-picker
-                v-model="item.fieldValue"
-                type="datetime"
-                align="right"
-                :size="size"
-                unlink-panels
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              >
-              </el-date-picker>
-            </template>
-          </el-col>
-        </el-row>
+                  <el-input v-model="form[key]" size="small"></el-input>
+                </template>
+                <template v-else-if="formConfig[key]['fieldType'] === 1">
+                  <el-select
+                    v-model="form[key]"
+                    size="small"
+                    style="width:100%"
+                    filterable
+                    clearable
+                  >
+                    <el-option
+                      v-for="option in formConfig[key]['options']"
+                      :key="option.optionKey"
+                      :label="option.optionValue"
+                      :value="option.optionKey"
+                    ></el-option>
+                  </el-select>
+                </template>
+                <template v-else-if="formConfig[key]['fieldType'] === 2">
+                  <el-date-picker
+                    v-model="form[key]"
+                    type="datetime"
+                    align="right"
+                    :size="size"
+                    style="width:100%;"
+                    unlink-panels
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  >
+                  </el-date-picker>
+                </template>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </div>
     </div>
     <div v-else>
@@ -76,8 +80,10 @@
   </div>
 </template>
 <script>
+import baseinfoCommon from './baseinfo.common';
 export default {
   name: 'base-info',
+  mixins: [baseinfoCommon],
   props: {
     type: {
       type: String,
@@ -90,40 +96,12 @@ export default {
       default: () => [],
     },
   },
-  data() {
-    return {
-      fieldList: [],
-      constFieldList: [],
-      size: 'small',
-    };
-  },
   computed: {
     showForm() {
       return (
         this.type === 'qx' &&
         (this.operator === 'check' || this.operator === 'recheck')
       );
-    },
-  },
-  watch: {
-    fields: {
-      handler: function(val) {
-        if (val) {
-          this.constFieldList = JSON.parse(JSON.stringify(this.fields));
-          const list = this.fields.filter(item => item.isEdit);
-          this.fieldList = JSON.parse(JSON.stringify(list));
-        }
-      },
-      immediate: true,
-      deep: true,
-    },
-  },
-  methods: {
-    getValue(value, options) {
-      let item = options.filter(option => option.optionKey === value);
-      if (item[0]) {
-        return item[0].optionValue;
-      }
     },
   },
 };
@@ -137,6 +115,10 @@ export default {
   overflow: auto;
   box-sizing: border-box;
   border-bottom: 1px solid #e6e6e6;
+  .el-form-item__label {
+    padding: 0;
+    line-height: 0;
+  }
   .label {
     display: inline-block;
     padding-bottom: 25px;

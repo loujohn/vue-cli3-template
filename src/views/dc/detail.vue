@@ -96,7 +96,7 @@
               <el-button
                 size="mini"
                 type="text"
-                @click.stop="toParticular(scope.row.id)"
+                @click.stop="toParticular(scope.row)"
                 >详情</el-button
               >
             </template>
@@ -301,7 +301,8 @@ export default {
         padding: 200,
       });
     },
-    toParticular(id) {
+    toParticular(item) {
+      const { id } = item;
       this.$router.push({ name: 'dc-particular', query: { id } });
     },
     handleTaskSelect(selection, row) {
@@ -339,6 +340,14 @@ export default {
         this.getTaskStatistic();
       }
     },
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (from.name === 'dc-particular') {
+        vm.getList();
+        vm.getTaskStatistic();
+      }
+    });
   },
   beforeRouteLeave(to, from, next) {
     if (to.name !== 'dc-particular') {
