@@ -314,7 +314,7 @@ export default {
       }
     },
     handleTaskSelectAll(selection) {
-      this.selectedTasks = selection;
+      this.selectedTasks = JSON.parse(JSON.stringify(selection));
     },
     async submit() {
       if (this.count === 0) {

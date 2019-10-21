@@ -646,6 +646,7 @@ export default {
       padding: 15px 20px 0px;
       height: 130px;
       box-sizing: border-box;
+      overflow: auto;
     }
     .people {
       height: 50px;

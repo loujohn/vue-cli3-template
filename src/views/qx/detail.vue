@@ -299,6 +299,7 @@ export default {
     },
     refresh() {
       this.getList();
+      this.getTaskStatistic();
     },
     async getTaskField() {
       const params = { taskId: this.id };

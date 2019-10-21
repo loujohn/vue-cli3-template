@@ -19,15 +19,6 @@
             <el-input v-model="form.taskName" :style="style"></el-input>
           </el-form-item>
           <el-form-item label="创建方式:" prop="importType">
-            <!-- <el-select v-model="form.importType" :style="style" clearable>
-              <el-option
-                v-for="item in createWayList"
-                :key="item.name"
-                :label="item.name"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select> -->
             <el-radio-group v-model="form.importType">
               <el-radio
                 v-for="item in createWayList"
@@ -159,6 +150,7 @@ export default {
     'form.importType': function(val) {
       val = val.toString();
       this.showTemplate = val === '1' || val === '';
+      this.fieldList = [];
     },
   },
   mounted() {
@@ -187,12 +179,14 @@ export default {
     handleUploadSuccess(data) {
       const { fields, gdbFilePath } = data;
       this.form.gdbFilePath = gdbFilePath;
+      this.$refs['form'].clearValidate('gdbFilePath');
       if (!this.form.importType) {
         this.fieldList = fields;
       }
     },
     handleFileRemove() {
       this.fieldList = [];
+      this.form.gdbFilePath = '';
     },
     submit() {
       this.$refs['form'].validate(async valid => {

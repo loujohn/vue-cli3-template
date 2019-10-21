@@ -137,6 +137,7 @@
           :small="true"
           :page-count="5"
           @current-change="handleCurrentPageChange"
+          :current-page="params.pageIndex"
         ></el-pagination>
       </div>
     </div>
@@ -415,9 +416,10 @@ export default {
       } else {
         this.selectedTasks.push(row);
       }
+      console.log(this.selectedTasks);
     },
     handleTaskSelectAll(selection) {
-      this.selectedTasks = selection;
+      this.selectedTasks = JSON.parse(JSON.stringify(selection));
     },
     getPointFeatures(geojson) {
       let featureCollection = {
