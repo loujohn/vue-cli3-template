@@ -109,6 +109,12 @@ export default {
   .extra {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    span {
+      display: inline-block;
+      flex-grow: 1;
+      word-break: break-all;
+    }
   }
   .remove {
     color: #409eff;

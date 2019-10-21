@@ -104,6 +104,7 @@
           prop="referenceInfo.surverUserName"
           width="100px"
         ></el-table-column>
+        <el-table-column label=""></el-table-column>
         <el-table-column label="分发状态" width="80px">
           <template slot-scope="scope">
             <span
@@ -122,7 +123,7 @@
             <el-button
               type="text"
               size="mini"
-              @click="handleTaskOne(scope.row.id)"
+              @click="handleTaskOne(scope.row)"
             >
               {{ scope.row.distributionStatus | distribution }}
             </el-button>
@@ -315,7 +316,15 @@ export default {
         this.getTuBanStatistic();
       }
     },
-    async handleTaskOne(id) {
+    async handleTaskOne(item) {
+      const { id, surveyStage } = item;
+      if (surveyStage !== 0) {
+        this.$message({
+          type: 'warning',
+          message: '该任务已经开始调查无法撤回!',
+        });
+        return false;
+      }
       if (this.status === 1) {
         this.form.surveyUserId = '';
       }

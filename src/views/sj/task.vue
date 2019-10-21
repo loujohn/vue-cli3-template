@@ -37,6 +37,7 @@
               :remote-method="remoteMethod"
               :loading="loading"
               :style="style"
+              clearable
               @change="handleSelectChange"
             >
               <el-option
@@ -150,6 +151,7 @@ export default {
     'form.importType': function(val) {
       val = val.toString();
       this.showTemplate = val === '1' || val === '';
+      this.form.templateId = '';
       this.fieldList = [];
     },
   },
@@ -165,6 +167,7 @@ export default {
       this.options = dataList;
     },
     async handleSelectChange(val) {
+      if (!val) return false;
       const params = {
         id: val,
       };
@@ -175,6 +178,7 @@ export default {
         },
       } = res;
       this.fieldList = fields;
+      this.$refs['form'].clearValidate('templateId');
     },
     handleUploadSuccess(data) {
       const { fields, gdbFilePath } = data;
