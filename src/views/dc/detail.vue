@@ -46,7 +46,12 @@
                 ></el-option>
               </el-select>
             </el-col>
-            <el-col :span="8" :offset="8" style="text-align: right;">
+            <el-col
+              v-show="showSubmit"
+              :span="8"
+              :offset="8"
+              style="text-align: right;"
+            >
               <span class="count">已选择{{ count }}项</span>
               <el-button
                 :size="size"
@@ -170,6 +175,9 @@ export default {
   computed: {
     count() {
       return this.selectedTasks.length;
+    },
+    showSubmit() {
+      return this.params.surveyStage === 1;
     },
   },
   watch: {

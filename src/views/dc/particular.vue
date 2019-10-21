@@ -103,9 +103,6 @@ export default {
     id: {
       type: [Number, String],
     },
-    type: {
-      type: String,
-    },
   },
   mixins: [mapHandler],
   data() {
@@ -128,6 +125,7 @@ export default {
       pcGeojson: '',
       appGeojson: '',
       surveyStatus: '',
+      checkFlowStage: '',
       form: {
         taskRecordId: this.id,
         recordJsonStr: '',
@@ -138,7 +136,7 @@ export default {
   },
   computed: {
     canEdit() {
-      return this.surveyStatus == 1;
+      return this.surveyStatus === 1 || this.checkFlowStage === 2;
     },
     showUpload() {
       return this.activeTabIndex === 3 && this.surveyStatus === 1;
@@ -243,6 +241,7 @@ export default {
       let {
         taskId,
         surveyStage,
+        checkFlowStage,
         referenceInfo: {
           fieldsList,
           farImageFiles,
@@ -255,6 +254,7 @@ export default {
       } = data;
       this.taskId = taskId;
       this.surveyStatus = surveyStage;
+      this.checkFlowStage = checkFlowStage;
       this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
       this.videoList = vedioFiles;
       this.attachmentList = annexFiles;
