@@ -56,12 +56,15 @@
       <button
         class="btn btn-restore"
         @click="restore()"
-        v-show="showRestore && isDrawing"
+        v-show="pcGeojson && isDrawing"
       >
         <svg-icon iconClass="restore" :style="style" />
         还原
       </button>
     </div>
+    <el-dialog :visible="showDialog">
+      <el-upload />
+    </el-dialog>
   </div>
 </template>
 
@@ -88,10 +91,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    showRestore: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -115,7 +114,6 @@ export default {
       btnCheckActive: false,
       btnOriginActive: true,
       showPopover: false,
-      showDialog: false,
     };
   },
   mounted() {
@@ -208,10 +206,19 @@ export default {
       }
     },
     cancel() {
-      this.draw && this.draw.deleteAll();
-      this.form.pcGeojson = '';
-      this.showPopover = false;
-      this.isDrawing = false;
+      this.$confirm('是否保存当前编辑?', '提示', {
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+      })
+        .then(() => {
+          this.save();
+        })
+        .catch(() => {
+          this.draw && this.draw.deleteAll();
+          this.form.pcGeojson = '';
+          this.showPopover = false;
+          this.isDrawing = false;
+        });
     },
     bindEvent() {
       this.map.doubleClickZoom.disable();

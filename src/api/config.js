@@ -29,6 +29,7 @@ const url = {
   taskSubmit: baseUrl + 'manage/taskRecord/submit.do',
   getGeojson: baseUrl + 'manage/taskRecord/getGeojson.do',
   taskDelete: baseUrl + 'manage/task/delete.do',
+  mapPreview: baseUrl + 'manage/map/preview.do',
 };
 
 export default url;
