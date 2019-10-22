@@ -62,6 +62,9 @@
             <el-button type="text" size="mini" @click="toDetail(scope.row.id)"
               >详情</el-button
             >
+            <el-button type="text" size="mini" @click="deleteTask(scope.row.id)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -112,6 +115,16 @@ export default {
   methods: {
     toDetail(id) {
       this.$router.push({ name: 'sj-detail', query: { id } });
+    },
+    async deleteTask(id) {
+      const res = await task.deleteTask({ id });
+      if (res.code === 200 && res.message === 'ok') {
+        this.$message({
+          type: 'success',
+          message: '删除成功',
+        });
+        this.getList();
+      }
     },
     async getList() {
       const data = await task.getTaskList(this.params);
