@@ -33,27 +33,29 @@
         v-show="appGeojson && !pcGeojson"
         @click="handleToggle('辅助范围')"
       >
-        <svg-icon
-          class="svg-icon"
-          style="height: 1.5em; width: 1.5em;"
-          iconClass="aim"
-        />
+        <svg-icon class="svg-icon" :style="style" iconClass="aim" />
         <span>辅助范围</span>
       </button>
     </div>
     <div class="btns" v-if="canEdit">
-      <button
-        class="btn btn-trigger"
-        @click="geoEdit()"
-        :class="{ active: isDrawing }"
+      <el-popover
+        trigger="manual"
+        style="min-width: 0;margin-right: 10px;"
+        v-model="showPopover"
       >
-        <svg-icon
-          iconClass="draw"
-          :style="{ height: '1.5em', width: '1.5em' }"
-        />空间编辑
+        <el-button size="small" @click="save()">保存</el-button>
+        <el-button size="small" @click="cancel()">取消</el-button>
+        <button class="btn btn-trigger" slot="reference" @click="geoEdit()">
+          <svg-icon iconClass="draw" :style="style" />编辑
+        </button>
+      </el-popover>
+      <button class="btn btn-customer">
+        <svg-icon iconClass="custom" :style="style" />
+        自定义
       </button>
-      <button class="btn btn-save" v-show="isDrawing" @click="save()">
-        保存
+      <button class="btn btn-restore" @click="restore()" v-show="showRestore">
+        <svg-icon iconClass="restore" :style="style" />
+        还原
       </button>
     </div>
   </div>
@@ -82,9 +84,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    showRestore: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
+      style: {
+        height: '1.5em',
+        width: '1.5em',
+      },
       D2c: d2c || window.d2c,
       draw: null,
       mode: 'simple_select',
@@ -100,6 +110,7 @@ export default {
       btnAssistActive: false,
       btnCheckActive: false,
       btnOriginActive: true,
+      showPopover: false,
     };
   },
   mounted() {
@@ -156,29 +167,45 @@ export default {
       }
     },
     geoEdit() {
-      this.isDrawing = !this.isDrawing;
+      this.isDrawing = true;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
-        if (this.originGeojson) {
-          this.handleEdit(this.originGeojson);
-        } else {
-          return false;
-        }
-        // if (this.pcGeojson) {
-        //   this.handleEdit(this.pcGeojson);
-        //   return true;
-        // } else if (this.appGeojson) {
-        //   this.handleEdit(this.appGeojson);
-        //   return true;
-        // } else if (this.originGeojson) {
+        this.showPopover = true;
+        // if (this.originGeojson) {
         //   this.handleEdit(this.originGeojson);
-        //   return true;
         // } else {
         //   return false;
         // }
+        if (this.pcGeojson) {
+          this.handleEdit(this.pcGeojson);
+          return true;
+        }
+        // else if (this.appGeojson) {
+        //   this.handleEdit(this.appGeojson);
+        //   return true;
+        // }
+        else if (this.originGeojson) {
+          this.handleEdit(this.originGeojson);
+          return true;
+        } else {
+          return false;
+        }
       } else {
         this.draw && this.draw.deleteAll();
       }
+    },
+    restore() {
+      if (this.isDrawing) {
+        if (this.originGeojson) {
+          this.handleEdit(this.originGeojson);
+        }
+      }
+    },
+    cancel() {
+      this.draw && this.draw.deleteAll();
+      this.form.pcGeojson = '';
+      this.showPopover = false;
+      this.isDrawing = false;
     },
     bindEvent() {
       this.map.doubleClickZoom.disable();
@@ -197,11 +224,10 @@ export default {
       this.form.pcGeojson = JSON.stringify(geometry);
     },
     async save() {
-      const params = {
-        taskRecordId: this.$route.query.id,
-        pcGeojson: this.form.pcGeojson,
-      };
-      const res = await survey.saveTaskRecordInfo(params);
+      const formData = new FormData();
+      formData.append('taskRecordId', this.$route.query.id);
+      formData.append('pcGeojson', this.form.pcGeojson);
+      const res = await survey.saveTaskRecordInfo(formData);
       if (res.code === 200 && res.message === 'ok') {
         this.$message({
           type: 'success',
@@ -210,6 +236,7 @@ export default {
         this.form.pcGeojson = '';
         this.draw && this.draw.deleteAll();
         this.isDrawing = false;
+        this.showPopover = false;
         this.$emit('finish-edit');
       }
     },
@@ -274,13 +301,21 @@ export default {
     right: 10px;
     display: flex;
     justify-content: center;
-    .btn-trigger {
+    .btn {
       margin-right: 10px;
+    }
+    .btn:last-of-type {
+      margin: 0;
+    }
+    .btn-trigger {
       color: #606266;
     }
-    .btn-trigger.active {
-      color: #0094ec;
-    }
+    // .btn-trigger.active {
+    //   color: #0094ec;
+    // }
   }
+}
+.el-popover {
+  min-width: 0;
 }
 </style>

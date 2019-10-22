@@ -62,6 +62,7 @@
           :appGeojson="appGeojson"
           :pcGeojson="pcGeojson"
           :canEdit="canEdit"
+          :showRestore="checkFlowStage === 2"
           v-if="map"
           @load="handleMapLoad"
           @toggle-geo-layer="toggleGeoLayer"
