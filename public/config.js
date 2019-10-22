@@ -1,4 +1,4 @@
-var common = 'http://192.168.11.160:8083';
+var common = 'http://172.20.24.50:8083';
 // var common = 'http://172.16.4.195:8083';
 // var common = 'http://172.16.3.239:8083';//何鹏
 
