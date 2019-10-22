@@ -53,7 +53,11 @@
         <svg-icon iconClass="custom" :style="style" />
         自定义
       </button>
-      <button class="btn btn-restore" @click="restore()" v-show="showRestore">
+      <button
+        class="btn btn-restore"
+        @click="restore()"
+        v-show="showRestore && isDrawing"
+      >
         <svg-icon iconClass="restore" :style="style" />
         还原
       </button>
@@ -111,6 +115,7 @@ export default {
       btnCheckActive: false,
       btnOriginActive: true,
       showPopover: false,
+      showDialog: false,
     };
   },
   mounted() {
@@ -153,6 +158,7 @@ export default {
     handleEdit(geojson) {
       this.draw && this.draw.deleteAll();
       if (geojson) {
+        this.form.pcGeojson = geojson;
         geojson = JSON.parse(geojson);
         const feature = {
           id: this.featureId,
