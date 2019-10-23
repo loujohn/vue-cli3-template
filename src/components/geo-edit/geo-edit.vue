@@ -208,7 +208,7 @@ export default {
       }
     },
     geoEdit() {
-      this.showUploadPopover = false;
+      this.uploadClear();
       this.isDrawing = true;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
@@ -362,9 +362,6 @@ export default {
     .btn-trigger {
       color: #606266;
     }
-    // .btn-trigger.active {
-    //   color: #0094ec;
-    // }
   }
 }
 .el-popover {
