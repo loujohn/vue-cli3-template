@@ -1,5 +1,4 @@
 import url from 'api/config';
-
 export default {
   data() {
     return {
@@ -29,6 +28,8 @@ export default {
 
     handleRemove(file, fileList) {
       this.upload.success = false;
+      this.form.pcGeojson = '';
+      this.draw && this.draw.deleteAll();
     },
 
     handleError(err, file, fileList) {},
@@ -40,10 +41,23 @@ export default {
       });
     },
     showUpload() {
+      this.draw && this.draw.deleteAll();
       this.showUploadPopover = true;
       this.showPopover = false;
-      this.draw && this.draw.deleteAll();
       this.isDrawing = false;
+    },
+    async uploadSave() {
+      if (!this.upload.success) {
+        this.$message({
+          type: 'error',
+          message: '请添加范围',
+        });
+        return false;
+      }
+      const res = await this.save();
+      if (res) {
+        this.uploadClear();
+      }
     },
     uploadCancel() {
       if (this.upload.success) {
@@ -54,15 +68,11 @@ export default {
           .then(async () => {
             const res = await this.save();
             if (res) {
-              this.showUploadPopover = false;
-              this.upload.success = false;
+              this.uploadClear();
             }
           })
           .catch(() => {
-            this.draw && this.draw.deleteAll();
-            this.form.pcGeojson = '';
-            this.showUploadPopover = false;
-            this.upload.success = false;
+            this.uploadClear();
           });
       } else {
         this.showUploadPopover = false;
@@ -73,6 +83,7 @@ export default {
       this.form.pcGeojson = '';
       this.showUploadPopover = false;
       this.upload.success = false;
+      this.$refs['upload'].clearFiles();
     },
   },
 };

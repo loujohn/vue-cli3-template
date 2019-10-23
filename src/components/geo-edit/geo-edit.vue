@@ -50,6 +50,7 @@
         </button>
       </el-popover>
       <el-popover
+        style="margin-right: 10px;"
         placement="bottom-end"
         trigger="manual"
         v-model="showUploadPopover"
@@ -63,6 +64,7 @@
           :on-remove="handleRemove"
           :on-error="handleError"
           :on-exceed="handleExceed"
+          ref="upload"
         >
           <el-button
             size="small"
@@ -71,7 +73,12 @@
             slot="trigger"
             >添加范围</el-button
           >
-          <el-button size="small" style="margin-left: 5px;">保存</el-button>
+          <el-button
+            size="small"
+            style="margin-left: 5px;"
+            @click="uploadSave()"
+            >保存</el-button
+          >
           <el-button
             size="small"
             style="margin-left: 5px;"
@@ -100,7 +107,6 @@
 import d2c from 'd2c';
 // import drawStyles from './draw-style';
 import { survey } from 'api';
-import url from 'api/config';
 import upload from './upload';
 export default {
   name: 'geo-edit',
