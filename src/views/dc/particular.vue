@@ -66,6 +66,7 @@
           @load="handleMapLoad"
           @toggle-geo-layer="toggleGeoLayer"
           @finish-edit="getTaskDetail()"
+          @finish-upload="finishUpload"
         />
       </div>
     </div>
@@ -300,6 +301,10 @@ export default {
       const bbox = this.getBbox(geojson);
       this.map.fitBounds(bbox, { padding: 200 });
     },
+    finishUpload() {
+      const bbox = this.getBbox(this.originGeojson);
+      this.map.fitBounds(bbox, { padding: 200 });
+    },
     toggleGeoLayer({ name, active }) {
       if (name === '调查范围') {
         if (active) {
@@ -357,6 +362,8 @@ export default {
     if (this.$refs['geo-edit']) {
       this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
       this.$refs['geo-edit'].isDrawing = false;
+      this.$refs['geo-edit'].showPopover = false;
+      this.$refs['geo-edit'].uploadClear();
     }
     next();
   },

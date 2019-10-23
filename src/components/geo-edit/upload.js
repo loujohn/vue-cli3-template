@@ -84,6 +84,7 @@ export default {
       this.showUploadPopover = false;
       this.upload.success = false;
       this.$refs['upload'].clearFiles();
+      this.$emit('finish-upload');
     },
   },
 };
