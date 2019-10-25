@@ -1,7 +1,7 @@
 <template>
   <div class="head">
-    <span class="title"
-      ><img class="img" :src="titleLogo" alt="" />{{ title }}</span
+    <router-link tag="span" :to="{ path: '/' }" class="title"
+      ><img class="img" :src="titleLogo" alt="" />{{ title }}</router-link
     >
     <el-dropdown @command="handleCommand">
       <div class="user">
