@@ -12,7 +12,9 @@
       :file-list="files"
       :auto-upload="true"
       :before-remove="removeFile"
-      :multiple="true"
+      :on-exceed="exceed"
+      :multiple="false"
+      :limit="1"
     >
       <el-button
         slot="trigger"
@@ -55,6 +57,12 @@ export default {
         });
         this.$refs['upload'].clearFiles();
       }
+    },
+    exceed(file, fileList) {
+      this.$message({
+        type: 'warning',
+        message: '只允许上传单个文件',
+      });
     },
     progress(file) {
       if (file.size > 1024 * 1024 * 100) {

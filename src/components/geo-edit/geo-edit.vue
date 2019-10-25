@@ -40,7 +40,7 @@
     <div class="btns" v-if="canEdit">
       <el-popover
         trigger="manual"
-        style="min-width: 0;margin-right: 10px;"
+        style="margin-right: 10px;"
         v-model="showPopover"
       >
         <el-button size="small" @click="save()">保存</el-button>
@@ -49,14 +49,52 @@
           <svg-icon iconClass="draw" :style="style" />编辑
         </button>
       </el-popover>
-      <button class="btn btn-customer">
-        <svg-icon iconClass="custom" :style="style" />
-        自定义
-      </button>
+      <el-popover
+        style="margin-right: 10px;"
+        placement="bottom-end"
+        trigger="manual"
+        v-model="showUploadPopover"
+      >
+        <el-upload
+          :action="upload.url"
+          :headers="upload.headers"
+          :limit="1"
+          :multiple="false"
+          :on-success="handleSuccess"
+          :on-remove="handleRemove"
+          :on-error="handleError"
+          :on-exceed="handleExceed"
+          ref="upload"
+        >
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-upload"
+            slot="trigger"
+            >添加范围</el-button
+          >
+          <el-button
+            size="small"
+            style="margin-left: 5px;"
+            @click="uploadSave()"
+            >保存</el-button
+          >
+          <el-button
+            size="small"
+            style="margin-left: 5px;"
+            @click="uploadCancel()"
+            >取消</el-button
+          >
+        </el-upload>
+        <button class="btn btn-customer" @click="showUpload()" slot="reference">
+          <svg-icon iconClass="custom" :style="style" />
+          自定义
+        </button>
+      </el-popover>
       <button
         class="btn btn-restore"
         @click="restore()"
-        v-show="showRestore && isDrawing"
+        v-show="pcGeojson && isDrawing"
       >
         <svg-icon iconClass="restore" :style="style" />
         还原
@@ -68,8 +106,10 @@
 <script>
 import d2c from 'd2c';
 import { survey } from 'api';
+import upload from './upload';
 export default {
   name: 'geo-edit',
+  mixins: [upload],
   props: {
     map: {
       type: Object,
@@ -84,10 +124,6 @@ export default {
       type: String,
     },
     canEdit: {
-      type: Boolean,
-      default: false,
-    },
-    showRestore: {
       type: Boolean,
       default: false,
     },
@@ -114,7 +150,6 @@ export default {
       btnCheckActive: false,
       btnOriginActive: true,
       showPopover: false,
-      showDialog: false,
     };
   },
   mounted() {
@@ -172,6 +207,7 @@ export default {
       }
     },
     geoEdit() {
+      this.uploadClear();
       this.isDrawing = true;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
@@ -207,10 +243,19 @@ export default {
       }
     },
     cancel() {
-      this.draw && this.draw.deleteAll();
-      this.form.pcGeojson = '';
-      this.showPopover = false;
-      this.isDrawing = false;
+      this.$confirm('是否保存当前范围?', '提示', {
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+      })
+        .then(() => {
+          this.save();
+        })
+        .catch(() => {
+          this.draw && this.draw.deleteAll();
+          this.form.pcGeojson = '';
+          this.showPopover = false;
+          this.isDrawing = false;
+        });
     },
     bindEvent() {
       this.map.doubleClickZoom.disable();
@@ -243,6 +288,7 @@ export default {
         this.isDrawing = false;
         this.showPopover = false;
         this.$emit('finish-edit');
+        return true;
       }
     },
     clear() {
@@ -315,9 +361,6 @@ export default {
     .btn-trigger {
       color: #606266;
     }
-    // .btn-trigger.active {
-    //   color: #0094ec;
-    // }
   }
 }
 .el-popover {

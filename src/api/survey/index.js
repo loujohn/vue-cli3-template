@@ -45,4 +45,10 @@ export default {
     const res = await http.post(url.taskSubmit, qs.stringify(params));
     return res;
   },
+  /**
+   * params { file }
+   */
+  // async preview(params) {
+
+  // },
 };

@@ -153,6 +153,7 @@ export default {
       this.showTemplate = val === '1' || val === '';
       this.form.templateId = '';
       this.fieldList = [];
+      this.$refs['upload'].$refs['upload'].clearFiles();
     },
   },
   mounted() {

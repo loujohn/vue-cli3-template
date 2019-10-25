@@ -114,11 +114,46 @@ const router = new Router({
   ],
 });
 
+function getRootPath(type) {
+  switch (type) {
+    case 1:
+      return '/sj';
+    case 2:
+      return '/qx';
+    case 3:
+      return '/dc';
+    default:
+      return '';
+  }
+}
+
+function preventRoute(type, path, from, next) {
+  if (path === '/login') {
+    return next();
+  }
+  const regMap = {
+    '1': /sj/,
+    '2': /qx/,
+    '3': /dc/,
+  };
+  if (!regMap[type].test(path)) {
+    return next(from.path);
+  }
+  next();
+}
+
 router.beforeEach(({ path }, from, next) => {
   const isLogin = Boolean(store.state.token);
+  let userInfo = sessionStorage.getItem('userInfo');
+  let type;
+  if (userInfo) {
+    userInfo = JSON.parse(userInfo);
+    ({ type } = userInfo);
+  }
   if (!isLogin && path !== '/login') return next({ path: '/login' });
-  if (isLogin && path === '/login') return next({ path: '/' });
-  next();
+  if (isLogin && path === '/login') return next(getRootPath(type));
+
+  preventRoute(type, path, from, next);
 });
 
 export default router;

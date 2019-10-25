@@ -179,4 +179,15 @@ export default {
     });
     return res.data || {};
   },
+
+  /**
+   * params { id }
+   */
+  async deleteTask(params) {
+    const res = await http.get(url.taskDelete, {
+      params,
+      hideLoading: true,
+    });
+    return res;
+  },
 };
