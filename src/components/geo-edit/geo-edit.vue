@@ -67,7 +67,6 @@
 
 <script>
 import d2c from 'd2c';
-// import drawStyles from './draw-style';
 import { survey } from 'api';
 export default {
   name: 'geo-edit',
