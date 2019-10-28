@@ -137,6 +137,9 @@ function preventRoute(type, path, from, next) {
     '3': /dc/,
   };
   if (!regMap[type].test(path)) {
+    if (from.path === '/') {
+      return next(getRootPath(type));
+    }
     return next(from.path);
   }
   next();
