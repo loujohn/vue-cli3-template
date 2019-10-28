@@ -45,6 +45,8 @@ export default {
       this.showUploadPopover = true;
       this.showPopover = false;
       this.isDrawing = false;
+      this.recordIndex = 0;
+      this.drawRecord = [];
     },
     async uploadSave() {
       if (!this.upload.success) {

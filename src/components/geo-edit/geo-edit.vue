@@ -13,21 +13,42 @@
         ></span>
         <span
           class="el-icon-right next"
-          :class="{ active: recordIndex !== drawRecord.length - 1 }"
+          :class="{ active: recordIndex < drawRecord.length - 1 }"
           @click="next()"
         ></span>
-        <span class="restore">
+        <span class="restore" @click="restore()">
           <svg-icon :style="style" iconClass="restore"></svg-icon>
           还原
         </span>
-        <span class="custom">
-          <svg-icon iconClass="custom" :style="style"></svg-icon>
-          自定义
-        </span>
-        <span class="save">
+        <el-popover v-model="showUploadPopover" trigger="manual">
+          <el-upload
+            :action="upload.url"
+            :headers="upload.headers"
+            :limit="1"
+            :multiple="false"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :on-error="handleError"
+            :on-exceed="handleExceed"
+            ref="upload"
+          >
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-upload"
+              slot="trigger"
+              >添加范围</el-button
+            >
+          </el-upload>
+          <span class="custom" slot="reference" @click="showUpload()">
+            <svg-icon iconClass="custom" :style="style"></svg-icon>
+            自定义
+          </span>
+        </el-popover>
+        <span class="save" @click="save()">
           保存
         </span>
-        <span class="cancel">
+        <span class="cancel" @click="cancel()">
           取消
         </span>
       </div>
@@ -61,69 +82,6 @@
         <span class="text">辅助范围</span>
       </span>
     </div>
-    <!-- <div class="btns" v-if="canEdit">
-      <el-popover
-        trigger="manual"
-        style="margin-right: 10px;"
-        v-model="showPopover"
-      >
-        <el-button size="small" @click="save()">保存</el-button>
-        <el-button size="small" @click="cancel()">取消</el-button>
-        <button class="btn btn-trigger" slot="reference" @click="geoEdit()">
-          <svg-icon iconClass="draw" :style="style" />编辑
-        </button>
-      </el-popover>
-      <el-popover
-        style="margin-right: 10px;"
-        placement="bottom-end"
-        trigger="manual"
-        v-model="showUploadPopover"
-      >
-        <el-upload
-          :action="upload.url"
-          :headers="upload.headers"
-          :limit="1"
-          :multiple="false"
-          :on-success="handleSuccess"
-          :on-remove="handleRemove"
-          :on-error="handleError"
-          :on-exceed="handleExceed"
-          ref="upload"
-        >
-          <el-button
-            size="small"
-            type="primary"
-            icon="el-icon-upload"
-            slot="trigger"
-            >添加范围</el-button
-          >
-          <el-button
-            size="small"
-            style="margin-left: 5px;"
-            @click="uploadSave()"
-            >保存</el-button
-          >
-          <el-button
-            size="small"
-            style="margin-left: 5px;"
-            @click="uploadCancel()"
-            >取消</el-button
-          >
-        </el-upload>
-        <button class="btn btn-customer" @click="showUpload()" slot="reference">
-          <svg-icon iconClass="custom" :style="style" />
-          自定义
-        </button>
-      </el-popover>
-      <button
-        class="btn btn-restore"
-        @click="restore()"
-        v-show="pcGeojson && isDrawing"
-      >
-        <svg-icon iconClass="restore" :style="style" />
-        还原
-      </button>
-    </div> -->
   </div>
 </template>
 
@@ -219,6 +177,9 @@ export default {
       this.draw && this.draw.deleteAll();
     },
     handleEdit(geojson) {
+      if (this.drawRecord.length === 0) {
+        this.drawRecord.push(geojson);
+      }
       this.draw && this.draw.deleteAll();
       if (geojson) {
         this.form.pcGeojson = geojson;
@@ -259,6 +220,8 @@ export default {
       if (this.isDrawing) {
         if (this.originGeojson) {
           this.handleEdit(this.originGeojson);
+          this.drawRecord = [this.originGeojson];
+          this.recordIndex = 0;
         }
       }
     },
@@ -275,6 +238,7 @@ export default {
           this.form.pcGeojson = '';
           this.showPopover = false;
           this.isDrawing = false;
+          this.toolExpand = false;
         });
     },
     bindEvent() {
@@ -309,14 +273,14 @@ export default {
       if (this.recordIndex >= this.drawRecord.length) {
         this.recordIndex = this.drawRecord.length - 1;
       }
-      this.handleDraw(this.drawRecord[this.recordIndex]);
+      this.handleEdit(this.drawRecord[this.recordIndex]);
     },
     prev() {
       this.recordIndex--;
       if (this.recordIndex < 0) {
         this.recordIndex = 0;
       }
-      this.handleDraw(this.drawRecord[this.recordIndex]);
+      this.handleEdit(this.drawRecord[this.recordIndex]);
     },
     async save() {
       const formData = new FormData();
@@ -332,6 +296,7 @@ export default {
         this.draw && this.draw.deleteAll();
         this.isDrawing = false;
         this.showPopover = false;
+        this.toolExpand = false;
         this.$emit('finish-edit');
         return true;
       }
@@ -394,6 +359,10 @@ export default {
       .next.active {
         color: #409eff;
       }
+      .restore {
+        border-left: 1px solid #ccc;
+        padding-left: 5px;
+      }
       .custom {
         margin-left: 10px;
         border-left: 1px solid #ccc;
@@ -403,6 +372,9 @@ export default {
         margin-left: 10px;
         padding: 0 5px;
         color: #409eff;
+      }
+      .cancel {
+        color: #f56c6c;
       }
     }
   }
@@ -476,52 +448,6 @@ export default {
       &.active {
         background-color: #f56c6c;
       }
-    }
-  }
-  // .btn {
-  //   height: 30px;
-  //   padding: 0 8px;
-  //   outline: 0;
-  //   border-radius: 5px;
-  //   border: 1px solid #e6e6e6;
-  //   background-color: #fff;
-  //   display: flex;
-  //   align-items: center;
-  //   justify-content: center;
-  //   cursor: pointer;
-  // }
-  // .origin.active {
-  //   color: #c08f01;
-  // }
-  // .pc.active {
-  //   color: #409eff;
-  // }
-  // .app.active {
-  //   color: #f56c6c;
-  // }
-  .ranges {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    display: flex;
-  }
-  .btn-toggle {
-    margin-right: 5px;
-  }
-  .btns {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    justify-content: center;
-    .btn {
-      margin-right: 10px;
-    }
-    .btn:last-of-type {
-      margin: 0;
-    }
-    .btn-trigger {
-      color: #606266;
     }
   }
 }
