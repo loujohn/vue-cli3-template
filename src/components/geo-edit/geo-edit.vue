@@ -10,11 +10,13 @@
           class="el-icon-back prev"
           :class="{ active: recordIndex !== 0 }"
           @click="prev()"
+          title="上一步"
         ></span>
         <span
           class="el-icon-right next"
           :class="{ active: recordIndex < drawRecord.length - 1 }"
           @click="next()"
+          title="下一步"
         ></span>
         <span class="restore" @click="restore()">
           <svg-icon :style="style" iconClass="restore"></svg-icon>
