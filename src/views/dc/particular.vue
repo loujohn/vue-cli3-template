@@ -68,7 +68,7 @@
           @finish-edit="getTaskDetail()"
           @finish-upload="finishUpload"
         />
-        <geo-edit-introduction :isDisplay="canEdit" />
+        <geo-edit-introduction :isDisplay="showIntroduction" />
       </div>
     </div>
   </div>
@@ -135,6 +135,7 @@ export default {
         recordJsonStr: '',
         pcGeojson: '',
       },
+      showIntroduction: false,
       marker: null,
     };
   },

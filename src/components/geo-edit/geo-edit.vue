@@ -86,12 +86,12 @@
 </template>
 
 <script>
-import d2c from 'd2c';
 import { survey } from 'api';
 import upload from './upload';
+import draw from './draw';
 export default {
   name: 'geo-edit',
-  mixins: [upload],
+  mixins: [draw, upload],
   props: {
     map: {
       type: Object,
@@ -119,24 +119,13 @@ export default {
       form: {
         pcGeojson: '',
       },
-      D2c: d2c || window.d2c,
-      draw: null,
-      mode: 'simple_select',
-      featureId: 'geo-edit-id',
       isDrawing: false,
       current: '下发范围',
-      data: '',
-      show: false,
-
       toolExpand: false,
-      drawRecord: [],
-      recordIndex: 0,
 
-      showAppGeojson: false,
       btnAssistActive: false,
       btnCheckActive: false,
       btnOriginActive: true,
-      showPopover: false,
     };
   },
   mounted() {
@@ -162,43 +151,8 @@ export default {
         active,
       });
     },
-    initDraw() {
-      if (this.map.draw) {
-        this.draw = this.map.draw();
-      } else {
-        this.draw = new this.D2c.draw({
-          displayControlsDefault: false,
-        });
-        this.map.addControl(this.draw);
-      }
-      this.bindEvent();
-    },
-    clearDraw() {
-      this.draw && this.draw.deleteAll();
-    },
-    handleEdit(geojson) {
-      if (this.drawRecord.length === 0) {
-        this.drawRecord.push(geojson);
-      }
-      this.draw && this.draw.deleteAll();
-      if (geojson) {
-        this.form.pcGeojson = geojson;
-        geojson = JSON.parse(geojson);
-        const feature = {
-          id: this.featureId,
-          type: 'Feature',
-          properties: {},
-          geometry: geojson,
-        };
-        this.draw.add(feature);
-        this.draw.changeMode('direct_select', {
-          featureId: this.featureId,
-        });
-      }
-    },
     geoEdit() {
       this.toolExpand = true;
-      // this.uploadClear();
       this.isDrawing = true;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
@@ -216,15 +170,6 @@ export default {
         this.draw && this.draw.deleteAll();
       }
     },
-    restore() {
-      if (this.isDrawing) {
-        if (this.originGeojson) {
-          this.handleEdit(this.originGeojson);
-          this.drawRecord = [this.originGeojson];
-          this.recordIndex = 0;
-        }
-      }
-    },
     cancel() {
       this.$confirm('是否保存当前范围?', '提示', {
         confirmButtonText: '是',
@@ -234,53 +179,8 @@ export default {
           this.save();
         })
         .catch(() => {
-          this.draw && this.draw.deleteAll();
-          this.form.pcGeojson = '';
-          this.showPopover = false;
-          this.isDrawing = false;
-          this.toolExpand = false;
+          this.reset();
         });
-    },
-    bindEvent() {
-      this.map.doubleClickZoom.disable();
-      this.map.on('draw.create', this.handleDraw);
-      this.map.on('draw.update', this.handleDraw);
-      this.map.on('draw.modechange', this.handleMode);
-    },
-    handleDraw() {
-      const data = this.draw.getAll();
-      const { features } = data;
-      if (features.length === 0) {
-        return false;
-      }
-      const feature = features[0];
-      let { geometry } = feature;
-      geometry = JSON.stringify(geometry);
-      if (this.drawRecord.length === this.recordIndex + 1) {
-        this.drawRecord.push(geometry);
-      } else {
-        this.drawRecord.splice(
-          this.recordIndex,
-          this.drawRecord.length - this.recordIndex,
-          geometry,
-        );
-      }
-      this.recordIndex++;
-      this.form.pcGeojson = geometry;
-    },
-    next() {
-      this.recordIndex++;
-      if (this.recordIndex >= this.drawRecord.length) {
-        this.recordIndex = this.drawRecord.length - 1;
-      }
-      this.handleEdit(this.drawRecord[this.recordIndex]);
-    },
-    prev() {
-      this.recordIndex--;
-      if (this.recordIndex < 0) {
-        this.recordIndex = 0;
-      }
-      this.handleEdit(this.drawRecord[this.recordIndex]);
     },
     async save() {
       const formData = new FormData();
@@ -292,33 +192,21 @@ export default {
           type: 'success',
           message: '保存成功',
         });
-        this.form.pcGeojson = '';
-        this.draw && this.draw.deleteAll();
-        this.isDrawing = false;
-        this.showPopover = false;
-        this.toolExpand = false;
-        this.$emit('finish-edit');
-        return true;
+        this.reset();
       }
     },
-    clear() {
-      this.draw.deleteAll();
-      this.draw.changeMode(this.mode);
-      this.show = false;
-    },
-    handleMode(e) {
-      if (e.mode !== this.mode) {
-        this.draw.changeMode(this.mode);
+    reset() {
+      this.form.pcGeojson = '';
+      this.draw && this.draw.deleteAll();
+      this.isDrawing = false;
+      this.toolExpand = false;
+      this.$emit('finish-edit');
+      if (this.upload.success) {
+        this.showUploadPopover = false;
+        this.upload.success = false;
+        this.$refs['upload'] && this.$refs['upload'].clearFiles();
+        this.$emit('finish-upload');
       }
-    },
-    offEvent() {
-      this.map.off('draw.create', this.handleDraw);
-      this.map.off('draw.update', this.handleDraw);
-      this.map.off('draw.changeMode', this.handleMode);
-    },
-    destroy() {
-      this.offEvent();
-      this.draw.changeMode('simple_select');
     },
   },
 };
@@ -330,7 +218,7 @@ export default {
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: rgba(255, 255, 255, 1);
+    background-color: #fff;
     padding: 3px 5px;
     border-radius: 3px;
     font-size: 14px;
@@ -382,7 +270,7 @@ export default {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: #fff;
     padding: 10px;
     border-radius: 3px;
     font-size: 12px;
