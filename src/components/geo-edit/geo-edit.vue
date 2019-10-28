@@ -1,43 +1,67 @@
 <template>
   <div class="geo-edit">
-    <div class="ranges">
-      <button
-        class="btn origin btn-toggle"
+    <div class="tools" v-if="canEdit">
+      <span class="edit" @click="geoEdit()">
+        <svg-icon iconClass="draw" :style="style"></svg-icon>
+        编辑
+      </span>
+      <div class="tool" v-show="toolExpand">
+        <span
+          class="el-icon-back prev"
+          :class="{ active: recordIndex !== 0 }"
+          @click="prev()"
+        ></span>
+        <span
+          class="el-icon-right next"
+          :class="{ active: recordIndex !== drawRecord.length - 1 }"
+          @click="next()"
+        ></span>
+        <span class="restore">
+          <svg-icon :style="style" iconClass="restore"></svg-icon>
+          还原
+        </span>
+        <span class="custom">
+          <svg-icon iconClass="custom" :style="style"></svg-icon>
+          自定义
+        </span>
+        <span class="save">
+          保存
+        </span>
+        <span class="cancel">
+          取消
+        </span>
+      </div>
+    </div>
+    <div class="toggles">
+      <span
+        class="btn origin"
         :class="{ active: btnOriginActive }"
-        v-show="originGeojson"
         @click="handleToggle('下发范围')"
+        v-show="originGeojson"
       >
-        <svg-icon
-          class="svg-icon"
-          style="height: 1.5em; width: 1.5em;"
-          iconClass="aim"
-        />
-        <span>下发范围</span>
-      </button>
-      <button
-        class="btn pc btn-toggle"
-        :class="{ active: btnCheckActive }"
+        <i class="dot"></i>
+        <span class="text">下发范围</span>
+      </span>
+      <span
         v-show="pcGeojson"
+        class="btn pc"
+        :class="{ active: btnCheckActive }"
         @click="handleToggle('调查范围')"
       >
-        <svg-icon
-          class="svg-icon"
-          style="height: 1.5em; width: 1.5em;"
-          iconClass="aim"
-        />
-        <span>调查范围</span>
-      </button>
-      <button
-        class="btn app btn-toggle"
+        <i class="dot"></i>
+        <span class="text">调查范围</span>
+      </span>
+      <span
+        class="btn app"
         :class="{ active: btnAssistActive }"
         v-show="appGeojson && !pcGeojson"
         @click="handleToggle('辅助范围')"
       >
-        <svg-icon class="svg-icon" :style="style" iconClass="aim" />
-        <span>辅助范围</span>
-      </button>
+        <i class="dot"></i>
+        <span class="text">辅助范围</span>
+      </span>
     </div>
-    <div class="btns" v-if="canEdit">
+    <!-- <div class="btns" v-if="canEdit">
       <el-popover
         trigger="manual"
         style="margin-right: 10px;"
@@ -99,7 +123,7 @@
         <svg-icon iconClass="restore" :style="style" />
         还原
       </button>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -134,18 +158,23 @@ export default {
         height: '1.5em',
         width: '1.5em',
       },
-      D2c: d2c || window.d2c,
-      draw: null,
-      mode: 'simple_select',
-      data: '',
-      drawing: false,
-      show: false,
-      featureId: 'geo-edit-id',
-      showAppGeojson: false,
-      isDrawing: false,
       form: {
         pcGeojson: '',
       },
+      D2c: d2c || window.d2c,
+      draw: null,
+      mode: 'simple_select',
+      featureId: 'geo-edit-id',
+      isDrawing: false,
+      current: '下发范围',
+      data: '',
+      show: false,
+
+      toolExpand: false,
+      drawRecord: [],
+      recordIndex: 0,
+
+      showAppGeojson: false,
       btnAssistActive: false,
       btnCheckActive: false,
       btnOriginActive: true,
@@ -207,25 +236,16 @@ export default {
       }
     },
     geoEdit() {
-      this.uploadClear();
+      this.toolExpand = true;
+      // this.uploadClear();
       this.isDrawing = true;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
         this.showPopover = true;
-        // if (this.originGeojson) {
-        //   this.handleEdit(this.originGeojson);
-        // } else {
-        //   return false;
-        // }
         if (this.pcGeojson) {
           this.handleEdit(this.pcGeojson);
           return true;
-        }
-        // else if (this.appGeojson) {
-        //   this.handleEdit(this.appGeojson);
-        //   return true;
-        // }
-        else if (this.originGeojson) {
+        } else if (this.originGeojson) {
           this.handleEdit(this.originGeojson);
           return true;
         } else {
@@ -270,8 +290,33 @@ export default {
         return false;
       }
       const feature = features[0];
-      const { geometry } = feature;
-      this.form.pcGeojson = JSON.stringify(geometry);
+      let { geometry } = feature;
+      geometry = JSON.stringify(geometry);
+      if (this.drawRecord.length === this.recordIndex + 1) {
+        this.drawRecord.push(geometry);
+      } else {
+        this.drawRecord.splice(
+          this.recordIndex,
+          this.drawRecord.length - this.recordIndex,
+          geometry,
+        );
+      }
+      this.recordIndex++;
+      this.form.pcGeojson = geometry;
+    },
+    next() {
+      this.recordIndex++;
+      if (this.recordIndex >= this.drawRecord.length) {
+        this.recordIndex = this.drawRecord.length - 1;
+      }
+      this.handleDraw(this.drawRecord[this.recordIndex]);
+    },
+    prev() {
+      this.recordIndex--;
+      if (this.recordIndex < 0) {
+        this.recordIndex = 0;
+      }
+      this.handleDraw(this.drawRecord[this.recordIndex]);
     },
     async save() {
       const formData = new FormData();
@@ -316,27 +361,144 @@ export default {
 
 <style lang="scss">
 .geo-edit {
-  .btn {
-    height: 30px;
-    padding: 0 8px;
-    outline: 0;
-    border-radius: 5px;
-    border: 1px solid #e6e6e6;
-    background-color: #fff;
+  .tools {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 1);
+    padding: 3px 5px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: #606266;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    span {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .edit {
+      padding-right: 10px;
+    }
+    .tool {
+      display: flex;
+      border-left: 1px solid #ccc;
+      .prev,
+      .next {
+        padding: 0 5px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .prev:hover,
+      .prev.active,
+      .next:hover,
+      .next.active {
+        color: #409eff;
+      }
+      .custom {
+        margin-left: 10px;
+        border-left: 1px solid #ccc;
+      }
+      .save {
+        border-left: 1px solid #ccc;
+        margin-left: 10px;
+        padding: 0 5px;
+        color: #409eff;
+      }
+    }
   }
-  .origin.active {
-    color: #c08f01;
+  .toggles {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    .btn {
+      cursor: pointer;
+      padding: 3px 0;
+      .text {
+        vertical-align: middle;
+      }
+      .dot {
+        vertical-align: middle;
+        display: inline-block;
+        height: 14px;
+        width: 14px;
+        border-radius: 100%;
+        box-sizing: border-box;
+        margin-right: 3px;
+        position: relative;
+        background-color: #fff;
+        &::after {
+          content: '';
+          display: inline-block;
+          height: 4px;
+          width: 4px;
+          border-radius: 100%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #fff;
+        }
+      }
+    }
+    .btn.origin {
+      color: #c08f01;
+      .dot {
+        border: 1px solid #c08f01;
+      }
+      &.active {
+        .dot {
+          background-color: #c08f01;
+        }
+      }
+    }
+    .btn.pc {
+      color: #409eff;
+      .dot {
+        border: 1px solid #409eff;
+      }
+      &.active {
+        .dot {
+          background-color: #409eff;
+        }
+      }
+    }
+    .btn.app {
+      color: #f56c6c;
+      .dot {
+        border: 1px solid #f56c6c;
+      }
+      &.active {
+        background-color: #f56c6c;
+      }
+    }
   }
-  .pc.active {
-    color: #409eff;
-  }
-  .app.active {
-    color: #f56c6c;
-  }
+  // .btn {
+  //   height: 30px;
+  //   padding: 0 8px;
+  //   outline: 0;
+  //   border-radius: 5px;
+  //   border: 1px solid #e6e6e6;
+  //   background-color: #fff;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   cursor: pointer;
+  // }
+  // .origin.active {
+  //   color: #c08f01;
+  // }
+  // .pc.active {
+  //   color: #409eff;
+  // }
+  // .app.active {
+  //   color: #f56c6c;
+  // }
   .ranges {
     position: absolute;
     top: 10px;
