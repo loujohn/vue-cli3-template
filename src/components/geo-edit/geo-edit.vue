@@ -1,116 +1,97 @@
 <template>
   <div class="geo-edit">
-    <div class="ranges">
-      <button
-        class="btn origin btn-toggle"
+    <div class="tools" v-if="canEdit">
+      <span class="edit" @click="geoEdit()">
+        <svg-icon iconClass="draw" :style="style"></svg-icon>
+        编辑
+      </span>
+      <div class="tool" v-show="toolExpand">
+        <span
+          class="el-icon-back prev"
+          :class="{ active: recordIndex !== 0 }"
+          @click="prev()"
+        ></span>
+        <span
+          class="el-icon-right next"
+          :class="{ active: recordIndex < drawRecord.length - 1 }"
+          @click="next()"
+        ></span>
+        <span class="restore" @click="restore()">
+          <svg-icon :style="style" iconClass="restore"></svg-icon>
+          还原
+        </span>
+        <el-popover v-model="showUploadPopover" trigger="manual">
+          <el-upload
+            :action="upload.url"
+            :headers="upload.headers"
+            :limit="1"
+            :multiple="false"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :on-error="handleError"
+            :on-exceed="handleExceed"
+            ref="upload"
+          >
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-upload"
+              slot="trigger"
+              >添加范围</el-button
+            >
+          </el-upload>
+          <span class="custom" slot="reference" @click="showUpload()">
+            <svg-icon iconClass="custom" :style="style"></svg-icon>
+            自定义
+          </span>
+        </el-popover>
+        <span class="save" @click="save()">
+          保存
+        </span>
+        <span class="cancel" @click="cancel()">
+          取消
+        </span>
+      </div>
+    </div>
+    <div class="toggles">
+      <span
+        class="btn origin"
         :class="{ active: btnOriginActive }"
-        v-show="originGeojson"
         @click="handleToggle('下发范围')"
+        v-show="originGeojson"
       >
-        <svg-icon
-          class="svg-icon"
-          style="height: 1.5em; width: 1.5em;"
-          iconClass="aim"
-        />
-        <span>下发范围</span>
-      </button>
-      <button
-        class="btn pc btn-toggle"
-        :class="{ active: btnCheckActive }"
+        <i class="dot"></i>
+        <span class="text">下发范围</span>
+      </span>
+      <span
         v-show="pcGeojson"
+        class="btn pc"
+        :class="{ active: btnCheckActive }"
         @click="handleToggle('调查范围')"
       >
-        <svg-icon
-          class="svg-icon"
-          style="height: 1.5em; width: 1.5em;"
-          iconClass="aim"
-        />
-        <span>调查范围</span>
-      </button>
-      <button
-        class="btn app btn-toggle"
+        <i class="dot"></i>
+        <span class="text">调查范围</span>
+      </span>
+      <span
+        class="btn app"
         :class="{ active: btnAssistActive }"
         v-show="appGeojson && !pcGeojson"
         @click="handleToggle('辅助范围')"
       >
-        <svg-icon class="svg-icon" :style="style" iconClass="aim" />
-        <span>辅助范围</span>
-      </button>
-    </div>
-    <div class="btns" v-if="canEdit">
-      <el-popover
-        trigger="manual"
-        style="margin-right: 10px;"
-        v-model="showPopover"
-      >
-        <el-button size="small" @click="save()">保存</el-button>
-        <el-button size="small" @click="cancel()">取消</el-button>
-        <button class="btn btn-trigger" slot="reference" @click="geoEdit()">
-          <svg-icon iconClass="draw" :style="style" />编辑
-        </button>
-      </el-popover>
-      <el-popover
-        style="margin-right: 10px;"
-        placement="bottom-end"
-        trigger="manual"
-        v-model="showUploadPopover"
-      >
-        <el-upload
-          :action="upload.url"
-          :headers="upload.headers"
-          :limit="1"
-          :multiple="false"
-          :on-success="handleSuccess"
-          :on-remove="handleRemove"
-          :on-error="handleError"
-          :on-exceed="handleExceed"
-          ref="upload"
-        >
-          <el-button
-            size="small"
-            type="primary"
-            icon="el-icon-upload"
-            slot="trigger"
-            >添加范围</el-button
-          >
-          <el-button
-            size="small"
-            style="margin-left: 5px;"
-            @click="uploadSave()"
-            >保存</el-button
-          >
-          <el-button
-            size="small"
-            style="margin-left: 5px;"
-            @click="uploadCancel()"
-            >取消</el-button
-          >
-        </el-upload>
-        <button class="btn btn-customer" @click="showUpload()" slot="reference">
-          <svg-icon iconClass="custom" :style="style" />
-          自定义
-        </button>
-      </el-popover>
-      <button
-        class="btn btn-restore"
-        @click="restore()"
-        v-show="pcGeojson && isDrawing"
-      >
-        <svg-icon iconClass="restore" :style="style" />
-        还原
-      </button>
+        <i class="dot"></i>
+        <span class="text">辅助范围</span>
+      </span>
     </div>
   </div>
 </template>
 
 <script>
-import d2c from 'd2c';
-// import drawStyles from './draw-style';
 import { survey } from 'api';
 import upload from './upload';
+import draw from './draw';
 export default {
   name: 'geo-edit',
-  mixins: [upload],
+  mixins: [draw, upload],
   props: {
     map: {
       type: Object,
@@ -135,22 +116,16 @@ export default {
         height: '1.5em',
         width: '1.5em',
       },
-      D2c: d2c || window.d2c,
-      draw: null,
-      mode: 'simple_select',
-      data: '',
-      drawing: false,
-      show: false,
-      featureId: 'geo-edit-id',
-      showAppGeojson: false,
-      isDrawing: false,
       form: {
         pcGeojson: '',
       },
+      isDrawing: false,
+      current: '下发范围',
+      toolExpand: false,
+
       btnAssistActive: false,
       btnCheckActive: false,
       btnOriginActive: true,
-      showPopover: false,
     };
   },
   mounted() {
@@ -176,57 +151,17 @@ export default {
         active,
       });
     },
-    initDraw() {
-      if (this.map.draw) {
-        this.draw = this.map.draw();
-      } else {
-        this.draw = new this.D2c.draw({
-          displayControlsDefault: false,
-        });
-        this.map.addControl(this.draw);
-      }
-      this.bindEvent();
-    },
-    clearDraw() {
-      this.draw && this.draw.deleteAll();
-    },
-    handleEdit(geojson) {
-      this.draw && this.draw.deleteAll();
-      if (geojson) {
-        this.form.pcGeojson = geojson;
-        geojson = JSON.parse(geojson);
-        const feature = {
-          id: this.featureId,
-          type: 'Feature',
-          properties: {},
-          geometry: geojson,
-        };
-        this.draw.add(feature);
-        this.draw.changeMode('direct_select', {
-          featureId: this.featureId,
-        });
-      }
-    },
     geoEdit() {
-      this.uploadClear();
+      if (this.toolExpand) return false;
+      this.toolExpand = true;
       this.isDrawing = true;
       if (this.isDrawing) {
         this.draw && this.draw.deleteAll();
         this.showPopover = true;
-        // if (this.originGeojson) {
-        //   this.handleEdit(this.originGeojson);
-        // } else {
-        //   return false;
-        // }
         if (this.pcGeojson) {
           this.handleEdit(this.pcGeojson);
           return true;
-        }
-        // else if (this.appGeojson) {
-        //   this.handleEdit(this.appGeojson);
-        //   return true;
-        // }
-        else if (this.originGeojson) {
+        } else if (this.originGeojson) {
           this.handleEdit(this.originGeojson);
           return true;
         } else {
@@ -234,13 +169,6 @@ export default {
         }
       } else {
         this.draw && this.draw.deleteAll();
-      }
-    },
-    restore() {
-      if (this.isDrawing) {
-        if (this.originGeojson) {
-          this.handleEdit(this.originGeojson);
-        }
       }
     },
     cancel() {
@@ -252,27 +180,8 @@ export default {
           this.save();
         })
         .catch(() => {
-          this.draw && this.draw.deleteAll();
-          this.form.pcGeojson = '';
-          this.showPopover = false;
-          this.isDrawing = false;
+          this.reset();
         });
-    },
-    bindEvent() {
-      this.map.doubleClickZoom.disable();
-      this.map.on('draw.create', this.handleDraw);
-      this.map.on('draw.update', this.handleDraw);
-      this.map.on('draw.modechange', this.handleMode);
-    },
-    handleDraw() {
-      const data = this.draw.getAll();
-      const { features } = data;
-      if (features.length === 0) {
-        return false;
-      }
-      const feature = features[0];
-      const { geometry } = feature;
-      this.form.pcGeojson = JSON.stringify(geometry);
     },
     async save() {
       const formData = new FormData();
@@ -284,32 +193,21 @@ export default {
           type: 'success',
           message: '保存成功',
         });
-        this.form.pcGeojson = '';
-        this.draw && this.draw.deleteAll();
-        this.isDrawing = false;
-        this.showPopover = false;
-        this.$emit('finish-edit');
-        return true;
+        this.reset();
       }
     },
-    clear() {
-      this.draw.deleteAll();
-      this.draw.changeMode(this.mode);
-      this.show = false;
-    },
-    handleMode(e) {
-      if (e.mode !== this.mode) {
-        this.draw.changeMode(this.mode);
+    reset() {
+      this.form.pcGeojson = '';
+      this.draw && this.draw.deleteAll();
+      this.isDrawing = false;
+      this.toolExpand = false;
+      this.$emit('finish-edit');
+      if (this.upload.success) {
+        this.showUploadPopover = false;
+        this.upload.success = false;
+        this.$refs['upload'] && this.$refs['upload'].clearFiles();
+        this.$emit('finish-upload');
       }
-    },
-    offEvent() {
-      this.map.off('draw.create', this.handleDraw);
-      this.map.off('draw.update', this.handleDraw);
-      this.map.off('draw.changeMode', this.handleMode);
-    },
-    destroy() {
-      this.offEvent();
-      this.draw.changeMode('simple_select');
     },
   },
 };
@@ -317,50 +215,128 @@ export default {
 
 <style lang="scss">
 .geo-edit {
-  .btn {
-    height: 30px;
-    padding: 0 8px;
-    outline: 0;
-    border-radius: 5px;
-    border: 1px solid #e6e6e6;
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .origin.active {
-    color: #c08f01;
-  }
-  .pc.active {
-    color: #409eff;
-  }
-  .app.active {
-    color: #f56c6c;
-  }
-  .ranges {
+  .tools {
     position: absolute;
     top: 10px;
     left: 10px;
+    background-color: #fff;
+    padding: 3px 5px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: #606266;
     display: flex;
+    span {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .edit {
+      padding-right: 10px;
+    }
+    .tool {
+      display: flex;
+      border-left: 1px solid #ccc;
+      .prev,
+      .next {
+        padding: 0 5px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .prev:hover,
+      .prev.active,
+      .next:hover,
+      .next.active {
+        color: #409eff;
+      }
+      .restore {
+        border-left: 1px solid #ccc;
+        padding-left: 5px;
+      }
+      .custom {
+        margin-left: 10px;
+        border-left: 1px solid #ccc;
+      }
+      .save {
+        border-left: 1px solid #ccc;
+        margin-left: 10px;
+        padding: 0 5px;
+        color: #409eff;
+      }
+      .cancel {
+        color: #f56c6c;
+      }
+    }
   }
-  .btn-toggle {
-    margin-right: 5px;
-  }
-  .btns {
+  .toggles {
     position: absolute;
     top: 10px;
     right: 10px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+    font-size: 12px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     .btn {
-      margin-right: 10px;
+      cursor: pointer;
+      padding: 3px 0;
+      .text {
+        vertical-align: middle;
+      }
+      .dot {
+        vertical-align: middle;
+        display: inline-block;
+        height: 14px;
+        width: 14px;
+        border-radius: 100%;
+        box-sizing: border-box;
+        margin-right: 3px;
+        position: relative;
+        background-color: #fff;
+        &::after {
+          content: '';
+          display: inline-block;
+          height: 4px;
+          width: 4px;
+          border-radius: 100%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #fff;
+        }
+      }
     }
-    .btn:last-of-type {
-      margin: 0;
+    .btn.origin {
+      color: #c08f01;
+      .dot {
+        border: 1px solid #c08f01;
+      }
+      &.active {
+        .dot {
+          background-color: #c08f01;
+        }
+      }
     }
-    .btn-trigger {
-      color: #606266;
+    .btn.pc {
+      color: #409eff;
+      .dot {
+        border: 1px solid #409eff;
+      }
+      &.active {
+        .dot {
+          background-color: #409eff;
+        }
+      }
+    }
+    .btn.app {
+      color: #f56c6c;
+      .dot {
+        border: 1px solid #f56c6c;
+      }
+      &.active {
+        background-color: #f56c6c;
+      }
     }
   }
 }

@@ -68,6 +68,7 @@
           @finish-edit="getTaskDetail()"
           @finish-upload="finishUpload"
         />
+        <geo-edit-introduction :isDisplay="showIntroduction" />
       </div>
     </div>
   </div>
@@ -75,6 +76,7 @@
 <script>
 import vMap from 'components/map/map';
 import geojsonEdit from 'components/geo-edit/geo-edit';
+import geoEditIntroduction from 'components/geo-edit/introduction';
 import dcImage from 'components/image/dcImage';
 import vVideo from 'components/video/video';
 import manualUpload from 'components/upload/manual-upload';
@@ -94,6 +96,7 @@ export default {
   components: {
     vMap,
     geojsonEdit,
+    geoEditIntroduction,
     dcImage,
     vVideo,
     dcBaseInfo,
@@ -132,6 +135,7 @@ export default {
         recordJsonStr: '',
         pcGeojson: '',
       },
+      showIntroduction: false,
       marker: null,
     };
   },
