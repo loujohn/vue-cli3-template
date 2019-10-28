@@ -132,7 +132,7 @@ function preventRoute(type, path, from, next) {
     return next();
   }
   const regMap = {
-    '1': /sj/,
+    '1': /(sj|xt)/,
     '2': /qx/,
     '3': /dc/,
   };
