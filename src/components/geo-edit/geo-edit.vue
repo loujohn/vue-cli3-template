@@ -152,6 +152,7 @@ export default {
       });
     },
     geoEdit() {
+      if (this.toolExpand) return false;
       this.toolExpand = true;
       this.isDrawing = true;
       if (this.isDrawing) {
