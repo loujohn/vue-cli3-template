@@ -28,6 +28,7 @@
             :headers="upload.headers"
             :limit="1"
             :multiple="false"
+            :before-upload="progress"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-error="handleError"
@@ -209,6 +210,18 @@ export default {
         this.upload.success = false;
         this.$refs['upload'] && this.$refs['upload'].clearFiles();
         this.$emit('finish-upload');
+      }
+    },
+    progress(file) {
+      let fileType = file.type;
+      if (fileType !== 'application/zip' && fileType !== 'application/x-rar') {
+        this.$message({
+          message: '上传文件只能为压缩包',
+          type: 'error',
+        });
+        return false;
+      } else {
+        return true;
       }
     },
   },

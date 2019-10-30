@@ -1,5 +1,6 @@
 <template>
   <div class="manual-upload">
+    <p class="tips">* 上传文件不能为压缩包</p>
     <el-upload
       ref="upload"
       multiple
@@ -44,6 +45,18 @@ export default {
   methods: {
     handleChange(file, fileList) {
       this.fileList = fileList;
+      let type = file.name.substring(file.name.lastIndexOf('.') + 1);
+      if (type === 'zip' || type === 'ZIP' || type === 'rar' || type === 'RAR') {
+        this.$message({
+          message: '上传文件不能为压缩包',
+          type: 'error',
+        });
+        for (let i = 0; i < this.fileList.length; ++i) {
+          if (this.fileList[i].uid === file.uid) {
+            this.fileList.splice(i, 1);
+          }
+        }
+      }
     },
     initFile(files) {
       this.deletedFileIds = [];
@@ -68,5 +81,10 @@ export default {
 <style lang="scss">
 .manual-upload {
   padding: 10px;
+  .tips {
+    color: #f56c6c;
+    font-size: 14px;
+    margin: 0 0 5px 0px;
+  }
 }
 </style>
