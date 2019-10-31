@@ -66,30 +66,27 @@
       <span
         v-show="pcGeojson"
         class="btn pc"
-        :class="{ active: btnCheckActive }"
         @click="handleToggle('调查范围')"
       >
-        <i class="dot" v-if="btnCheckActive"></i>
+        <i class="dot" v-if="!btnCheckActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">调查范围</span>
       </span>
       <span
         class="btn origin"
-        :class="{ active: btnOriginActive }"
         @click="handleToggle('原始下发图斑')"
         v-show="originGeojson"
       >
-        <i class="dot" v-if="btnOriginActive"></i>
+        <i class="dot" v-if="!btnOriginActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">原始下发图斑</span>
       </span>
       <span
         class="btn app"
-        :class="{ active: btnAssistActive }"
         v-show="appGeojson && !pcGeojson"
         @click="handleToggle('辅助线')"
       >
-        <i class="dot" v-if="btnAssistActive"></i>
+        <i class="dot" v-if="!btnAssistActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">辅助线</span>
       </span>
@@ -124,20 +121,20 @@ export default {
   },
   data() {
     return {
-      style: {
-        height: '1.5em',
-        width: '1.5em',
-      },
+      // style: {
+      //   height: '1.5em',
+      //   width: '1.5em',
+      // },
       form: {
         pcGeojson: '',
       },
       isDrawing: false,
-      current: '原始下发图斑',
+      current: '调查范围',
       toolExpand: false,
 
       btnAssistActive: false,
-      btnCheckActive: false,
-      btnOriginActive: true,
+      btnCheckActive: true,
+      btnOriginActive: false,
     };
   },
   mounted() {
