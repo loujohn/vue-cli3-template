@@ -28,7 +28,7 @@
           <svg-icon class="my-icon" iconClass="reset"></svg-icon>
           重置
         </span>
-        <el-popover v-model="showUploadPopover" trigger="manual">
+        <el-popover v-model="showUploadPopover" trigger="click" placement="bottom">
           <el-upload
             :action="upload.url"
             :headers="upload.headers"
@@ -49,7 +49,7 @@
               >添加范围</el-button
             >
           </el-upload>
-          <span class="custom" slot="reference" @click="showUpload()">
+          <span class="custom" slot="reference">
             <svg-icon iconClass="uploadMap" class="my-icon"></svg-icon>
             导入范围
           </span>
