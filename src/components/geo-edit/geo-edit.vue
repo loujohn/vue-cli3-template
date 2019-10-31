@@ -6,117 +6,62 @@
         <span style="color: #409eff">编辑</span>
       </span>
       <div class="tool" v-show="toolExpand">
-        <svg-icon iconClass="back" class="prev" :class="{ active: recordIndex !== 0 }"
-          @click="prev()"
-          title="上一步"></svg-icon>
-        <svg-icon iconClass="go" class="next" :class="{ active: recordIndex < drawRecord.length - 1 }"
-          @click="next()"
-          title="下一步"></svg-icon>
-        <!-- <span
-          class="el-icon-back prev"
+        <svg-icon
+          iconClass="back"
+          class="prev"
           :class="{ active: recordIndex !== 0 }"
           @click="prev()"
           title="上一步"
-        ></span> -->
-        <!-- <span
-          class="el-icon-right next"
+        ></svg-icon>
+        <svg-icon
+          iconClass="go"
+          class="next"
           :class="{ active: recordIndex < drawRecord.length - 1 }"
           @click="next()"
           title="下一步"
-        ></span> -->
+        ></svg-icon>
         <span class="restore" @click="restore()">
-          <svg-icon class="my-icon" iconClass="reset"></svg-icon>
-          重置
+          <svg-icon class="my-icon" iconClass="reset"></svg-icon>重置
         </span>
-        <!-- <el-popover v-model="showUploadPopover" trigger="click" placement="bottom"> -->
-          <!-- <el-upload
+        <span class="custom">
+          <svg-icon iconClass="uploadMap" class="my-icon"></svg-icon>
+          <el-upload
             :action="upload.url"
             :headers="upload.headers"
             :limit="1"
             :multiple="false"
-            :before-upload="progress"
+            :before-upload="handleProgress"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-error="handleError"
             :on-exceed="handleExceed"
+            accept="application/x-zip-compressed, application/x-rar-compressed"
             ref="upload"
           >
-            <el-button
-              size="small"
-              type="primary"
-              icon="el-icon-upload"
-              slot="trigger"
-              >添加范围</el-button
-            >
-          </el-upload> -->
-          <span class="custom" slot="reference" @click="showUpload = true">
-            <svg-icon iconClass="uploadMap" class="my-icon"></svg-icon>
-            导入范围
-          </span>
-        <!-- </el-popover> -->
-        <span class="save" @click="save()">
-          保存
+            <el-button size="small" type="text" slot="trigger">导入范围</el-button>
+          </el-upload>
         </span>
-        <span class="cancel" @click="cancel()">
-          取消
-        </span>
+        <span class="save" @click="save()">保存</span>
+        <span class="cancel" @click="cancel()">取消</span>
       </div>
     </div>
     <div class="toggles">
-      <span
-        v-show="pcGeojson"
-        class="btn pc"
-        @click="handleToggle('调查范围')"
-      >
+      <span v-show="pcGeojson" class="btn pc" @click="handleToggle('调查范围')">
         <i class="dot" v-if="!btnCheckActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">调查范围</span>
       </span>
-      <span
-        class="btn origin"
-        @click="handleToggle('原始下发图斑')"
-        v-show="originGeojson"
-      >
+      <span class="btn origin" @click="handleToggle('原始下发图斑')" v-show="originGeojson">
         <i class="dot" v-if="!btnOriginActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">原始下发图斑</span>
       </span>
-      <span
-        class="btn app"
-        v-show="appGeojson && !pcGeojson"
-        @click="handleToggle('辅助线')"
-      >
+      <span class="btn app" v-show="appGeojson && !pcGeojson" @click="handleToggle('辅助线')">
         <i class="dot" v-if="!btnAssistActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">辅助线</span>
       </span>
     </div>
-    <el-dialog
-      title="导入范围"
-      :visible.sync="showUpload"
-      width="30%"
-      v-show="showUpload">
-      <el-upload
-        :action="upload.url"
-        :headers="upload.headers"
-        :limit="1"
-        :multiple="false"
-        :before-upload="progress"
-        :on-success="handleSuccess"
-        :on-remove="handleRemove"
-        :on-error="handleError"
-        :on-exceed="handleExceed"
-        ref="upload"
-      >
-        <el-button
-          size="small"
-          type="primary"
-          icon="el-icon-upload"
-          slot="trigger"
-          >添加范围</el-button
-        >
-      </el-upload>
-    </el-dialog>
   </div>
 </template>
 
@@ -160,8 +105,8 @@ export default {
       toolExpand: false,
 
       btnAssistActive: false,
-      btnCheckActive: true,
-      btnOriginActive: false,
+      btnCheckActive: this.pcGeojson ? true : false,
+      btnOriginActive: this.originGeojson ? true : false,
     };
   },
   mounted() {
@@ -245,18 +190,6 @@ export default {
         this.$emit('finish-upload');
       }
     },
-    progress(file) {
-      let fileType = file.type;
-      if (fileType !== 'application/zip' && fileType !== 'application/x-rar') {
-        this.$message({
-          message: '上传文件只能为压缩包',
-          type: 'error',
-        });
-        return false;
-      } else {
-        return true;
-      }
-    },
   },
 };
 </script>
@@ -320,6 +253,14 @@ export default {
           font-size: 12px;
           color: #409eff;
         }
+        .el-button--text {
+          font-size: 14px;
+          color: #606266;
+          font-weight: normal;
+        }
+        .el-upload-list {
+          display: none;
+        }
       }
       .save {
         background: #409eff;
@@ -374,52 +315,52 @@ export default {
         // align-items: center;
         // justify-content: center;
         // position: relative;
-      //   background-color: #fff;
+        //   background-color: #fff;
         // &::after {
-      //     content: '';
-      //     display: inline-block;
-      //     height: 4px;
-      //     width: 4px;
-      //     border-radius: 100%;
-      //     position: absolute;
-      //     top: 50%;
-      //     left: 50%;
-      //     transform: translate(-50%, -50%);
-      //     background-color: #fff;
+        //     content: '';
+        //     display: inline-block;
+        //     height: 4px;
+        //     width: 4px;
+        //     border-radius: 100%;
+        //     position: absolute;
+        //     top: 50%;
+        //     left: 50%;
+        //     transform: translate(-50%, -50%);
+        //     background-color: #fff;
         // }
       }
     }
     // .btn.origin {
-      // color: #409eff;
-      // .dot {
-      //   border: 1px solid #409eff;
-      // }
-      // &.active {
-      //   .dot {
-      //     border-color: #409eff;
-      //     background-color: #409eff;
-      //   }
-      // }
+    // color: #409eff;
+    // .dot {
+    //   border: 1px solid #409eff;
+    // }
+    // &.active {
+    //   .dot {
+    //     border-color: #409eff;
+    //     background-color: #409eff;
+    //   }
+    // }
     // }
     // .btn.pc {
-      // color: #409eff;
-      // .dot {
-      //   border: 1px solid #409eff;
-      // }
-      // &.active {
-      //   .dot {
-      //     background-color: #409eff;
-      //   }
-      // }
+    // color: #409eff;
+    // .dot {
+    //   border: 1px solid #409eff;
+    // }
+    // &.active {
+    //   .dot {
+    //     background-color: #409eff;
+    //   }
+    // }
     // }
     // .btn.app {
     //   color: #409eff;
     //   .dot {
     //     border: 1px solid #f56c6c;
     //   }
-      // &.active {
-      //   background-color: #f56c6c;
-      // }
+    // &.active {
+    //   background-color: #f56c6c;
+    // }
     // }
   }
 }

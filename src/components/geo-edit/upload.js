@@ -48,5 +48,17 @@ export default {
       this.recordIndex = 0;
       this.drawRecord = [];
     },
+    handleProgress(file) {
+      let fileType = file.type;
+      if (fileType !== 'application/zip' && fileType !== 'application/x-rar') {
+        this.$message({
+          message: '上传文件只能为压缩包',
+          type: 'error',
+        });
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
 };
