@@ -5,7 +5,7 @@
         <svg-icon iconClass="edit1" class="my-icon"></svg-icon>
         <span style="color: #409eff">编辑</span>
       </span>
-      <div class="tool">
+      <div class="tool" v-show="toolExpand">
         <svg-icon iconClass="back" class="prev" :class="{ active: recordIndex !== 0 }"
           @click="prev()"
           title="上一步"></svg-icon>
@@ -57,9 +57,9 @@
         <span class="save" @click="save()">
           保存
         </span>
-        <!-- <span class="cancel" @click="cancel()">
+        <span class="cancel" @click="cancel()">
           取消
-        </span> -->
+        </span>
       </div>
     </div>
     <div class="toggles">
@@ -246,6 +246,7 @@ export default {
     font-size: 14px;
     color: #606266;
     display: flex;
+    height: 25px;
     span {
       display: flex;
       align-items: center;
@@ -295,12 +296,16 @@ export default {
       .save {
         background: #409eff;
         margin-left: 20px;
-        padding: 3px 15px;
+        padding: 2px 15px;
         border-radius: 2px;
         color: #fff;
       }
       .cancel {
-        color: #f56c6c;
+        background: #f56c6c;
+        margin-left: 10px;
+        padding: 2px 15px;
+        border-radius: 2px;
+        color: #fff;
       }
     }
   }
