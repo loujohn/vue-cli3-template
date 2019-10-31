@@ -28,8 +28,8 @@
           <svg-icon class="my-icon" iconClass="reset"></svg-icon>
           重置
         </span>
-        <el-popover v-model="showUploadPopover" trigger="click" placement="bottom">
-          <el-upload
+        <!-- <el-popover v-model="showUploadPopover" trigger="click" placement="bottom"> -->
+          <!-- <el-upload
             :action="upload.url"
             :headers="upload.headers"
             :limit="1"
@@ -48,12 +48,12 @@
               slot="trigger"
               >添加范围</el-button
             >
-          </el-upload>
-          <span class="custom" slot="reference">
+          </el-upload> -->
+          <span class="custom" slot="reference" @click="showUpload = true">
             <svg-icon iconClass="uploadMap" class="my-icon"></svg-icon>
             导入范围
           </span>
-        </el-popover>
+        <!-- </el-popover> -->
         <span class="save" @click="save()">
           保存
         </span>
@@ -91,6 +91,32 @@
         <span class="text">辅助线</span>
       </span>
     </div>
+    <el-dialog
+      title="导入范围"
+      :visible.sync="showUpload"
+      width="30%"
+      v-show="showUpload">
+      <el-upload
+        :action="upload.url"
+        :headers="upload.headers"
+        :limit="1"
+        :multiple="false"
+        :before-upload="progress"
+        :on-success="handleSuccess"
+        :on-remove="handleRemove"
+        :on-error="handleError"
+        :on-exceed="handleExceed"
+        ref="upload"
+      >
+        <el-button
+          size="small"
+          type="primary"
+          icon="el-icon-upload"
+          slot="trigger"
+          >添加范围</el-button
+        >
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -121,6 +147,7 @@ export default {
   },
   data() {
     return {
+      showUpload: false,
       // style: {
       //   height: '1.5em',
       //   width: '1.5em',
@@ -270,6 +297,7 @@ export default {
         padding: 0 5px;
         font-size: 18px;
         font-weight: bold;
+        cursor: pointer;
       }
       .prev:hover,
       .prev.active,
