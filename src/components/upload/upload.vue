@@ -65,15 +65,14 @@ export default {
       });
     },
     progress(file) {
-      console.log('aaa');
-      let fileType = file.type;
-      if (fileType === 'application/zip' || fileType === 'application/x-rar') {
-        this.$message({
-          message: '上传文件不能为压缩包',
-          type: 'error',
-        });
-        return false;
-      }
+      // let fileType = file.type;
+      // if (fileType === 'application/zip' || fileType === 'application/x-rar') {
+      //   this.$message({
+      //     message: '上传文件不能为压缩包',
+      //     type: 'error',
+      //   });
+      //   return false;
+      // }
 
       if (file.size > 1024 * 1024 * 100) {
         this.$message({
