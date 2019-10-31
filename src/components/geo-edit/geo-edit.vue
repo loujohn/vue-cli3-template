@@ -45,8 +45,8 @@
         <span class="cancel" @click="cancel()">取消</span>
       </div>
     </div>
-    <div class="toggles">
-      <span v-show="pcGeojson" class="btn pc" @click="handleToggle('调查范围')">
+    <div class="toggles" v-show="pcGeojson">
+      <span class="btn pc" @click="handleToggle('调查范围')">
         <i class="dot" v-if="!btnCheckActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">调查范围</span>
@@ -60,6 +60,11 @@
         <i class="dot" v-if="!btnAssistActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">辅助线</span>
+      </span>
+      <span class="btn app" v-show="traceGeojson" @click="handleToggle('调查足迹')">
+        <i class="dot" v-if="!btncheckTraceActive"></i>
+        <i class="el-icon-check" v-else></i>
+        <span class="text">调查足迹</span>
       </span>
     </div>
   </div>
@@ -85,6 +90,9 @@ export default {
     pcGeojson: {
       type: String,
     },
+    traceGeojson: {
+      type: String,
+    },
     canEdit: {
       type: Boolean,
       default: false,
@@ -92,11 +100,6 @@ export default {
   },
   data() {
     return {
-      showUpload: false,
-      // style: {
-      //   height: '1.5em',
-      //   width: '1.5em',
-      // },
       form: {
         pcGeojson: '',
       },
@@ -105,8 +108,9 @@ export default {
       toolExpand: false,
 
       btnAssistActive: false,
-      btnCheckActive: this.pcGeojson ? true : false,
-      btnOriginActive: this.originGeojson ? true : false,
+      btnCheckActive: true,
+      btnOriginActive: true,
+      btncheckTraceActive: false,
     };
   },
   mounted() {
@@ -126,6 +130,9 @@ export default {
       } else if (name === '原始下发图斑') {
         this.btnOriginActive = !this.btnOriginActive;
         active = this.btnOriginActive;
+      } else if (name === '调查足迹') {
+        this.btncheckTraceActive = !this.btncheckTraceActive;
+        active = this.btncheckTraceActive;
       }
       this.$emit('toggle-geo-layer', {
         name,

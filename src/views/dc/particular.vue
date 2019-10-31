@@ -61,6 +61,7 @@
           :originGeojson="originGeojson"
           :appGeojson="appGeojson"
           :pcGeojson="pcGeojson"
+          :traceGeojson="traceGeojson"
           :canEdit="canEdit"
           v-if="map"
           @load="handleMapLoad"
@@ -89,6 +90,7 @@ import {
   pcGeo,
   appGeo,
   directionGeo,
+  surverUserTrace,
 } from '../../configs/layer.config';
 
 export default {
@@ -129,6 +131,7 @@ export default {
       pcGeojson: '',
       appGeojson: '',
       surveyStatus: '',
+      traceGeojson: '',
       checkFlowStage: '',
       form: {
         taskRecordId: this.id,
@@ -255,6 +258,7 @@ export default {
           vedioFiles,
           annexFiles,
           geojsons,
+          traceGeojson,
         },
       } = data;
       this.taskId = taskId;
@@ -263,6 +267,7 @@ export default {
       this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
       this.videoList = vedioFiles;
       this.attachmentList = annexFiles;
+      this.traceGeojson = traceGeojson;
       fieldsList = fieldsList.map(e => {
         if (e.fieldName === 'centerPoint') {
           const { fieldValue } = e;
@@ -297,6 +302,7 @@ export default {
       this.initGeoLayers(map, originGeo);
       this.initGeoLayers(map, pcGeo);
       this.initGeoLayers(map, appGeo);
+      this.initGeoLayers(map, surverUserTrace);
       this.setGeojson(map, originGeo, geojson);
       this.initSymbolLayer(map, directionGeo);
       const center = this.getCenter(geojson);
@@ -332,6 +338,12 @@ export default {
           const center = this.getCenter(this.originGeojson);
           this.setGeojson(this.map, directionGeo, center);
           this.marker = this.addMarker(this.map, this.marker, { center });
+        }
+      } else if (name === '调查足迹') {
+        if (active) {
+          this.setGeojson(this.map, surverUserTrace, this.traceGeojson);
+        } else {
+          this.clearGeojson(this.map, surverUserTrace);
         }
       }
     },
