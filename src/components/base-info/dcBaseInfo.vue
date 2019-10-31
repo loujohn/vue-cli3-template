@@ -11,10 +11,7 @@
         <el-form label-position="top" ref="form" :model="form" :rules="rules">
           <el-row :gutter="10">
             <el-col :span="12" v-for="(value, key) in form" :key="key">
-              <el-form-item
-                :label="`${formConfig[key]['fieldAlias']}:`"
-                :prop="key"
-              >
+              <el-form-item :label="`${formConfig[key]['fieldAlias']}:`" :prop="key">
                 <template
                   v-if="
                     formConfig[key]['fieldType'] === 0 ||
@@ -52,8 +49,7 @@
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                  >
-                  </el-date-picker>
+                  ></el-date-picker>
                 </template>
               </el-form-item>
             </el-col>
@@ -66,13 +62,23 @@
         <el-row :gutter="10">
           <el-col :span="12" v-for="item in constFieldList" :key="item.id">
             <template v-if="item.fieldType === 1">
+              <span class="isEdit">
+                <span v-if="item.is_pc_required === 1 && item.isEdit === 1">*</span>
+              </span>
               <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <span class="content">{{
+              <span class="content">
+                {{
                 getValue(item.fieldValue, item.options)
-              }}</span>
+                }}
+              </span>
             </template>
             <template v-else>
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
+              <span class="isEdit">
+                <span v-if="item.is_pc_required === 1 && item.isEdit === 1">*</span>
+              </span>
+              <span class="label-edit">
+                {{ item.fieldAlias }}:
+              </span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
           </el-col>
@@ -81,9 +87,7 @@
     </div>
     <div class="submit-box">
       <button class="btn btn-back" @click="back()">返回</button>
-      <button class="btn btn-submit" v-show="canEdit" @click="submit()">
-        提交
-      </button>
+      <button class="btn btn-submit" v-show="canEdit" @click="submit()">提交</button>
     </div>
   </div>
 </template>
@@ -147,6 +151,15 @@ export default {
     },
     submit() {
       if (!this.$refs['form']) {
+        for (let i = 0; i < this.constFieldList.length; ++i) {
+          if (this.constFieldList[i].is_pc_required === 1 && this.constFieldList[i].isEdit === 1 && !this.constFieldList[i].fieldValue) {
+            this.$message({
+              type: 'error',
+              message: '请填写必填项',
+            });
+            return false;
+          }
+        }
         this.$emit('submit');
         return true;
       }
@@ -204,6 +217,11 @@ export default {
   .content {
     display: inline-block;
     // padding-bottom: 25px;
+  }
+  .isEdit {
+    display: inline-block;
+    width: 10px;
+    color: #f56c6c;
   }
   .label-edit {
     display: inline-block;
