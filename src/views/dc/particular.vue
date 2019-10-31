@@ -316,13 +316,13 @@ export default {
         } else {
           this.clearGeojson(this.map, pcGeo);
         }
-      } else if (name === '辅助范围') {
+      } else if (name === '辅助线') {
         if (active) {
           this.setGeojson(this.map, appGeo, this.appGeojson);
         } else {
           this.clearGeojson(this.map, appGeo);
         }
-      } else if (name === '下发范围') {
+      } else if (name === '原始下发图斑') {
         if (!active) {
           this.marker && this.marker.remove();
           this.clearGeojson(this.map, originGeo);
@@ -367,7 +367,7 @@ export default {
       this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
       this.$refs['geo-edit'].isDrawing = false;
       this.$refs['geo-edit'].showPopover = false;
-      this.$refs['geo-edit'].uploadClear();
+      // this.$refs['geo-edit'].uploadClear();
     }
     next();
   },

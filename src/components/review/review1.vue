@@ -8,9 +8,9 @@
             class="btn"
             :class="{ active: showOriginGeojson }"
             v-show="originGeojson"
-            @click="handleToggle('下发范围')"
+            @click="handleToggle('原始下发图斑')"
           >
-            下发范围
+            原始下发图斑
           </button>
           <button
             class="btn"
@@ -483,7 +483,7 @@ export default {
             padding: 200,
           });
         }
-      } else if (name === '下发范围') {
+      } else if (name === '原始下发图斑') {
         this.showOriginGeojson = !this.showOriginGeojson;
         if (!this.showOriginGeojson) {
           this.marker && this.marker.remove();
