@@ -45,7 +45,7 @@
         <span class="cancel" @click="cancel()">取消</span>
       </div>
     </div>
-    <div class="toggles" v-show="pcGeojson">
+    <div class="toggles">
       <span class="btn pc" @click="handleToggle('调查范围')">
         <i class="dot" v-if="!btnCheckActive"></i>
         <i class="el-icon-check" v-else></i>
