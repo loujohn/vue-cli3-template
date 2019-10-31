@@ -4,35 +4,26 @@
       <div class="map-container" :style="{ height: containerHeight }">
         <v-map @load="handleMapLoad" />
         <div class="ranges">
-          <button
-            class="btn"
-            :class="{ active: showOriginGeojson }"
-            v-show="originGeojson"
-            @click="handleToggle('原始下发图斑')"
-          >
-            原始下发图斑
-          </button>
-          <button
-            class="btn"
-            :class="{ active: showPcGeojson }"
-            v-show="pcGeojson"
-            @click="handleToggle('调查范围')"
-          >
-            调查范围
-          </button>
-          <button
-            class="btn"
-            :class="{ active: showTraceGeojson }"
-            v-show="traceGeojson"
-            @click="handleToggle('调查足迹')"
-          >
-            调查足迹
-          </button>
+          <div class="geojsonChoose" v-show="originGeojson" @click="handleToggle('原始下发图斑')">
+            <i class="dot" v-if="!showOriginGeojson"></i>
+            <i class="el-icon-check" v-else></i>
+            <span>原始下发图斑</span>
+          </div>
+          <div class="geojsonChoose" v-show="pcGeojson" @click="handleToggle('调查范围')">
+            <i class="dot" v-if="!showPcGeojson"></i>
+            <i class="el-icon-check" v-else></i>
+            <span>调查范围</span>
+          </div>
+          <div class="geojsonChoose" v-show="traceGeojson" @click="handleToggle('调查足迹')">
+            <i class="dot" v-if="!showTraceGeojson"></i>
+            <i class="el-icon-check" v-else></i>
+            <span>调查足迹</span>
+          </div>
         </div>
       </div>
       <!-- <div class="image-container" v-show="showImage">
         <img :src="imagePath" alt="图片" />
-      </div> -->
+      </div>-->
     </div>
     <div class="right">
       <div class="head">
@@ -43,20 +34,14 @@
             :key="tab.name"
             :class="{ active: index === activeTabIndex }"
             @click="setActiveTabIndex(index)"
-            >{{ tab.name }}</span
-          >
+          >{{ tab.name }}</span>
         </div>
         <span class="close" @click="close()">
           <i class="el-icon-close"></i>
         </span>
       </div>
       <div class="review-box" v-show="activeTabIndex === 0">
-        <base-info
-          :fields="fieldList"
-          :operator="operator"
-          :type="type"
-          ref="baseInfo"
-        ></base-info>
+        <base-info :fields="fieldList" :operator="operator" :type="type" ref="baseInfo"></base-info>
         <div class="suggestion">
           <el-row>
             <el-col :span="4">
@@ -74,10 +59,10 @@
           </el-row>
         </div>
         <div class="people">
-          <span
-            >调查人员:
-            {{ data.referenceInfo && data.referenceInfo.userRealName }}</span
-          >
+          <span>
+            调查人员:
+            {{ data.referenceInfo && data.referenceInfo.userRealName }}
+          </span>
           <span>调查日期: {{ data.surveyTime }}</span>
           <el-popover
             placement="top-end"
@@ -86,15 +71,14 @@
             v-model="visible"
             width="200"
           >
-            <span
-              style="cursor: pointer;"
-              slot="reference"
-              @click="togglePopover()"
-              >图斑状态:
-              <strong :class="getClass(data.checkFlowStage)">{{
+            <span style="cursor: pointer;" slot="reference" @click="togglePopover()">
+              图斑状态:
+              <strong :class="getClass(data.checkFlowStage)">
+                {{
                 data.checkFlowStage | checkStatus
-              }}</strong></span
-            >
+                }}
+              </strong>
+            </span>
             <div class="suggestion-content">
               <span class="sug-title">{{ contentTitle }}</span>
               <span class="sug-content">{{ content }}</span>
@@ -106,7 +90,7 @@
           <!-- <div class="toggle">
             <span>上一条</span>
             <span>下一条</span>
-          </div> -->
+          </div>-->
           <div class="operation" v-show="operator === 'check'">
             <!-- <span>审核:</span>
             <el-radio-group class="radio-group" v-model="form.status">
@@ -115,21 +99,13 @@
             </el-radio-group>
             <el-button size="mini" @click="check()" class="submit-botton"
               >提交</el-button
-            > -->
-            <el-button size="mini" type="primary" @click="handleCheck('通过')"
-              >通过</el-button
-            >
-            <el-button size="mini" type="danger" @click="handleCheck('不通过')"
-              >不通过</el-button
-            >
+            >-->
+            <el-button size="mini" type="primary" @click="handleCheck('通过')">通过</el-button>
+            <el-button size="mini" type="danger" @click="handleCheck('不通过')">不通过</el-button>
           </div>
           <div class="operation" v-show="operator === 'recheck'">
-            <el-button size="mini" type="primary" @click="recheck()"
-              >重新提交</el-button
-            >
-            <el-button size="mini" type="warning" @click="reDistribute()"
-              >重新下发</el-button
-            >
+            <el-button size="mini" type="primary" @click="recheck()">重新提交</el-button>
+            <el-button size="mini" type="warning" @click="reDistribute()">重新下发</el-button>
           </div>
         </div>
       </div>
@@ -140,11 +116,7 @@
         ref="image-preview"
       />
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
-      <manual-upload
-        ref="manual-upload"
-        :files="attachmentList"
-        v-show="showUpload"
-      />
+      <manual-upload ref="manual-upload" :files="attachmentList" v-show="showUpload" />
       <v-attachments :attachments="attachmentList" v-show="showAttachments" />
     </div>
   </div>
@@ -190,6 +162,7 @@ export default {
   mixins: [mapHandler],
   data() {
     return {
+      checkList: [],
       tabs: [
         { name: '基本信息' },
         { name: '照 片' },
@@ -576,19 +549,36 @@ export default {
       position: absolute;
       top: 3px;
       left: 3px;
-      .btn {
-        padding: 3px;
-        border-radius: 3px;
-        background-color: rgba(255, 255, 255, 0.8);
-        border: 1px solid #e6e6e6;
-        display: inline-block;
-        margin-right: 10px;
-        font-size: 12px;
-        cursor: pointer;
-        outline: none;
-      }
-      .btn.active {
-        color: #409eff;
+      display: flex;
+      flex-direction: column;
+      background-color: #fff;
+      border-radius: 4px;
+      padding: 10px 10px 5px 10px;
+      .geojsonChoose {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        span {
+          color: #409eff;
+          font-size: 12px;
+          font-weight: normal;
+        }
+        .dot {
+          vertical-align: middle;
+          display: inline-block;
+          height: 10px;
+          width: 10px;
+          border: 1px solid #babcbe;
+          background-color: #f4f5f8;
+          border-radius: 1px;
+          margin-right: 8px;
+        }
+        .el-icon-check {
+          margin-right: 8px;
+          font-size: 2px;
+          background-color: #409eff;
+          color: #fff;
+        }
       }
     }
   }
