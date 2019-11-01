@@ -302,7 +302,7 @@ export default {
       this.initGeoLayers(map, originGeo);
       this.initGeoLayers(map, pcGeo);
       this.initGeoLayers(map, appGeo);
-      this.initGeoLayers(map, surverUserTrace);
+      this.initLineLayer(this.map, surverUserTrace);
       this.setGeojson(map, originGeo, geojson);
       this.initSymbolLayer(map, directionGeo);
       const center = this.getCenter(geojson);
@@ -341,9 +341,19 @@ export default {
         }
       } else if (name === '调查足迹') {
         if (active) {
+          // this.setGeojson(this.map, surverUserTrace, this.traceGeojson);
           this.setGeojson(this.map, surverUserTrace, this.traceGeojson);
+          const bbox = this.getBbox(this.traceGeojson);
+          this.map.fitBounds(bbox, {
+            padding: 200,
+          });
         } else {
+          // this.clearGeojson(this.map, surverUserTrace);
           this.clearGeojson(this.map, surverUserTrace);
+          const bbox = this.getBbox(this.originGeojson);
+          this.map.fitBounds(bbox, {
+            padding: 200,
+          });
         }
       }
     },
