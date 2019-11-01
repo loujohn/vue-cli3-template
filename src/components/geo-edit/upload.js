@@ -23,6 +23,10 @@ export default {
         this.map.fitBounds(fourPoint, {
           padding: 200,
         });
+        this.$message({
+          type: 'success',
+          message: '上传成功',
+        });
       }
     },
 
