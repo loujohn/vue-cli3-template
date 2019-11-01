@@ -4,15 +4,15 @@
       <div class="map-container" :style="{ height: containerHeight }">
         <v-map @load="handleMapLoad" />
         <div class="ranges">
-          <div class="geojsonChoose" v-show="originGeojson" @click="handleToggle('原始下发图斑')">
-            <i class="dot" v-if="!showOriginGeojson"></i>
-            <i class="el-icon-check" v-else></i>
-            <span>原始下发图斑</span>
-          </div>
           <div class="geojsonChoose" v-show="pcGeojson" @click="handleToggle('调查范围')">
             <i class="dot" v-if="!showPcGeojson"></i>
             <i class="el-icon-check" v-else></i>
             <span>调查范围</span>
+          </div>
+          <div class="geojsonChoose" v-show="originGeojson" @click="handleToggle('原始下发图斑')">
+            <i class="dot" v-if="!showOriginGeojson"></i>
+            <i class="el-icon-check" v-else></i>
+            <span>原始下发图斑</span>
           </div>
           <div class="geojsonChoose" v-show="traceGeojson" @click="handleToggle('调查足迹')">
             <i class="dot" v-if="!showTraceGeojson"></i>
