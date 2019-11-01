@@ -85,10 +85,6 @@
         </el-row>
       </div>
     </div>
-    <div class="submit-box">
-      <button class="btn btn-back" @click="back()">返回</button>
-      <button class="btn btn-submit" v-show="canEdit" @click="submit()">提交</button>
-    </div>
   </div>
 </template>
 <script>
@@ -145,36 +141,6 @@ export default {
       } else {
         this.edit = !this.edit;
       }
-    },
-    back() {
-      this.$router.go(-1);
-    },
-    submit() {
-      if (!this.$refs['form']) {
-        for (let i = 0; i < this.constFieldList.length; ++i) {
-          if (this.constFieldList[i].is_pc_required === 1 && this.constFieldList[i].isEdit === 1 && !this.constFieldList[i].fieldValue) {
-            this.$message({
-              type: 'error',
-              message: '请填写必填项',
-            });
-            return false;
-          }
-        }
-        this.$emit('submit');
-        return true;
-      }
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          const fieldList = this.fieldList.map(item => {
-            const { id, fieldName } = item;
-            return {
-              taskFieldsId: id,
-              fieldValue: this.form[fieldName],
-            };
-          });
-          this.$emit('submit', JSON.stringify(fieldList));
-        }
-      });
     },
   },
 };
@@ -248,23 +214,5 @@ export default {
   box-sizing: border-box;
   border-top: 1px solid #e6e6e6;
   background-color: #fff;
-  .btn {
-    height: 36px;
-    width: 80px;
-    cursor: pointer;
-    outline: none;
-    border-radius: 5px;
-  }
-  .btn-back {
-    border: 1px solid #0e67f2;
-    color: #0e67f2;
-    background-color: #fff;
-  }
-  .btn-submit {
-    margin-left: 10px;
-    border: 1px solid #e6e6e6;
-    background-color: #0e67f2;
-    color: #fff;
-  }
 }
 </style>

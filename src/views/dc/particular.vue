@@ -29,11 +29,11 @@
         </div>
         <div class="content-view">
           <dc-base-info
+            ref="dc-base-info"
             :fields="fieldList"
             :canEdit="canEdit"
             v-show="activeTabIndex === 0"
             @save-info="handleSave"
-            @submit="handleSubmit"
           />
           <dc-image
             :imageObj="imageObj"
@@ -51,6 +51,10 @@
             :attachments="attachmentList"
             v-show="showAttachments"
           />
+        </div>
+        <div class="submit-box">
+          <button class="btn btn-back" @click="back()">返回</button>
+          <button class="btn btn-submit" v-show="canEdit" @click="submit()">提交</button>
         </div>
       </div>
       <div class="map-container">
@@ -383,6 +387,46 @@ export default {
         this.map.flyTo({ center: position });
       }
     },
+    back() {
+      this.$router.go(-1);
+    },
+    submit() {
+      if (!this.$refs['dc-base-info'].$refs['form']) {
+        let filesList = this.$refs['dc-base-info'].constFieldList;
+        for (let i = 0; i < filesList.length; ++i) {
+          if (filesList[i].is_pc_required === 1 && filesList[i].isEdit === 1 && !filesList[i].fieldValue) {
+            this.$message({
+              type: 'error',
+              message: '请填写必填项',
+            });
+            return false;
+          }
+        }
+        let formFieldList = this.$refs['dc-base-info'].fieldList
+        const fieldList = formFieldList.map(item => {
+          const { id, fieldName } = item;
+          return {
+            taskFieldsId: id,
+            fieldValue: this.$refs['dc-base-info'].form[fieldName],
+          };
+        });
+        this.handleSubmit(JSON.stringify(fieldList));
+        return true;
+      }
+      this.$refs['dc-base-info'].$refs['form'].validate(valid => {
+        if (valid) {
+          let formFieldList = this.$refs['dc-base-info'].fieldList
+          const fieldList = formFieldList.map(item => {
+            const { id, fieldName } = item;
+            return {
+              taskFieldsId: id,
+              fieldValue: this.$refs['dc-base-info'].form[fieldName],
+            };
+          });
+          this.handleSubmit(JSON.stringify(fieldList));
+        }
+      });
+    },
   },
   beforeRouteLeave(to, from, next) {
     if (this.$refs['geo-edit']) {
@@ -430,6 +474,35 @@ export default {
       }
       .content-view {
         height: calc(100% - 42px);
+      }
+      .submit-box {
+        text-align: right;
+        padding: 10px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        border-top: 1px solid #e6e6e6;
+        background-color: #fff;
+        .btn {
+          height: 36px;
+          width: 80px;
+          cursor: pointer;
+          outline: none;
+          border-radius: 5px;
+        }
+        .btn-back {
+          border: 1px solid #0094ec;
+          color: #0094ec;
+          background-color: #fff;
+        }
+        .btn-submit {
+          margin-left: 10px;
+          border: 1px solid #0094ec;
+          background-color: #0094ec;
+          color: #fff;
+        }
       }
     }
   }
