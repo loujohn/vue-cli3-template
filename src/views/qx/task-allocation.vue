@@ -51,7 +51,7 @@
           </el-col>
           <el-col :span="6" v-if="status === 1">
             <span class="label">调查人员:</span>
-            <el-select v-model="form.surveyUserId" :size="size" clearable>
+            <el-select v-model="searchUserId" :size="size" clearable>
               <el-option
                 v-for="item in surveyUserList"
                 :key="item.id"
@@ -230,6 +230,7 @@ export default {
       fields: [],
       selectedTasks: [],
       showPagination: true,
+      searchUserId: '',
     };
   },
   computed: {
