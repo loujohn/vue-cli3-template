@@ -87,19 +87,7 @@
         </div>
         <div class="action">
           <div class="toggle"></div>
-          <!-- <div class="toggle">
-            <span>上一条</span>
-            <span>下一条</span>
-          </div>-->
           <div class="operation" v-show="operator === 'check'">
-            <!-- <span>审核:</span>
-            <el-radio-group class="radio-group" v-model="form.status">
-              <el-radio :label="1">通过</el-radio>
-              <el-radio :label="0">不通过</el-radio>
-            </el-radio-group>
-            <el-button size="mini" @click="check()" class="submit-botton"
-              >提交</el-button
-            >-->
             <el-button size="mini" type="primary" @click="handleCheck('通过')">通过</el-button>
             <el-button size="mini" type="danger" @click="handleCheck('不通过')">不通过</el-button>
           </div>
@@ -329,6 +317,9 @@ export default {
       }
       if (this.type === 'qx') {
         const recordJsonStr = this.handleFieldList();
+        if (!recordJsonStr) {
+          return false;
+        }
         formData.append('recordJsonStr', recordJsonStr);
       }
       for (let key in this.form) {
@@ -346,6 +337,9 @@ export default {
       });
       formData.append('deleteAnnexIdStr', deletedFileIds.toString());
       const recordJsonStr = this.handleFieldList();
+      if (!recordJsonStr) {
+        return false;
+      }
       formData.append('recordJsonStr', recordJsonStr);
       this.form = {
         ...this.form,
@@ -422,16 +416,33 @@ export default {
       }
     },
     handleFieldList() {
-      const form = this.$refs['baseInfo'].form;
-      const fieldList = this.$refs['baseInfo'].fieldList;
-      const fields = fieldList.map(field => {
-        const { id, fieldName } = field;
-        return {
-          taskFieldsId: id,
-          fieldValue: form[fieldName],
-        };
-      });
-      return JSON.stringify(fields);
+      if (this.$refs['baseInfo'].$refs['form']) {
+        this.$refs['baseInfo'].$refs['form'].validate(valid => {
+          if (valid) {
+            const form = this.$refs['baseInfo'].form;
+            const fieldList = this.$refs['baseInfo'].fieldList;
+            const fields = fieldList.map(field => {
+              const { id, fieldName } = field;
+              return {
+                taskFieldsId: id,
+                fieldValue: form[fieldName],
+              };
+            });
+            return JSON.stringify(fields);
+          }
+        })
+      } else {
+        const form = this.$refs['baseInfo'].form;
+        const fieldList = this.$refs['baseInfo'].fieldList;
+        const fields = fieldList.map(field => {
+          const { id, fieldName } = field;
+          return {
+            taskFieldsId: id,
+            fieldValue: form[fieldName],
+          };
+        });
+        return JSON.stringify(fields);
+      }
     },
     handleToggle(name) {
       if (name === '调查范围') {

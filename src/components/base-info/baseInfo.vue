@@ -1,6 +1,12 @@
 <template>
   <div>
-    <div v-if="showForm">
+    <div class="edit-trigger" v-if="showForm">
+      <span @click="doEdit()">
+        <svg-icon iconClass="edit" />
+        {{ isEdit ? '取消编辑' : '编辑' }}
+      </span>
+    </div>
+    <div v-if="showForm && isEdit">
       <div class="base-info">
         <el-form label-position="top" ref="form" :model="form" :rules="rules">
           <el-row :gutter="10">
@@ -60,16 +66,19 @@
         <el-row :gutter="10">
           <el-col :span="24" v-for="item in constFieldList" :key="item.id">
             <template v-if="item.fieldType === 0">
+              <span class="tips"><span v-if="item.is_pc_required === 1 && item.isEdit === 1">* </span></span>
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
             <template v-else-if="item.fieldType === 1">
+              <span class="tips"><span v-if="item.is_pc_required === 1 && item.isEdit === 1">* </span></span>
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{
                 getValue(item.fieldValue, item.options)
               }}</span>
             </template>
             <template v-else-if="item.fieldType === 2">
+              <span class="tips"><span v-if="item.is_pc_required === 1 && item.isEdit === 1">* </span></span>
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
@@ -96,6 +105,11 @@ export default {
       default: () => [],
     },
   },
+  data() {
+    return {
+      isEdit: false,
+    }
+  },
   computed: {
     showForm() {
       return (
@@ -104,10 +118,52 @@ export default {
       );
     },
   },
+  methods: {
+    doEdit() {
+      if (this.isEdit) {
+        this.$confirm('是否保存当前编辑?', '提示', {
+          confirmButtonText: '是',
+          cancelButtonText: '否',
+          type: 'info',
+        })
+          .then(() => {
+            this.$refs['form'].validate(valid => {
+              if (valid) {
+                for (let item of this.constFieldList) {
+                  if (item.isEdit === 1) {
+                    item.fieldValue = this.form[item.fieldName];
+                  }
+                }
+                this.isEdit = !this.isEdit;
+              }
+            })
+          })
+          .catch(() => {
+            this.isEdit = !this.isEdit;
+          });
+      } else {
+        for (let item of this.constFieldList) {
+          if (item.isEdit === 1) {
+            this.form[item.fieldName] = item.fieldValue;
+          }
+        }
+        this.isEdit = !this.isEdit;
+      }
+    },
+  },
 };
 </script>
 
 <style lang="scss">
+.edit-trigger {
+  padding: 5px 10px;
+  text-align: right;
+  span {
+    color: #409eff;
+    font-size: 14px;
+    cursor: pointer;
+  }
+}
 .base-info {
   padding: 30px 20px;
   color: #000;
@@ -142,6 +198,11 @@ export default {
   }
   .el-row--flex {
     flex-wrap: wrap;
+  }
+  .tips {
+    display: inline-block;
+    width: 10px;
+    color: #f56c6c;
   }
 }
 </style>
