@@ -20,7 +20,7 @@
           @click="next()"
           title="下一步"
         ></svg-icon>
-        <span class="restore" @click="restore()">
+        <span class="restore" @click="handleRestore()">
           <svg-icon class="my-icon" iconClass="reset"></svg-icon>重置
         </span>
         <span class="custom">
@@ -35,7 +35,6 @@
             :on-remove="handleRemove"
             :on-error="handleError"
             :on-exceed="handleExceed"
-            accept="application/x-zip-compressed, application/x-rar-compressed"
             ref="upload"
           >
             <el-button size="small" type="text" slot="trigger">导入范围</el-button>
@@ -197,6 +196,9 @@ export default {
         this.$emit('finish-upload');
       }
     },
+    handleRestore() {
+      this.restore();
+    }
   },
 };
 </script>
