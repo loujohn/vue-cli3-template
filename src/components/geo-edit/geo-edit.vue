@@ -197,6 +197,7 @@ export default {
       }
     },
     handleRestore() {
+      this.$refs.upload.clearFiles();
       this.restore();
     }
   },
