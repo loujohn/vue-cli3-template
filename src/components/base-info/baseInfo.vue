@@ -167,7 +167,7 @@ export default {
 .base-info {
   padding: 30px 20px;
   color: #000;
-  height: 340px;
+  height: 310px;
   overflow: auto;
   box-sizing: border-box;
   border-bottom: 1px solid #e6e6e6;
