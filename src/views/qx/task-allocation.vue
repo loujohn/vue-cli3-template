@@ -30,20 +30,9 @@
         </div>
       </div>
       <div class="filter">
-        <el-row :gutter="10">
+        <el-row :gutter="10" type="flex" justify="space-between">
           <el-col :span="6">
-            <span class="label">调查人员:</span>
-            <el-select v-model="form.surveyUserId" :size="size" clearable>
-              <el-option
-                v-for="item in surveyUserList"
-                :key="item.id"
-                :label="item.realName"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="6">
-            <span class="label">分发状态:</span>
+            <!-- <span class="label">分发状态:</span>
             <el-select
               v-model="status"
               :size="size"
@@ -54,6 +43,20 @@
                 :key="item.name"
                 :label="item.name"
                 :value="item.value"
+              ></el-option>
+            </el-select> -->
+            <el-radio-group v-model="status" size="small" @change="handleStatusChange">
+              <el-radio-button :label="item.value" v-for="(item, index) of distributionStatusList" :key="index">{{item.name}}</el-radio-button>
+            </el-radio-group>
+          </el-col>
+          <el-col :span="6" v-if="status === 1">
+            <span class="label">调查人员:</span>
+            <el-select v-model="form.surveyUserId" :size="size" clearable>
+              <el-option
+                v-for="item in surveyUserList"
+                :key="item.id"
+                :label="item.realName"
+                :value="item.id"
               ></el-option>
             </el-select>
           </el-col>
@@ -66,7 +69,7 @@
                 size="small"
                 @click="handleTaskAll()"
               >
-                <svg-icon iconClass="分发"></svg-icon> 全部分派
+                <svg-icon iconClass="分发"></svg-icon> 批量分派
               </el-button>
               <el-button
                 @click="handleTaskAll()"
@@ -152,6 +155,25 @@
         @cancel="handleCancel"
       />
     </div>
+    <el-dialog
+      title="任务分派"
+      :visible.sync="showSurceyUserChoose"
+      width="30%"
+      :before-close="handleClose">
+      <span>调查人员：</span>
+      <el-select v-model="form.surveyUserId" :size="size" clearable>
+        <el-option
+          v-for="item in surveyUserList"
+          :key="item.id"
+          :label="item.realName"
+          :value="item.id"
+        ></el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancelTask()">取 消</el-button>
+        <el-button type="primary" @click="handleTaskAll()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -181,9 +203,10 @@ export default {
   mixins: [list],
   data() {
     return {
+      showSurceyUserChoose: false,
       distributionStatusList: [
-        { name: '已分派', value: 1 },
         { name: '未分派', value: 0 },
+        { name: '已分派', value: 1 },
       ],
       size: 'small',
       map: null,
@@ -283,17 +306,21 @@ export default {
       if (this.status === 1) {
         this.form.surveyUserId = '';
       }
-      if (!this.form.surveyUserId && this.status === 0) {
-        this.$message({
-          type: 'warning',
-          message: '请选择调查员',
-        });
-        return false;
-      }
       if (this.selectedTasks.length === 0) {
         this.$message({
           type: 'warning',
           message: '请勾选图斑',
+        });
+        return false;
+      }
+      if (!this.form.surveyUserId && this.status === 0 && this.showSurceyUserChoose === false) {
+        this.showSurceyUserChoose = true;
+        return false;
+      }
+      if (!this.form.surveyUserId && this.status === 0 && this.showSurceyUserChoose === true) {
+        this.$message({
+          type: 'warning',
+          message: '请选择调查人员',
         });
         return false;
       }
@@ -314,7 +341,13 @@ export default {
         this.getList();
         this.handleMap();
         this.getTuBanStatistic();
+        this.showSurceyUserChoose = false;
+        this.form.surveyUserId = '';
       }
+    },
+    handleCancelTask() {
+      this.showSurceyUserChoose = false;
+      this.form.surveyUserId = '';
     },
     async handleTaskOne(item) {
       const { id, surveyStage } = item;
