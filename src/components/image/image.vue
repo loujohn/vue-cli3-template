@@ -184,12 +184,13 @@ export default {
 <style lang="scss">
 .image {
   .beChoose {
-    border: 2px dashed #f56c6c;
-    padding: 2px;
+    box-shadow: 0px 0px 5px rgb(59, 58, 58);
+    // border: 2px dashed #f56c6c;
+    // padding: 2px;
   }
   .normal {
-    border: 2px solid #fff;
-    padding: 2px;
+    // border: 2px solid #fff;
+    // padding: 2px;
   }
   padding: 10px;
   overflow: auto;
