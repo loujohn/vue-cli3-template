@@ -51,7 +51,7 @@
           </el-col>
           <el-col :span="6" v-if="status === 1">
             <span class="label">调查人员:</span>
-            <el-select v-model="searchUserId" :size="size" clearable>
+            <el-select v-model="searchUserId" :size="size" clearable @change="handleCurrentPageChange(1)">
               <el-option
                 v-for="item in surveyUserList"
                 :key="item.id"
@@ -435,6 +435,7 @@ export default {
       const params = {
         ...this.params,
         taskId: this.id,
+        surveyUserId: this.searchUserId || undefined,
       };
       const data = await task.getTaskRecordList(params);
       const { dataList, totalCount } = data;
