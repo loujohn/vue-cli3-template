@@ -459,17 +459,30 @@ export default {
     .operation-panel {
       background: #fff;
       .tabs {
-        background-color: #f1f1f1;
+        display: flex;
+        background-color: #0094ec;
+        box-sizing: border-box;
+        height: 40px;
+        color: #fff;
+        font-size: 14px;
         .tab {
-          display: inline-block;
-          font-size: 14px;
+          width: 85px;
           padding: 10px 0;
-          margin: 0 10px;
           cursor: pointer;
+          display: flex;
+          margin-left: 5px;
+          align-items: center;
+          justify-content: center;
         }
         .tab.active {
+          border-top-right-radius: 4px;
+          border-top-left-radius: 4px;
+          margin-top: 5px;
+          background: #fff;
+          font-weight: bold;
+          border-bottom: 1px solid #0094ec;
+          border-bottom: 1px solid #fff;
           color: #0094ec;
-          border-bottom: 3px solid #0094ec;
         }
       }
       .content-view {

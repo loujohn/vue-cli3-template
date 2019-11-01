@@ -223,8 +223,8 @@ export default {
       border-radius: 45px;
       // background-color: #5d7b9a;
       // border-color: #5d7b9a;
-      background-color: #0087d7;
-      border-color: #0087d7;
+      background-color: #0094ec;
+      border-color: #0094ec;
       color: #fff;
     }
   }
