@@ -6,9 +6,7 @@
         <el-radio-button label="farImageFiles">远 景</el-radio-button>
         <el-radio-button label="otherImageFiles">其 它</el-radio-button>
       </el-radio-group>
-      <span class="show-big-picture" @click="showBigPicture()" v-show="fullPath"
-        >查看大图</span
-      >
+      <span class="show-big-picture" @click="showBigPicture()" v-show="fullPath">查看原图</span>
     </div>
     <el-row :gutter="10" v-show="!isEmpty">
       <el-col :span="6" v-for="(image, index) in images" :key="index">
@@ -16,6 +14,7 @@
           fit="scale-down"
           :src="`${staticUrl}${image.filePath}`"
           @click="handleImageClick(image)"
+          :class="current === index ? 'beChoose' : 'normal'"
         >
           <div slot="error">
             <i class="el-icon-picture-outline"></i>
@@ -117,7 +116,7 @@ export default {
       fullPath: '',
       showImage: false,
       dialogVisible: false,
-      current: 0,
+      current: undefined,
     };
   },
   methods: {
@@ -177,6 +176,14 @@ export default {
 
 <style lang="scss">
 .dc-image {
+  .beChoose {
+    border: 2px dashed #f56c6c;
+    padding: 2px;
+  }
+  .normal {
+    border: 2px solid #fff;
+    padding: 2px;
+  }
   padding: 10px;
   overflow: auto;
   overflow: auto;
