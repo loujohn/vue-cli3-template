@@ -165,7 +165,7 @@ export default {
   }
 }
 .base-info {
-  padding: 30px 20px;
+  padding: 0px 20px 30px 20px;
   color: #000;
   height: 310px;
   overflow: auto;
