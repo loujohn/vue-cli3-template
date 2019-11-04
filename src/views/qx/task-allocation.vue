@@ -45,13 +45,27 @@
                 :value="item.value"
               ></el-option>
             </el-select> -->
-            <el-radio-group v-model="status" size="small" @change="handleStatusChange">
-              <el-radio-button :label="item.value" v-for="(item, index) of distributionStatusList" :key="index">{{item.name}}</el-radio-button>
+            <el-radio-group
+              v-model="status"
+              size="small"
+              @change="handleStatusChange"
+            >
+              <el-radio-button
+                :label="item.value"
+                v-for="(item, index) of distributionStatusList"
+                :key="index"
+                >{{ item.name }}</el-radio-button
+              >
             </el-radio-group>
           </el-col>
           <el-col :span="6" v-if="status === 1">
             <span class="label">调查人员:</span>
-            <el-select v-model="searchUserId" :size="size" clearable @change="handleCurrentPageChange(1)">
+            <el-select
+              v-model="searchUserId"
+              :size="size"
+              clearable
+              @change="handleCurrentPageChange(1)"
+            >
               <el-option
                 v-for="item in surveyUserList"
                 :key="item.id"
@@ -159,7 +173,8 @@
       title="任务分派"
       :visible.sync="showSurceyUserChoose"
       width="30%"
-      :before-close="handleClose">
+      :before-close="handleClose"
+    >
       <span>调查人员：</span>
       <el-select v-model="form.surveyUserId" :size="size" clearable>
         <el-option
@@ -279,15 +294,23 @@ export default {
         this.selectedTasks.map(task => {
           idMap[task.id] = task.id;
         });
-        this.map.setPaintProperty('circle-layer', 'circle-color', [
-          'case',
-          ['has', ['get', 'taskRecordId'], ['literal', idMap]],
-          'yellow',
-          this.status ? '#1296db' : '#d81e06',
-        ]);
+        this.highlightSelectedTasks(this.selectedTasks, this.map, this.status);
         this.list = this.selectedTasks;
         this.$refs['table'].toggleAllSelection();
       }
+    },
+    highlightSelectedTasks(selectTasks, map, status) {
+      let idMap = {};
+      selectTasks.forEach(task => {
+        idMap[task.id] = task.id;
+      });
+      map &&
+        map.setPaintProperty('circle-layer', 'circle-color', [
+          'case',
+          ['has', ['get', 'taskRecordId'], ['literal', idMap]],
+          'yellow',
+          status ? '#1296db' : '#d81e06',
+        ]);
     },
     handleCancel() {
       this.selectedTasks = [];
@@ -314,11 +337,19 @@ export default {
         });
         return false;
       }
-      if (!this.form.surveyUserId && this.status === 0 && this.showSurceyUserChoose === false) {
+      if (
+        !this.form.surveyUserId &&
+        this.status === 0 &&
+        this.showSurceyUserChoose === false
+      ) {
         this.showSurceyUserChoose = true;
         return false;
       }
-      if (!this.form.surveyUserId && this.status === 0 && this.showSurceyUserChoose === true) {
+      if (
+        !this.form.surveyUserId &&
+        this.status === 0 &&
+        this.showSurceyUserChoose === true
+      ) {
         this.$message({
           type: 'warning',
           message: '请选择调查人员',
@@ -460,10 +491,12 @@ export default {
       } else {
         this.selectedTasks.push(row);
       }
-      console.log(this.selectedTasks);
+      this.highlightSelectedTasks(this.selectedTasks, this.map, this.status);
+      // console.log(this.selectedTasks);
     },
     handleTaskSelectAll(selection) {
       this.selectedTasks = JSON.parse(JSON.stringify(selection));
+      this.highlightSelectedTasks(this.selectedTasks, this.map, this.status);
     },
     getPointFeatures(geojson) {
       let featureCollection = {
