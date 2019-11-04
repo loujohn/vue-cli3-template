@@ -37,7 +37,9 @@
             :on-exceed="handleExceed"
             ref="upload"
           >
-            <el-button size="small" type="text" slot="trigger">导入范围</el-button>
+            <el-button size="small" type="text" slot="trigger"
+              >导入范围</el-button
+            >
           </el-upload>
         </span>
         <span class="save" @click="save()">保存</span>
@@ -50,17 +52,29 @@
         <i class="el-icon-check" v-else></i>
         <span class="text">调查范围</span>
       </span>
-      <span class="btn origin" @click="handleToggle('原始下发图斑')" v-show="originGeojson">
+      <span
+        class="btn origin"
+        @click="handleToggle('原始下发图斑')"
+        v-show="originGeojson"
+      >
         <i class="dot" v-if="!btnOriginActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">原始下发图斑</span>
       </span>
-      <span class="btn app" v-show="appGeojson && !pcGeojson" @click="handleToggle('辅助线')">
+      <span
+        class="btn app"
+        v-show="appGeojson && !pcGeojson"
+        @click="handleToggle('辅助线')"
+      >
         <i class="dot" v-if="!btnAssistActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">辅助线</span>
       </span>
-      <span class="btn app" v-show="traceGeojson" @click="handleToggle('调查足迹')">
+      <span
+        class="btn app"
+        v-show="traceGeojson"
+        @click="handleToggle('调查足迹')"
+      >
         <i class="dot" v-if="!btncheckTraceActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">调查足迹</span>
@@ -107,7 +121,7 @@ export default {
       toolExpand: false,
 
       btnAssistActive: false,
-      btnCheckActive: true,
+      btnCheckActive: false,
       btnOriginActive: true,
       btncheckTraceActive: false,
     };
@@ -199,7 +213,7 @@ export default {
     handleRestore() {
       this.$refs.upload.clearFiles();
       this.restore();
-    }
+    },
   },
 };
 </script>
