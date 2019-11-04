@@ -1,23 +1,40 @@
 <template>
   <div class="head">
-    <router-link tag="span" :to="{ path: '/' }" class="title"
-      ><img class="img" :src="titleLogo" alt="" />{{ title }}</router-link
-    >
-    <el-dropdown @command="handleCommand">
-      <div class="user">
-        <svg-icon iconClass="user"></svg-icon>
-        <span>{{ realName }} {{ userName }}</span>
+    <router-link tag="span" :to="{ path: '/' }" class="title">
+      <img class="img" :src="titleLogo" alt />
+      {{ title }}
+    </router-link>
+    <div class="right">
+      <div class="menu-wrapper" v-if="getPermission()">
+        <div
+          class="menu-item"
+          v-for="(item, index) in menuList"
+          :key="index"
+          :class="{
+          active:
+            item.router &&
+            activePart === item.name,
+        }"
+          @click="handleMenuSelect(item)"
+        >
+          <p>{{ item.name }}</p>
+        </div>
       </div>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+      <el-dropdown @command="handleCommand">
+        <div class="user">
+          <svg-icon iconClass="user"></svg-icon>
+          <span>{{ realName }} {{ userName }}</span>
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
   </div>
 </template>
 <script>
 import { title } from 'config';
 import { mapGetters } from 'vuex';
-// const logo = require('../../assets/images/header/kuangshan.png');
 import titleLogo from 'assets/images/sj/kuangshan .png';
 export default {
   name: 'v-header',
@@ -25,10 +42,37 @@ export default {
     return {
       title,
       titleLogo,
+      menuList: [
+        {
+          name: '任务管理',
+          router: 'sj-list',
+        },
+        {
+          name: '设备管理',
+          router: 'equipment-manage',
+        },
+        {
+          name: '访问日志',
+          router: 'visit-log',
+        },
+      ],
+      activePart: '任务管理',
     };
   },
   computed: {
     ...mapGetters(['userName', 'realName']),
+  },
+  mounted() {
+    let currentPath = this.$route.path.substring(
+      this.$route.path.lastIndexOf('/') + 1,
+    );
+    if (currentPath === 'visitLog') {
+      this.activePart = '访问日志';
+    } else if (currentPath === 'list') {
+      this.activePart = '任务管理';
+    } else if (currentPath === 'equipmentManage') {
+      this.activePart = '设备管理';
+    }
   },
   methods: {
     handleCommand(command) {
@@ -39,6 +83,25 @@ export default {
           break;
         default:
           break;
+      }
+    },
+    handleMenuSelect(item) {
+      this.$router.push({
+        name: item.router,
+      });
+      this.activePart = item.name;
+    },
+    getPermission() {
+      let userInfo = sessionStorage.getItem('userInfo');
+      let type;
+      if (userInfo) {
+        userInfo = JSON.parse(userInfo);
+        ({ type } = userInfo);
+      }
+      if (type === 1) {
+        return true;
+      } else {
+        return false;
       }
     },
   },
@@ -76,6 +139,48 @@ export default {
     font-size: $font-sm;
     span {
       padding-left: 5px;
+    }
+  }
+  .right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .menu-wrapper {
+      height: 70px;
+      display: flex;
+      margin-right: 40px;
+      .menu-item {
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 25px;
+        p {
+          font-weight: bold;
+          font-size: 16px;
+          padding: 10px 0;
+          margin: 0;
+          box-sizing: content-box;
+          color: #fff;
+        }
+      }
+      .menu-item.active {
+        position: relative;
+        background-color: #0094ec;
+        &:before {
+          content: '';
+          position: absolute;
+          bottom: 0px;
+          left: 42%;
+          border-width: 0 10px 10px;
+          border-style: solid;
+          border-color: #eff4fb transparent;
+          display: block;
+          width: 0;
+        }
+      }
     }
   }
 }

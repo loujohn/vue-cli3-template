@@ -34,6 +34,18 @@ const router = new Router({
               component: () => import('views/sj/detail'),
               props: route => ({ ...route.query }),
             },
+            {
+              path: 'equipmentManage',
+              name: 'equipment-manage',
+              component: () => import('views/equipment/equipmentManage'),
+              props: route => ({ ...route.query }),
+            },
+            {
+              path: 'visitLog',
+              name: 'visit-log',
+              component: () => import('views/log/visitLog'),
+              props: route => ({ ...route.query }),
+            },
           ],
         },
         {
