@@ -367,7 +367,7 @@ export default {
       this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
       this.$refs['geo-edit'].isDrawing = false;
       this.$refs['geo-edit'].showPopover = false;
-      this.$refs['geo-edit'].uploadClear();
+      // this.$refs['geo-edit'].uploadClear();
     }
     next();
   },
