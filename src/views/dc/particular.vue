@@ -29,11 +29,11 @@
         </div>
         <div class="content-view">
           <dc-base-info
+            ref="dc-base-info"
             :fields="fieldList"
             :canEdit="canEdit"
             v-show="activeTabIndex === 0"
             @save-info="handleSave"
-            @submit="handleSubmit"
           />
           <dc-image
             :imageObj="imageObj"
@@ -52,6 +52,10 @@
             v-show="showAttachments"
           />
         </div>
+        <div class="submit-box">
+          <button class="btn btn-back" @click="back()">返回</button>
+          <button class="btn btn-submit" v-show="canEdit" @click="submit()">提交</button>
+        </div>
       </div>
       <div class="map-container">
         <v-map @load="handleMapLoad" />
@@ -61,6 +65,7 @@
           :originGeojson="originGeojson"
           :appGeojson="appGeojson"
           :pcGeojson="pcGeojson"
+          :traceGeojson="traceGeojson"
           :canEdit="canEdit"
           v-if="map"
           @load="handleMapLoad"
@@ -89,6 +94,7 @@ import {
   pcGeo,
   appGeo,
   directionGeo,
+  surverUserTrace,
 } from '../../configs/layer.config';
 
 export default {
@@ -129,6 +135,7 @@ export default {
       pcGeojson: '',
       appGeojson: '',
       surveyStatus: '',
+      traceGeojson: '',
       checkFlowStage: '',
       form: {
         taskRecordId: this.id,
@@ -255,6 +262,7 @@ export default {
           vedioFiles,
           annexFiles,
           geojsons,
+          traceGeojson,
         },
       } = data;
       this.taskId = taskId;
@@ -263,6 +271,7 @@ export default {
       this.imageObj = { farImageFiles, otherImageFiles, nearImageFiles };
       this.videoList = vedioFiles;
       this.attachmentList = annexFiles;
+      this.traceGeojson = traceGeojson;
       fieldsList = fieldsList.map(e => {
         if (e.fieldName === 'centerPoint') {
           const { fieldValue } = e;
@@ -297,6 +306,7 @@ export default {
       this.initGeoLayers(map, originGeo);
       this.initGeoLayers(map, pcGeo);
       this.initGeoLayers(map, appGeo);
+      this.initLineLayer(this.map, surverUserTrace);
       this.setGeojson(map, originGeo, geojson);
       this.initSymbolLayer(map, directionGeo);
       const center = this.getCenter(geojson);
@@ -316,13 +326,13 @@ export default {
         } else {
           this.clearGeojson(this.map, pcGeo);
         }
-      } else if (name === '辅助范围') {
+      } else if (name === '辅助线') {
         if (active) {
           this.setGeojson(this.map, appGeo, this.appGeojson);
         } else {
           this.clearGeojson(this.map, appGeo);
         }
-      } else if (name === '下发范围') {
+      } else if (name === '原始下发图斑') {
         if (!active) {
           this.marker && this.marker.remove();
           this.clearGeojson(this.map, originGeo);
@@ -332,6 +342,22 @@ export default {
           const center = this.getCenter(this.originGeojson);
           this.setGeojson(this.map, directionGeo, center);
           this.marker = this.addMarker(this.map, this.marker, { center });
+        }
+      } else if (name === '调查足迹') {
+        if (active) {
+          // this.setGeojson(this.map, surverUserTrace, this.traceGeojson);
+          this.setGeojson(this.map, surverUserTrace, this.traceGeojson);
+          const bbox = this.getBbox(this.traceGeojson);
+          this.map.fitBounds(bbox, {
+            padding: 200,
+          });
+        } else {
+          // this.clearGeojson(this.map, surverUserTrace);
+          this.clearGeojson(this.map, surverUserTrace);
+          const bbox = this.getBbox(this.originGeojson);
+          this.map.fitBounds(bbox, {
+            padding: 200,
+          });
         }
       }
     },
@@ -360,6 +386,46 @@ export default {
         this.setGeojson(this.map, directionGeo, point);
         this.map.flyTo({ center: position });
       }
+    },
+    back() {
+      this.$router.go(-1);
+    },
+    submit() {
+      if (!this.$refs['dc-base-info'].$refs['form']) {
+        let filesList = this.$refs['dc-base-info'].constFieldList;
+        for (let i = 0; i < filesList.length; ++i) {
+          if (filesList[i].is_pc_required === 1 && filesList[i].isEdit === 1 && !filesList[i].fieldValue) {
+            this.$message({
+              type: 'error',
+              message: '请填写必填项',
+            });
+            return false;
+          }
+        }
+        let formFieldList = this.$refs['dc-base-info'].fieldList
+        const fieldList = formFieldList.map(item => {
+          const { id, fieldName } = item;
+          return {
+            taskFieldsId: id,
+            fieldValue: this.$refs['dc-base-info'].form[fieldName],
+          };
+        });
+        this.handleSubmit(JSON.stringify(fieldList));
+        return true;
+      }
+      this.$refs['dc-base-info'].$refs['form'].validate(valid => {
+        if (valid) {
+          let formFieldList = this.$refs['dc-base-info'].fieldList
+          const fieldList = formFieldList.map(item => {
+            const { id, fieldName } = item;
+            return {
+              taskFieldsId: id,
+              fieldValue: this.$refs['dc-base-info'].form[fieldName],
+            };
+          });
+          this.handleSubmit(JSON.stringify(fieldList));
+        }
+      });
     },
   },
   beforeRouteLeave(to, from, next) {
@@ -393,21 +459,63 @@ export default {
     .operation-panel {
       background: #fff;
       .tabs {
-        background-color: #f1f1f1;
+        display: flex;
+        background-color: #0094ec;
+        box-sizing: border-box;
+        height: 40px;
+        color: #fff;
+        font-size: 14px;
         .tab {
-          display: inline-block;
-          font-size: 14px;
+          width: 85px;
           padding: 10px 0;
-          margin: 0 10px;
           cursor: pointer;
+          display: flex;
+          margin-left: 5px;
+          align-items: center;
+          justify-content: center;
         }
         .tab.active {
+          border-top-right-radius: 4px;
+          border-top-left-radius: 4px;
+          margin-top: 5px;
+          background: #fff;
+          font-weight: bold;
+          border-bottom: 1px solid #0094ec;
+          border-bottom: 1px solid #fff;
           color: #0094ec;
-          border-bottom: 3px solid #0094ec;
         }
       }
       .content-view {
         height: calc(100% - 42px);
+      }
+      .submit-box {
+        text-align: right;
+        padding: 10px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        border-top: 1px solid #e6e6e6;
+        background-color: #fff;
+        .btn {
+          height: 36px;
+          width: 80px;
+          cursor: pointer;
+          outline: none;
+          border-radius: 5px;
+        }
+        .btn-back {
+          border: 1px solid #0094ec;
+          color: #0094ec;
+          background-color: #fff;
+        }
+        .btn-submit {
+          margin-left: 10px;
+          border: 1px solid #0094ec;
+          background-color: #0094ec;
+          color: #fff;
+        }
       }
     }
   }

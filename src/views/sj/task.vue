@@ -54,7 +54,7 @@
               v-show="form.templateId"
             />
           </el-form-item>
-          <el-form-item label="数据选择:" prop="gdbFilePath">
+          <el-form-item label="数据选择:" prop="layerNameArrayStr">
             <upload
               ref="upload"
               @upload-success="handleUploadSuccess"
@@ -105,7 +105,7 @@ export default {
     return {
       form: {
         templateId: '',
-        gdbFilePath: '',
+        layerNameArrayStr: '',
         extraFieldStr: '',
         taskName: '',
         taskDataTypeId: '28ba2788-71a1-4897-ad8b-9ddcdfdf3ead',
@@ -116,7 +116,7 @@ export default {
         taskName: [
           { required: true, message: '任务名称不能为空', trigger: 'blur' },
         ],
-        gdbFilePath: [
+        layerNameArrayStr: [
           { required: true, message: '请上传数据文件', trigger: 'blur' },
         ],
         templateId: [
@@ -182,16 +182,16 @@ export default {
       this.$refs['form'].clearValidate('templateId');
     },
     handleUploadSuccess(data) {
-      const { fields, gdbFilePath } = data;
-      this.form.gdbFilePath = gdbFilePath;
-      this.$refs['form'].clearValidate('gdbFilePath');
+      const { fields, layerNameArrayStr } = data;
+      this.form.layerNameArrayStr = layerNameArrayStr;
+      this.$refs['form'].clearValidate('layerNameArrayStr');
       if (!this.form.importType) {
         this.fieldList = fields;
       }
     },
     handleFileRemove() {
       this.fieldList = [];
-      this.form.gdbFilePath = '';
+      this.form.layerNameArrayStr = '';
     },
     submit() {
       this.$refs['form'].validate(async valid => {

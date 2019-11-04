@@ -2,86 +2,68 @@
   <div class="geo-edit">
     <div class="tools" v-if="canEdit">
       <span class="edit" @click="geoEdit()">
-        <svg-icon iconClass="draw" :style="style"></svg-icon>
-        编辑
+        <svg-icon iconClass="edit1" class="my-icon"></svg-icon>
+        <span style="color: #409eff">编辑</span>
       </span>
       <div class="tool" v-show="toolExpand">
-        <span
-          class="el-icon-back prev"
+        <svg-icon
+          iconClass="back"
+          class="prev"
           :class="{ active: recordIndex !== 0 }"
           @click="prev()"
           title="上一步"
-        ></span>
-        <span
-          class="el-icon-right next"
+        ></svg-icon>
+        <svg-icon
+          iconClass="go"
+          class="next"
           :class="{ active: recordIndex < drawRecord.length - 1 }"
           @click="next()"
           title="下一步"
-        ></span>
-        <span class="restore" @click="restore()">
-          <svg-icon :style="style" iconClass="restore"></svg-icon>
-          还原
+        ></svg-icon>
+        <span class="restore" @click="handleRestore()">
+          <svg-icon class="my-icon" iconClass="reset"></svg-icon>重置
         </span>
-        <el-popover v-model="showUploadPopover" trigger="manual">
+        <span class="custom">
+          <svg-icon iconClass="uploadMap" class="my-icon"></svg-icon>
           <el-upload
             :action="upload.url"
             :headers="upload.headers"
             :limit="1"
             :multiple="false"
+            :before-upload="handleProgress"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-error="handleError"
             :on-exceed="handleExceed"
             ref="upload"
           >
-            <el-button
-              size="small"
-              type="primary"
-              icon="el-icon-upload"
-              slot="trigger"
-              >添加范围</el-button
-            >
+            <el-button size="small" type="text" slot="trigger">导入范围</el-button>
           </el-upload>
-          <span class="custom" slot="reference" @click="showUpload()">
-            <svg-icon iconClass="custom" :style="style"></svg-icon>
-            自定义
-          </span>
-        </el-popover>
-        <span class="save" @click="save()">
-          保存
         </span>
-        <span class="cancel" @click="cancel()">
-          取消
-        </span>
+        <span class="save" @click="save()">保存</span>
+        <span class="cancel" @click="cancel()">取消</span>
       </div>
     </div>
     <div class="toggles">
-      <span
-        class="btn origin"
-        :class="{ active: btnOriginActive }"
-        @click="handleToggle('下发范围')"
-        v-show="originGeojson"
-      >
-        <i class="dot"></i>
-        <span class="text">下发范围</span>
-      </span>
-      <span
-        v-show="pcGeojson"
-        class="btn pc"
-        :class="{ active: btnCheckActive }"
-        @click="handleToggle('调查范围')"
-      >
-        <i class="dot"></i>
+      <span class="btn pc" @click="handleToggle('调查范围')">
+        <i class="dot" v-if="!btnCheckActive"></i>
+        <i class="el-icon-check" v-else></i>
         <span class="text">调查范围</span>
       </span>
-      <span
-        class="btn app"
-        :class="{ active: btnAssistActive }"
-        v-show="appGeojson && !pcGeojson"
-        @click="handleToggle('辅助范围')"
-      >
-        <i class="dot"></i>
-        <span class="text">辅助范围</span>
+      <span class="btn origin" @click="handleToggle('原始下发图斑')" v-show="originGeojson">
+        <i class="dot" v-if="!btnOriginActive"></i>
+        <i class="el-icon-check" v-else></i>
+        <span class="text">原始下发图斑</span>
+      </span>
+      <span class="btn app" v-show="appGeojson && !pcGeojson" @click="handleToggle('辅助线')">
+        <i class="dot" v-if="!btnAssistActive"></i>
+        <i class="el-icon-check" v-else></i>
+        <span class="text">辅助线</span>
+      </span>
+      <span class="btn app" v-show="traceGeojson" @click="handleToggle('调查足迹')">
+        <i class="dot" v-if="!btncheckTraceActive"></i>
+        <i class="el-icon-check" v-else></i>
+        <span class="text">调查足迹</span>
       </span>
     </div>
   </div>
@@ -107,6 +89,9 @@ export default {
     pcGeojson: {
       type: String,
     },
+    traceGeojson: {
+      type: String,
+    },
     canEdit: {
       type: Boolean,
       default: false,
@@ -114,20 +99,17 @@ export default {
   },
   data() {
     return {
-      style: {
-        height: '1.5em',
-        width: '1.5em',
-      },
       form: {
         pcGeojson: '',
       },
       isDrawing: false,
-      current: '下发范围',
+      current: '调查范围',
       toolExpand: false,
 
       btnAssistActive: false,
-      btnCheckActive: false,
+      btnCheckActive: true,
       btnOriginActive: true,
+      btncheckTraceActive: false,
     };
   },
   mounted() {
@@ -141,12 +123,15 @@ export default {
       if (name === '调查范围') {
         this.btnCheckActive = !this.btnCheckActive;
         active = this.btnCheckActive;
-      } else if (name === '辅助范围') {
+      } else if (name === '辅助线') {
         this.btnAssistActive = !this.btnAssistActive;
         active = this.btnAssistActive;
-      } else if (name === '下发范围') {
+      } else if (name === '原始下发图斑') {
         this.btnOriginActive = !this.btnOriginActive;
         active = this.btnOriginActive;
+      } else if (name === '调查足迹') {
+        this.btncheckTraceActive = !this.btncheckTraceActive;
+        active = this.btncheckTraceActive;
       }
       this.$emit('toggle-geo-layer', {
         name,
@@ -211,6 +196,10 @@ export default {
         this.$emit('finish-upload');
       }
     },
+    handleRestore() {
+      this.$refs.upload.clearFiles();
+      this.restore();
+    }
   },
 };
 </script>
@@ -222,27 +211,36 @@ export default {
     top: 10px;
     left: 10px;
     background-color: #fff;
-    padding: 3px 5px;
+    padding: 5px 10px;
     border-radius: 3px;
     font-size: 14px;
     color: #606266;
     display: flex;
+    height: 25px;
     span {
       display: flex;
       align-items: center;
       cursor: pointer;
     }
     .edit {
-      padding-right: 10px;
+      padding-right: 15px;
+      .my-icon {
+        margin-right: 5px;
+        font-size: 18px;
+        color: #409eff;
+      }
     }
     .tool {
       display: flex;
+      align-items: center;
       border-left: 1px solid #ccc;
+      padding-left: 10px;
       .prev,
       .next {
         padding: 0 5px;
-        font-size: 16px;
+        font-size: 18px;
         font-weight: bold;
+        cursor: pointer;
       }
       .prev:hover,
       .prev.active,
@@ -251,21 +249,42 @@ export default {
         color: #409eff;
       }
       .restore {
-        border-left: 1px solid #ccc;
-        padding-left: 5px;
+        padding-left: 15px;
+        .my-icon {
+          margin-right: 5px;
+          font-size: 10px;
+          color: #409eff;
+        }
       }
       .custom {
-        margin-left: 10px;
-        border-left: 1px solid #ccc;
+        padding-left: 20px;
+        .my-icon {
+          margin-right: 5px;
+          font-size: 12px;
+          color: #409eff;
+        }
+        .el-button--text {
+          font-size: 14px;
+          color: #606266;
+          font-weight: normal;
+        }
+        .el-upload-list {
+          display: none;
+        }
       }
       .save {
-        border-left: 1px solid #ccc;
-        margin-left: 10px;
-        padding: 0 5px;
-        color: #409eff;
+        background: #409eff;
+        margin-left: 20px;
+        padding: 2px 15px;
+        border-radius: 2px;
+        color: #fff;
       }
       .cancel {
-        color: #f56c6c;
+        background: #f56c6c;
+        margin-left: 10px;
+        padding: 2px 15px;
+        border-radius: 2px;
+        color: #fff;
       }
     }
   }
@@ -284,62 +303,75 @@ export default {
       padding: 3px 0;
       .text {
         vertical-align: middle;
+        color: #409eff;
+      }
+      .el-icon-check {
+        margin-right: 3px;
+        font-size: 2px;
+        background-color: #409eff;
+        color: #fff;
       }
       .dot {
         vertical-align: middle;
         display: inline-block;
-        height: 14px;
-        width: 14px;
-        border-radius: 100%;
-        box-sizing: border-box;
+        height: 10px;
+        width: 10px;
+        border: 1px solid #babcbe;
+        background-color: #f4f5f8;
+        border-radius: 1px;
+        // box-sizing: border-box;
         margin-right: 3px;
-        position: relative;
-        background-color: #fff;
-        &::after {
-          content: '';
-          display: inline-block;
-          height: 4px;
-          width: 4px;
-          border-radius: 100%;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background-color: #fff;
-        }
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
+        // position: relative;
+        //   background-color: #fff;
+        // &::after {
+        //     content: '';
+        //     display: inline-block;
+        //     height: 4px;
+        //     width: 4px;
+        //     border-radius: 100%;
+        //     position: absolute;
+        //     top: 50%;
+        //     left: 50%;
+        //     transform: translate(-50%, -50%);
+        //     background-color: #fff;
+        // }
       }
     }
-    .btn.origin {
-      color: #c08f01;
-      .dot {
-        border: 1px solid #c08f01;
-      }
-      &.active {
-        .dot {
-          background-color: #c08f01;
-        }
-      }
-    }
-    .btn.pc {
-      color: #409eff;
-      .dot {
-        border: 1px solid #409eff;
-      }
-      &.active {
-        .dot {
-          background-color: #409eff;
-        }
-      }
-    }
-    .btn.app {
-      color: #f56c6c;
-      .dot {
-        border: 1px solid #f56c6c;
-      }
-      &.active {
-        background-color: #f56c6c;
-      }
-    }
+    // .btn.origin {
+    // color: #409eff;
+    // .dot {
+    //   border: 1px solid #409eff;
+    // }
+    // &.active {
+    //   .dot {
+    //     border-color: #409eff;
+    //     background-color: #409eff;
+    //   }
+    // }
+    // }
+    // .btn.pc {
+    // color: #409eff;
+    // .dot {
+    //   border: 1px solid #409eff;
+    // }
+    // &.active {
+    //   .dot {
+    //     background-color: #409eff;
+    //   }
+    // }
+    // }
+    // .btn.app {
+    //   color: #409eff;
+    //   .dot {
+    //     border: 1px solid #f56c6c;
+    //   }
+    // &.active {
+    //   background-color: #f56c6c;
+    // }
+    // }
   }
 }
 .el-popover {

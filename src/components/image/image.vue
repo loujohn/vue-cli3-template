@@ -7,7 +7,7 @@
         <el-radio-button label="otherImageFiles">其 它</el-radio-button>
       </el-radio-group>
       <span class="show-big-picture" @click="showBigPicture()" v-show="fullPath"
-        >查看大图</span
+        >查看原图</span
       >
     </div>
     <el-row :gutter="10" v-show="!isEmpty">
@@ -17,6 +17,7 @@
           fit="scale-down"
           :src="`${staticUrl}${image.filePath}`"
           @click="handleImageClick(image)"
+          :class="current === index ? 'beChoose' : 'normal'"
         >
           <div slot="error">
             <i class="el-icon-picture-outline"></i>
@@ -123,7 +124,7 @@ export default {
       fullPath: '',
       showImage: false,
       dialogVisible: false,
-      current: 0,
+      current: undefined,
     };
   },
   methods: {
@@ -182,6 +183,15 @@ export default {
 
 <style lang="scss">
 .image {
+  .beChoose {
+    box-shadow: 0px 0px 5px rgb(59, 58, 58);
+    // border: 2px dashed #f56c6c;
+    // padding: 2px;
+  }
+  .normal {
+    // border: 2px solid #fff;
+    // padding: 2px;
+  }
   padding: 10px;
   overflow: auto;
   height: 560px;
@@ -241,9 +251,9 @@ export default {
       box-shadow: none;
       border-radius: 45px;
       // background-color: #5d7b9a;
-      background-color: #0087d7;
+      background-color: #0094ec;
       // border-color: #5d7b9a;
-      border-color: #0087d7;
+      border-color: #0094ec;
       color: #fff;
     }
   }

@@ -11,10 +11,7 @@
         <el-form label-position="top" ref="form" :model="form" :rules="rules">
           <el-row :gutter="10">
             <el-col :span="12" v-for="(value, key) in form" :key="key">
-              <el-form-item
-                :label="`${formConfig[key]['fieldAlias']}:`"
-                :prop="key"
-              >
+              <el-form-item :label="`${formConfig[key]['fieldAlias']}:`" :prop="key">
                 <template
                   v-if="
                     formConfig[key]['fieldType'] === 0 ||
@@ -52,8 +49,7 @@
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                  >
-                  </el-date-picker>
+                  ></el-date-picker>
                 </template>
               </el-form-item>
             </el-col>
@@ -66,24 +62,28 @@
         <el-row :gutter="10">
           <el-col :span="12" v-for="item in constFieldList" :key="item.id">
             <template v-if="item.fieldType === 1">
+              <span class="isEdit">
+                <span v-if="item.is_pc_required === 1 && item.isEdit === 1">*</span>
+              </span>
               <span class="label-edit">{{ item.fieldAlias }}:</span>
-              <span class="content">{{
+              <span class="content">
+                {{
                 getValue(item.fieldValue, item.options)
-              }}</span>
+                }}
+              </span>
             </template>
             <template v-else>
-              <span class="label-edit">{{ item.fieldAlias }}:</span>
+              <span class="isEdit">
+                <span v-if="item.is_pc_required === 1 && item.isEdit === 1">*</span>
+              </span>
+              <span class="label-edit">
+                {{ item.fieldAlias }}:
+              </span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
           </el-col>
         </el-row>
       </div>
-    </div>
-    <div class="submit-box">
-      <button class="btn btn-back" @click="back()">返回</button>
-      <button class="btn btn-submit" v-show="canEdit" @click="submit()">
-        提交
-      </button>
     </div>
   </div>
 </template>
@@ -142,27 +142,6 @@ export default {
         this.edit = !this.edit;
       }
     },
-    back() {
-      this.$router.go(-1);
-    },
-    submit() {
-      if (!this.$refs['form']) {
-        this.$emit('submit');
-        return true;
-      }
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          const fieldList = this.fieldList.map(item => {
-            const { id, fieldName } = item;
-            return {
-              taskFieldsId: id,
-              fieldValue: this.form[fieldName],
-            };
-          });
-          this.$emit('submit', JSON.stringify(fieldList));
-        }
-      });
-    },
   },
 };
 </script>
@@ -205,6 +184,11 @@ export default {
     display: inline-block;
     // padding-bottom: 25px;
   }
+  .isEdit {
+    display: inline-block;
+    width: 10px;
+    color: #f56c6c;
+  }
   .label-edit {
     display: inline-block;
     padding: 5px 0;
@@ -230,23 +214,5 @@ export default {
   box-sizing: border-box;
   border-top: 1px solid #e6e6e6;
   background-color: #fff;
-  .btn {
-    height: 36px;
-    width: 80px;
-    cursor: pointer;
-    outline: none;
-    border-radius: 5px;
-  }
-  .btn-back {
-    border: 1px solid #0e67f2;
-    color: #0e67f2;
-    background-color: #fff;
-  }
-  .btn-submit {
-    margin-left: 10px;
-    border: 1px solid #e6e6e6;
-    background-color: #0e67f2;
-    color: #fff;
-  }
 }
 </style>

@@ -85,6 +85,11 @@
             :width="getWidth(item.fieldAlias)"
           ></el-table-column>
           <el-table-column
+            label="调查时间"
+            prop="surveyTime"
+            width="150px"
+          ></el-table-column>
+          <el-table-column
             label="调查人员"
             prop="referenceInfo.surverUserName"
             width="80px"
