@@ -54,7 +54,9 @@
         </div>
         <div class="submit-box">
           <button class="btn btn-back" @click="back()">返回</button>
-          <button class="btn btn-submit" v-show="canEdit" @click="submit()">提交</button>
+          <button class="btn btn-submit" v-show="canEdit" @click="submit()">
+            提交
+          </button>
         </div>
       </div>
       <div class="map-container">
@@ -74,6 +76,7 @@
           @finish-upload="finishUpload"
         />
         <geo-edit-introduction :isDisplay="showIntroduction" />
+        <v-compass :map="map" v-if="map" />
       </div>
     </div>
   </div>
@@ -82,6 +85,7 @@
 import vMap from 'components/map/map';
 import geojsonEdit from 'components/geo-edit/geo-edit';
 import geoEditIntroduction from 'components/geo-edit/introduction';
+import vCompass from 'components/compass/compass';
 import dcImage from 'components/image/dcImage';
 import vVideo from 'components/video/video';
 import manualUpload from 'components/upload/manual-upload';
@@ -103,6 +107,7 @@ export default {
     vMap,
     geojsonEdit,
     geoEditIntroduction,
+    vCompass,
     dcImage,
     vVideo,
     dcBaseInfo,
@@ -394,7 +399,11 @@ export default {
       if (!this.$refs['dc-base-info'].$refs['form']) {
         let filesList = this.$refs['dc-base-info'].constFieldList;
         for (let i = 0; i < filesList.length; ++i) {
-          if (filesList[i].is_pc_required === 1 && filesList[i].isEdit === 1 && !filesList[i].fieldValue) {
+          if (
+            filesList[i].is_pc_required === 1 &&
+            filesList[i].isEdit === 1 &&
+            !filesList[i].fieldValue
+          ) {
             this.$message({
               type: 'error',
               message: '请填写必填项',
@@ -402,7 +411,7 @@ export default {
             return false;
           }
         }
-        let formFieldList = this.$refs['dc-base-info'].fieldList
+        let formFieldList = this.$refs['dc-base-info'].fieldList;
         const fieldList = formFieldList.map(item => {
           const { id, fieldName } = item;
           return {
@@ -415,7 +424,7 @@ export default {
       }
       this.$refs['dc-base-info'].$refs['form'].validate(valid => {
         if (valid) {
-          let formFieldList = this.$refs['dc-base-info'].fieldList
+          let formFieldList = this.$refs['dc-base-info'].fieldList;
           const fieldList = formFieldList.map(item => {
             const { id, fieldName } = item;
             return {

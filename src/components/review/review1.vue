@@ -4,22 +4,35 @@
       <div class="map-container" :style="{ height: containerHeight }">
         <v-map @load="handleMapLoad" />
         <div class="ranges">
-          <div class="geojsonChoose" v-show="pcGeojson" @click="handleToggle('调查范围')">
+          <div
+            class="geojsonChoose"
+            v-show="pcGeojson"
+            @click="handleToggle('调查范围')"
+          >
             <i class="dot" v-if="!showPcGeojson"></i>
             <i class="el-icon-check" v-else></i>
             <span>调查范围</span>
           </div>
-          <div class="geojsonChoose" v-show="originGeojson" @click="handleToggle('原始下发图斑')">
+          <div
+            class="geojsonChoose"
+            v-show="originGeojson"
+            @click="handleToggle('原始下发图斑')"
+          >
             <i class="dot" v-if="!showOriginGeojson"></i>
             <i class="el-icon-check" v-else></i>
             <span>原始下发图斑</span>
           </div>
-          <div class="geojsonChoose" v-show="traceGeojson" @click="handleToggle('调查足迹')">
+          <div
+            class="geojsonChoose"
+            v-show="traceGeojson"
+            @click="handleToggle('调查足迹')"
+          >
             <i class="dot" v-if="!showTraceGeojson"></i>
             <i class="el-icon-check" v-else></i>
             <span>调查足迹</span>
           </div>
         </div>
+        <v-compass :map="map" v-if="map" />
       </div>
       <!-- <div class="image-container" v-show="showImage">
         <img :src="imagePath" alt="图片" />
@@ -34,14 +47,20 @@
             :key="tab.name"
             :class="{ active: index === activeTabIndex }"
             @click="setActiveTabIndex(index)"
-          >{{ tab.name }}</span>
+            >{{ tab.name }}</span
+          >
         </div>
         <span class="close" @click="close()">
           <i class="el-icon-close"></i>
         </span>
       </div>
       <div class="review-box" v-show="activeTabIndex === 0">
-        <base-info :fields="fieldList" :operator="operator" :type="type" ref="baseInfo"></base-info>
+        <base-info
+          :fields="fieldList"
+          :operator="operator"
+          :type="type"
+          ref="baseInfo"
+        ></base-info>
         <div class="suggestion">
           <el-row>
             <el-col :span="4">
@@ -71,12 +90,14 @@
             v-model="visible"
             width="200"
           >
-            <span style="cursor: pointer;" slot="reference" @click="togglePopover()">
+            <span
+              style="cursor: pointer;"
+              slot="reference"
+              @click="togglePopover()"
+            >
               图斑状态:
               <strong :class="getClass(data.checkFlowStage)">
-                {{
-                data.checkFlowStage | checkStatus
-                }}
+                {{ data.checkFlowStage | checkStatus }}
               </strong>
             </span>
             <div class="suggestion-content">
@@ -88,12 +109,20 @@
         <div class="action">
           <div class="toggle"></div>
           <div class="operation" v-show="operator === 'check'">
-            <el-button size="mini" type="primary" @click="handleCheck('通过')">通过</el-button>
-            <el-button size="mini" type="danger" @click="handleCheck('不通过')">不通过</el-button>
+            <el-button size="mini" type="primary" @click="handleCheck('通过')"
+              >通过</el-button
+            >
+            <el-button size="mini" type="danger" @click="handleCheck('不通过')"
+              >不通过</el-button
+            >
           </div>
           <div class="operation" v-show="operator === 'recheck'">
-            <el-button size="mini" type="primary" @click="recheck()">重新提交</el-button>
-            <el-button size="mini" type="warning" @click="reDistribute()">重新下发</el-button>
+            <el-button size="mini" type="primary" @click="recheck()"
+              >重新提交</el-button
+            >
+            <el-button size="mini" type="warning" @click="reDistribute()"
+              >重新下发</el-button
+            >
           </div>
         </div>
       </div>
@@ -104,7 +133,11 @@
         ref="image-preview"
       />
       <v-video v-show="activeTabIndex === 2" :videos="videoList" />
-      <manual-upload ref="manual-upload" :files="attachmentList" v-show="showUpload" />
+      <manual-upload
+        ref="manual-upload"
+        :files="attachmentList"
+        v-show="showUpload"
+      />
       <v-attachments :attachments="attachmentList" v-show="showAttachments" />
     </div>
   </div>
@@ -112,6 +145,7 @@
 
 <script>
 import vMap from 'components/map/map';
+import vCompass from 'components/compass/compass';
 import vImage from 'components/image/image';
 import vVideo from 'components/video/video';
 import manualUpload from 'components/upload/manual-upload';
@@ -135,6 +169,7 @@ export default {
     baseInfo,
     manualUpload,
     vAttachments,
+    vCompass,
   },
   props: {
     data: {
@@ -430,7 +465,7 @@ export default {
             });
             return JSON.stringify(fields);
           }
-        })
+        });
       } else {
         const form = this.$refs['baseInfo'].form;
         const fieldList = this.$refs['baseInfo'].fieldList;

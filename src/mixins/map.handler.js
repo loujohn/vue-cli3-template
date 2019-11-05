@@ -16,6 +16,7 @@ export default {
         layout: {
           'icon-image': iconName,
           'icon-size': 0.5,
+          'icon-rotation-alignment': 'map',
           visibility: 'none',
         },
       });
