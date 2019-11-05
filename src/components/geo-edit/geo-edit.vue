@@ -121,7 +121,7 @@ export default {
       toolExpand: false,
 
       btnAssistActive: false,
-      btnCheckActive: false,
+      btnCheckActive: true,
       btnOriginActive: true,
       btncheckTraceActive: false,
     };
