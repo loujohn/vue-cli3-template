@@ -98,13 +98,11 @@ export default {
         userInfo = JSON.parse(userInfo);
         ({ type } = userInfo);
       }
-      // if (type === 1) {
-      //   return true;
-      // } else {
-      //   return false;
-      // }
-
-      return false;
+      if (type === 1) {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 };
