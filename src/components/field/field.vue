@@ -65,6 +65,13 @@ export default {
       });
     },
   },
+  watch: {
+    fieldList(val) {
+      if (val) {
+        this.extraFields = [];
+      }
+    },
+  },
   methods: {
     addField() {
       this.isAdd = true;
