@@ -286,6 +286,7 @@ export default {
           }
           if (!this.originGeojson) return false;
           if (this.map) {
+            this.map.resize();
             this.setGeojson(this.map, originGeo, this.originGeojson);
             const center = this.getCenter(this.originGeojson);
             this.setGeojson(this.map, directionGeo, center);
