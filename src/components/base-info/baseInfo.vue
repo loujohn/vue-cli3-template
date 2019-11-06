@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="edit-trigger" v-if="showForm">
-      <span @click="doEdit()">
+    <div class="edit-trigger">
+      <span @click="doEdit()" v-show="showForm">
         <svg-icon iconClass="edit" />
         {{ isEdit ? '取消编辑' : '编辑' }}
       </span>
@@ -156,6 +156,7 @@ export default {
 
 <style lang="scss">
 .edit-trigger {
+  height: 20px;
   padding: 5px 10px;
   text-align: right;
   span {
