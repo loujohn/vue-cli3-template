@@ -86,9 +86,12 @@
           ></el-table-column>
           <el-table-column
             label="调查时间"
-            prop="surveyTime"
-            width="150px"
-          ></el-table-column>
+            width="100px"
+          >
+          <template slot-scope="scope">
+            {{ scope.row.surveyTime | dateFormatter }}
+          </template>
+          </el-table-column>
           <el-table-column
             label="调查人员"
             prop="referenceInfo.surverUserName"
@@ -133,7 +136,7 @@
 import customerCard from 'components/card/card';
 import vMap from 'components/map/map';
 import list from 'mixins/list';
-import { surveyStatus } from 'filters';
+import { surveyStatus, dateFormatter } from 'filters';
 import { task, survey } from 'api';
 import turf from 'turf';
 import mapHandler from 'mixins/map.handler';
@@ -208,6 +211,7 @@ export default {
   },
   filters: {
     surveyStatus,
+    dateFormatter,
   },
   methods: {
     getClass(val) {
