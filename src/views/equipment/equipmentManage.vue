@@ -13,15 +13,17 @@
         <el-row :gutter="30">
           <el-col :span="4">
             <span class="label">用户名:</span>
-            <el-input v-model="keyword" placeholder="请输入用户名" size="small" class="my-input" clearable></el-input>
+            <el-input
+              v-model="keyword"
+              placeholder="请输入用户名"
+              size="small"
+              class="my-input"
+              clearable
+            ></el-input>
           </el-col>
           <el-col :span="4">
             <span class="label">行政区:</span>
-            <el-select
-              v-model="xzqh"
-              size="small"
-              clearable
-            >
+            <el-select v-model="xzqh" size="small" clearable>
               <el-option
                 v-for="item in xzqhList"
                 :key="item.label"
@@ -32,11 +34,7 @@
           </el-col>
           <el-col :span="4">
             <span class="label">设备类型:</span>
-            <el-select
-              v-model="sblx"
-              size="small"
-              clearable
-            >
+            <el-select v-model="sblx" size="small" clearable>
               <el-option
                 v-for="item in equipmentList"
                 :key="item.value"
@@ -45,9 +43,25 @@
               ></el-option>
             </el-select>
           </el-col>
+          <el-col :span="4">
+            <span class="label">状态:</span>
+            <el-select v-model="zt" size="small" clearable>
+              <el-option
+                v-for="item in ztList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="8" style="display: flex; justify-content: flex-end">
+            <el-button type="info" size="small">批量注销</el-button>
+            <el-button type="info" size="small">批量启用</el-button>
+          </el-col>
         </el-row>
       </div>
       <el-table header-row-class-name="customer-table-header">
+        <el-table-column type="selection"></el-table-column>
         <el-table-column type="index"></el-table-column>
         <el-table-column label="行政区"></el-table-column>
         <el-table-column label="用户"></el-table-column>
@@ -55,7 +69,7 @@
         <el-table-column label="设备类型"></el-table-column>
         <el-table-column label="设备型号"></el-table-column>
         <el-table-column label="注册时间"></el-table-column>
-        <el-table-column label="最后使用时间"></el-table-column>
+        <el-table-column label="状态"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="info" size="mini">注销</el-button>
@@ -84,6 +98,7 @@ export default {
       keyword: '',
       xzqh: '',
       sblx: '',
+      zt: '',
       xzqhList: [
         {
           label: '重庆市',
@@ -107,7 +122,17 @@ export default {
           label: '电脑',
           value: '3',
         },
-      ]
+      ],
+      ztList: [
+        {
+          label: '正常',
+          value: '1',
+        },
+        {
+          label: '已注销',
+          value: '2',
+        },
+      ],
     };
   },
   mounted() {},
@@ -127,7 +152,8 @@ export default {
         font-size: $font-sm;
         padding-right: 8px;
       }
-      .my-input, .el-select {
+      .my-input,
+      .el-select {
         width: calc(100% - 68px);
         .el-input__inner {
           background-color: #f8f8f8;
