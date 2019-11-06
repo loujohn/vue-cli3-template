@@ -17,7 +17,10 @@
         }"
           @click="handleMenuSelect(item)"
         >
-          <p>{{ item.name }}</p>
+          <span>
+            <svg-icon :iconClass="item.icon" />
+            <p>{{ item.name }}</p>
+          </span>
         </div>
       </div>
       <el-dropdown @command="handleCommand">
@@ -46,14 +49,17 @@ export default {
         {
           name: '任务管理',
           router: 'sj-list',
+          icon: '任务管理',
         },
         {
           name: '设备管理',
           router: 'equipment-manage',
+          icon: '设备管理',
         },
         {
           name: '访问日志',
           router: 'visit-log',
+          icon: '访问日志',
         },
       ],
       activePart: '任务管理',
@@ -156,30 +162,41 @@ export default {
         flex-flow: column;
         align-items: center;
         justify-content: center;
-        padding: 0 25px;
-        p {
+        padding: 0 20px;
+        span {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end;
+          .svg-icon {
+            font-size: 30px;
+            color: #fff;
+          }
+          p {
           font-weight: bold;
-          font-size: 16px;
-          padding: 10px 0;
+          font-size: 14px;
           margin: 0;
+          padding: 5px 0;
           box-sizing: content-box;
           color: #fff;
+        }
         }
       }
       .menu-item.active {
         position: relative;
         background-color: #0094ec;
-        &:before {
-          content: '';
-          position: absolute;
-          bottom: 0px;
-          left: 42%;
-          border-width: 0 10px 10px;
-          border-style: solid;
-          border-color: #eff4fb transparent;
-          display: block;
-          width: 0;
-        }
+        // &:before {
+        //   content: '';
+        //   position: absolute;
+        //   bottom: 0px;
+        //   left: 42%;
+        //   border-width: 0 10px 10px;
+        //   border-style: solid;
+        //   border-color: #eff4fb transparent;
+        //   display: block;
+        //   width: 0;
+        // }
       }
     }
   }
