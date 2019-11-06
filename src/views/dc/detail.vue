@@ -84,13 +84,10 @@
             :prop="`referenceInfo.fields[${item.fieldName}]`"
             :width="getWidth(item.fieldAlias)"
           ></el-table-column>
-          <el-table-column
-            label="调查时间"
-            width="100px"
-          >
-          <template slot-scope="scope">
-            {{ scope.row.surveyTime | dateFormatter }}
-          </template>
+          <el-table-column label="调查时间" width="100px">
+            <template slot-scope="scope">
+              {{ scope.row.surveyTime | dateFormatter }}
+            </template>
           </el-table-column>
           <el-table-column
             label="调查人员"
@@ -178,6 +175,7 @@ export default {
       fields: [],
       size: 'small',
       mapLoaded: false,
+      map: null,
     };
   },
   computed: {
@@ -360,6 +358,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
+      vm.map && vm.map.resize();
       if (from.name === 'dc-particular') {
         vm.getList();
         vm.getTaskStatistic();

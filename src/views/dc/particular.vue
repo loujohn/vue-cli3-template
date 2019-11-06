@@ -437,6 +437,11 @@ export default {
       });
     },
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.map && vm.map.resize();
+    });
+  },
   beforeRouteLeave(to, from, next) {
     if (this.$refs['geo-edit']) {
       this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
