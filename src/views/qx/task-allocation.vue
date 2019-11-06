@@ -173,7 +173,6 @@
       title="任务分派"
       :visible.sync="showSurceyUserChoose"
       width="30%"
-      :before-close="handleClose"
     >
       <span>调查人员：</span>
       <el-select v-model="form.surveyUserId" :size="size" clearable>
@@ -393,12 +392,14 @@ export default {
       if (this.status === 1) {
         this.form.surveyUserId = '';
       }
-      if (!this.form.surveyUserId && this.status === 0) {
-        this.$message({
-          type: 'warning',
-          message: '请选择调查员',
-        });
-        return false;
+      if (this.status === 0) {
+        this.form.surveyUserId = '';
+        this.selectedTasks = [];
+        this.$refs.table.clearSelection();
+        this.$refs.table.toggleRowSelection(item);
+        this.handleTaskSelect([], item);
+        this.showSurceyUserChoose = true;
+        return;
       }
       const params = {
         ...this.form,
