@@ -49,7 +49,7 @@
           />
           <v-attachments
             :attachments="attachmentList"
-            v-show="showAttachments"
+            v-show="showAttachments && !showUpload"
           />
         </div>
         <div class="submit-box">
