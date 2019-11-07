@@ -165,9 +165,16 @@ export default {
   watch: {
     mapLoaded(val) {
       if (val) {
-        if (this.originGeojson) {
-          this.initMapLayer(this.map, this.originGeojson);
+        let geojson;
+        let isPc;
+        if (this.pcGeojson) {
+          geojson = this.pcGeojson;
+          isPc = true;
+        } else {
+          geojson = this.originGeojson;
+          isPc = false;
         }
+        this.initMapLayer(this.map, geojson, isPc);
       }
     },
     id(val) {
@@ -290,33 +297,39 @@ export default {
       });
       this.fieldList = fieldsList.filter(e => !e.isSpace);
       this.originGeojson = fieldsList.find(e => e.isSpace).fieldValue;
-      if (this.mapLoaded) {
-        this.setGeojson(this.map, originGeo, this.originGeojson);
-        const center = this.getCenter(this.originGeojson);
-        this.setGeojson(this.map, directionGeo, center);
-        this.marker = this.addMarker(this.map, this.marker, { center });
-        const bbox = this.getBbox(this.originGeojson);
-        this.map.fitBounds(bbox, { padding: 200 });
-      }
       if (geojsons) {
         const { pcGeojson, appGeojson } = geojsons;
         this.pcGeojson = pcGeojson;
         this.appGeojson = appGeojson;
       } else {
-        this.pcGeojson = this.originGeojson;
+        this.pcGeojson = '';
         this.appGeojson = '';
       }
+      if (this.mapLoaded) {
+        if (this.pcGeojson) {
+          this.setGeojson(this.map, pcGeo, this.pcGeojson);
+        } else {
+          this.setGeojson(this.map, originGeo, this.originGeojson);
+          const center = this.getCenter(this.originGeojson);
+          this.marker = this.addMarker(this.map, this.marker, { center });
+        }
+        const bbox = this.getBbox(this.originGeojson);
+        this.map.fitBounds(bbox, { padding: 200 });
+      }
     },
-    initMapLayer(map, geojson) {
-      this.initGeoLayers(map, originGeo);
+    initMapLayer(map, geojson, isPc = false) {
       this.initGeoLayers(map, pcGeo);
+      this.initGeoLayers(map, originGeo);
       this.initGeoLayers(map, appGeo);
-      this.initLineLayer(this.map, surverUserTrace);
-      this.setGeojson(map, originGeo, geojson);
+      this.initLineLayer(map, surverUserTrace);
       this.initSymbolLayer(map, directionGeo);
-      const center = this.getCenter(geojson);
-      // this.setGeojson(map, directionGeo, center);
-      this.marker = this.addMarker(this.map, this.marker, { center });
+      if (isPc) {
+        this.setGeojson(map, pcGeo, geojson);
+      } else {
+        this.setGeojson(map, originGeo, geojson);
+        const center = this.getCenter(geojson);
+        this.marker = this.addMarker(this.map, this.marker, { center });
+      }
       const bbox = this.getBbox(geojson);
       this.map.fitBounds(bbox, { padding: 200 });
     },
