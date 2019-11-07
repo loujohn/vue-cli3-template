@@ -212,4 +212,18 @@ export default {
     const res = await http.get(url.getUserDevices, { params });
     return res.data;
   },
+  /**
+   * 禁用用户设备
+   */
+  async disableDevices(params) {
+    const res = await http.get(url.disableDevices, { params });
+    return res;
+  },
+  /**
+   * 启用用户设备
+   */
+  async enableDevices(params) {
+    const res = await http.get(url.enableDevices, { params });
+    return res;
+  },
 };

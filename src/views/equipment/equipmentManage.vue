@@ -56,12 +56,12 @@
             </el-select>
           </el-col>
           <el-col :span="8" style="display: flex; justify-content: flex-end">
-            <el-button type="info" size="small" @click="logoutAll()">批量注销</el-button>
-            <el-button type="info" size="small" @click="startAll()">批量启用</el-button>
+            <el-button type="info" size="small" @click="transAllDevices(0)">批量注销</el-button>
+            <el-button type="info" size="small" @click="transAllDevices(-1)">批量启用</el-button>
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header" :data="list" @select="handleSelect"
+      <el-table header-row-class-name="customer-table-header" ref="table" :data="list" @select="handleSelect"
         @select-all="handleSelectAll">
         <el-table-column type="selection"></el-table-column>
         <el-table-column type="index"></el-table-column>
@@ -78,7 +78,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="info" size="mini" @click="logoutOne(scope)">注销</el-button>
+            <el-button type="info" size="mini" @click="transOneDevices(scope)">{{scope.row.status === 0 ? '注销' : '启用'}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -112,6 +112,7 @@ export default {
       deviceType: '',
       status: '',
       xzqhList: [],
+      selectList: [],
       equipmentList: [
         {
           label: '平板',
@@ -154,24 +155,82 @@ export default {
       }
       const data = await task.getUserDevices(params);
       const { dataList, totalCount } = data;
-      console.log(dataList);
       this.list = dataList;
       this.totalCount = totalCount;
     },
     handleSelect(selection, row) {
-      
+      const existed = this.$R.contains(row.userId)(this.selectList);
+      if (existed) {
+        this.selectList = this.$R.filter(e => e !== row.userId)(this.selectList);
+      } else {
+        this.selectList.push(row.userId);
+      }
     },
     handleSelectAll(selection) {
-      
+      this.selectList = [];
+      this.selectList = this.$R.pluck('userId')(selection);
     },
-    logoutOne(scope) {
-
+    transOneDevices(scope) {
+      if (scope.row.status === 0) {
+        this.logoutDevices(scope.row.userId);
+      } else {
+        this.startDevices(scope.row.userId);
+      }
     },
-    logoutAll() {
-
+    transAllDevices(val) {
+      if (this.selectList.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择设备',
+        });
+        return;
+      }
+      let ids = this.$R.join(',')(this.selectList);
+      if (val === 0) {
+        this.logoutDevices(ids);
+      } else {
+        this.startDevices(ids);
+      }
     },
-    startAll() {
-
+    async logoutDevices(ids) {
+      let params = {
+        userIdArrayStr: ids,
+      }
+      const data = await task.disableDevices(params);
+      if (data.code === 200 && data.message === 'ok') {
+        this.$message({
+          type: 'success',
+          message: '注销成功',
+        });
+        this.getList();
+      } else {
+        this.$message({
+          type: 'error',
+          message: data.message || '注销失败',
+        });
+      }
+      this.$refs.table.clearSelection();
+      this.selectList = [];
+    },
+    async startDevices(ids) {
+      let params = {
+        userIdArrayStr: ids,
+      }
+      const data = await task.enableDevices(params);
+      if (data.code === 200 && data.message === 'ok') {
+        this.$message({
+          type: 'success',
+          message: '启用成功',
+        });
+        this.getList();
+      } else {
+        this.$message({
+          type: 'error',
+          message: data.message || '启用失败',
+        });
+      }
+      this.$refs.table.clearSelection();
+      this.selectList = [];
     },
   },
 };

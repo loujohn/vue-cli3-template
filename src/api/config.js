@@ -35,6 +35,8 @@ const url = {
   getLoginLog: baseUrl + 'manage/log/loginLog.do',
   //设备管理
   getUserDevices: baseUrl + 'manage/userInfo/pageSurveyUserDevices.do',
+  disableDevices: baseUrl + 'manage/userInfo/disable.do',
+  enableDevices: baseUrl + 'manage/userInfo/enable.do',
   //获取行政区划列表
   getXZQH: baseUrl + '/manage/dictionarys/listXzqh.do',
 };
