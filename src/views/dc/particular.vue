@@ -299,7 +299,7 @@ export default {
       this.originGeojson = fieldsList.find(e => e.isSpace).fieldValue;
       if (geojsons) {
         const { pcGeojson, appGeojson } = geojsons;
-        this.pcGeojson = pcGeojson;
+        this.pcGeojson = pcGeojson ? pcGeojson : this.originGeojson;
         this.appGeojson = appGeojson;
       } else {
         this.pcGeojson = this.originGeojson;
