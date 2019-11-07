@@ -1,6 +1,6 @@
 <template>
   <div class="head">
-    <router-link tag="span" :to="{ path: '/' }" class="title">
+    <router-link tag="span" :to="{ path: getRoutePath() }" class="title">
       <img class="img" :src="titleLogo" alt />
       {{ title }}
     </router-link>
@@ -11,10 +11,8 @@
           v-for="(item, index) in menuList"
           :key="index"
           :class="{
-          active:
-            item.router &&
-            activePart === item.name,
-        }"
+            active: item.router && activePart === item.name,
+          }"
           @click="handleMenuSelect(item)"
         >
           <span>
@@ -110,6 +108,20 @@ export default {
         return false;
       }
     },
+    getRoutePath() {
+      const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+      const { type } = userInfo;
+      switch (type) {
+        case 1:
+          return '/sj';
+        case 2:
+          return '/qx';
+        case 3:
+          return '/dc';
+        default:
+          return '';
+      }
+    },
   },
 };
 </script>
@@ -174,13 +186,13 @@ export default {
             color: #fff;
           }
           p {
-          font-weight: bold;
-          font-size: 14px;
-          margin: 0;
-          padding: 5px 0;
-          box-sizing: content-box;
-          color: #fff;
-        }
+            font-weight: bold;
+            font-size: 14px;
+            margin: 0;
+            padding: 5px 0;
+            box-sizing: content-box;
+            color: #fff;
+          }
         }
       }
       .menu-item.active {
