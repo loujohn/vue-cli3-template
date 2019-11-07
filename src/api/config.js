@@ -30,6 +30,13 @@ const url = {
   getGeojson: baseUrl + 'manage/taskRecord/getGeojson.do',
   taskDelete: baseUrl + 'manage/task/delete.do',
   mapPreview: baseUrl + 'manage/map/preview.do',
+
+  //访问日志
+  getLoginLog: baseUrl + 'manage/log/loginLog.do',
+  //设备管理
+  getUserDevices: baseUrl + 'manage/userInfo/pageSurveyUserDevices.do',
+  //获取行政区划列表
+  getXZQH: baseUrl + '/manage/dictionarys/listXzqh.do',
 };
 
 export default url;

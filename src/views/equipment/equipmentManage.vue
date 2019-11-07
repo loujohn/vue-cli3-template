@@ -19,22 +19,23 @@
               size="small"
               class="my-input"
               clearable
+              @input="getList(1)"
             ></el-input>
           </el-col>
           <el-col :span="4">
             <span class="label">行政区:</span>
-            <el-select v-model="xzqh" size="small" clearable>
+            <el-select v-model="xzqh" size="small" clearable filterable @change="getList(1)">
               <el-option
                 v-for="item in xzqhList"
-                :key="item.label"
-                :label="item.label"
-                :value="item.value"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-col>
           <el-col :span="4">
             <span class="label">设备类型:</span>
-            <el-select v-model="sblx" size="small" clearable>
+            <el-select v-model="deviceType" size="small" clearable @change="getList(1)">
               <el-option
                 v-for="item in equipmentList"
                 :key="item.value"
@@ -45,7 +46,7 @@
           </el-col>
           <el-col :span="4">
             <span class="label">状态:</span>
-            <el-select v-model="zt" size="small" clearable>
+            <el-select v-model="status" size="small" clearable @change="getList(1)">
               <el-option
                 v-for="item in ztList"
                 :key="item.value"
@@ -55,34 +56,41 @@
             </el-select>
           </el-col>
           <el-col :span="8" style="display: flex; justify-content: flex-end">
-            <el-button type="info" size="small">批量注销</el-button>
-            <el-button type="info" size="small">批量启用</el-button>
+            <el-button type="info" size="small" @click="logoutAll()">批量注销</el-button>
+            <el-button type="info" size="small" @click="startAll()">批量启用</el-button>
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header">
+      <el-table header-row-class-name="customer-table-header" :data="list" @select="handleSelect"
+        @select-all="handleSelectAll">
         <el-table-column type="selection"></el-table-column>
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="行政区"></el-table-column>
-        <el-table-column label="用户"></el-table-column>
-        <el-table-column label="电话号码"></el-table-column>
-        <el-table-column label="设备类型"></el-table-column>
-        <el-table-column label="设备型号"></el-table-column>
-        <el-table-column label="注册时间"></el-table-column>
-        <el-table-column label="状态"></el-table-column>
+        <el-table-column label="行政区" prop="xzqhName"></el-table-column>
+        <el-table-column label="用户" prop="realName"></el-table-column>
+        <el-table-column label="电话号码" prop="telephone"></el-table-column>
+        <el-table-column label="设备类型" prop="type"></el-table-column>
+        <el-table-column label="设备型号" prop="osCode"></el-table-column>
+        <el-table-column label="注册时间" prop="createTime"></el-table-column>
+        <el-table-column label="状态">
+          <template slot-scope="scope">
+            <el-tag size="medium" :class="scope.row.status === 0 ? 'normalTag' : 'logoutTag'"> {{scope.row.status === 0 ? '正 常' : '已注销'}} </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="info" size="mini">注销</el-button>
+            <el-button type="info" size="mini" @click="logoutOne(scope)">注销</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination
-          :total="20"
+          :total="totalCount"
           layout="total, prev, pager, next"
           :small="true"
           :pager-count="5"
-          :current-page="1"
+          :page-size="pageSize"
+          :current-page="pageIndex"
+          @current-change="getList"
           background
         ></el-pagination>
       </div>
@@ -95,48 +103,77 @@ export default {
   name: 'equipmentManage',
   data() {
     return {
+      list: [],
+      pageIndex: 1,
+      pageSize: 10,
+      totalCount: 0,
       keyword: '',
       xzqh: '',
-      sblx: '',
-      zt: '',
-      xzqhList: [
-        {
-          label: '重庆市',
-          value: '1',
-        },
-        {
-          label: '万州区',
-          value: '2',
-        },
-      ],
+      deviceType: '',
+      status: '',
+      xzqhList: [],
       equipmentList: [
         {
           label: '平板',
-          value: '1',
+          value: '平板',
         },
         {
           label: '手机',
-          value: '2',
-        },
-        {
-          label: '电脑',
-          value: '3',
+          value: '手机',
         },
       ],
       ztList: [
         {
           label: '正常',
-          value: '1',
+          value: '0',
         },
         {
           label: '已注销',
-          value: '2',
+          value: '-1',
         },
       ],
     };
   },
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.getXZQH();
+    this.getList();
+  },
+  methods: {
+    async getXZQH(pageIndex) {
+      const data = await task.getXZQH();
+      this.xzqhList = data;
+    },
+    async getList(pageIndex) {
+      let params = {
+        pageIndex: pageIndex || this.pageIndex,
+        pageSize: this.pageSize,
+        keyword: this.keyword || undefined,
+        xzqh: this.xzqh || undefined,
+        deviceType: this.deviceType || undefined,
+        status: this.status || undefined,
+      }
+      const data = await task.getUserDevices(params);
+      const { dataList, totalCount } = data;
+      console.log(dataList);
+      this.list = dataList;
+      this.totalCount = totalCount;
+    },
+    handleSelect(selection, row) {
+      
+    },
+    handleSelectAll(selection) {
+      
+    },
+    logoutOne(scope) {
+
+    },
+    logoutAll() {
+
+    },
+    startAll() {
+
+    },
+  },
 };
 </script>
 <style lang="scss">
@@ -159,6 +196,21 @@ export default {
           background-color: #f8f8f8;
         }
       }
+    }
+
+    .normalTag {
+      background: #0094ec;
+      border-color: #0094ec;
+      color: #fff;
+      width: 60px;
+      text-align: center;
+    }
+    .logoutTag {
+      background: #67c23a;
+      border-color: #67c23a;
+      color: #fff;
+      width: 60px;
+      text-align: center;
     }
   }
   .my-breadcrumb {

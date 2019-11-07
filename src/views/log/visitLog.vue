@@ -13,20 +13,22 @@
         <el-row :gutter="30">
           <el-col :span="4">
             <span class="label">用户名:</span>
-            <el-input v-model="keyword" placeholder="请输入用户名" size="small" class="my-input" clearable></el-input>
+            <el-input v-model="keyword" placeholder="请输入用户名" size="small" class="my-input" clearable @input="getList(1)"></el-input>
           </el-col>
           <el-col :span="4">
             <span class="label">行政区:</span>
             <el-select
               v-model="xzqh"
               size="small"
+              filterable
               clearable
+              @change="getList(1)"
             >
               <el-option
                 v-for="item in xzqhList"
-                :key="item.label"
-                :label="item.label"
-                :value="item.value"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-col>
@@ -42,27 +44,29 @@
               end-placeholder="结束日期"
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
+              @change="getList(1)"
             ></el-date-picker>
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header">
+      <el-table header-row-class-name="customer-table-header" :data="list">
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="行政区"></el-table-column>
-        <el-table-column label="用户名"></el-table-column>
-        <el-table-column label="真实姓名"></el-table-column>
-        <el-table-column label="所在单位"></el-table-column>
-        <el-table-column label="访问终端"></el-table-column>
-        <el-table-column label="访问IP"></el-table-column>
-        <el-table-column label="访问时间"></el-table-column>
+        <el-table-column label="行政区" prop="xzqhName"></el-table-column>
+        <el-table-column label="用户名" prop="userName"></el-table-column>
+        <el-table-column label="真实姓名" prop="realName"></el-table-column>
+        <el-table-column label="访问终端" prop="os"></el-table-column>
+        <el-table-column label="访问IP" prop="loginIp"></el-table-column>
+        <el-table-column label="访问时间" prop="actionTime"></el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination
-          :total="20"
+          :total="totalCount"
           layout="total, prev, pager, next"
           :small="true"
           :pager-count="5"
-          :current-page="1"
+          :page-size="pageSize"
+          :current-page="pageIndex"
+          @current-change="getList"
           background
         ></el-pagination>
       </div>
@@ -72,26 +76,48 @@
 <script>
 import { task } from 'api';
 export default {
-  name: 'equipmentManage',
+  name: 'visitLog',
   data() {
     return {
+      list: [],
+      pageIndex: 1,
+      pageSize: 10,
+      totalCount: 0,
       keyword: '',
       xzqh: '',
       time: [],
-      xzqhList: [
-        {
-          label: '重庆市',
-          value: '1',
-        },
-        {
-          label: '万州区',
-          value: '2',
-        },
-      ],
+      xzqhList: [],
     };
   },
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.getXZQH();
+    this.getList();
+  },
+  methods: {
+    async getXZQH(pageIndex) {
+      const data = await task.getXZQH();
+      this.xzqhList = data;
+    },
+    async getList(pageIndex) {
+      let startTime, endTime;
+      if (this.time && this.time.length !== 0) {
+        startTime = this.time[0];
+        endTime = this.time[1];
+      }
+      let params = {
+        pageIndex: pageIndex || this.pageIndex,
+        pageSize: this.pageSize,
+        xzqh: this.xzqh || undefined,
+        startTime: startTime || undefined,
+        endTime: endTime || undefined,
+        keyword: this.keyword || undefined,
+      }
+      const data = await task.getLoginLog(params);
+      const { dataList, totalCount } = data;
+      this.list = dataList;
+      this.totalCount = totalCount;
+    },
+  },
 };
 </script>
 <style lang="scss">

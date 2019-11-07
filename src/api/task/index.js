@@ -190,4 +190,26 @@ export default {
     });
     return res;
   },
+
+  /**
+   * 获取行政区划列表
+   */
+  async getXZQH(params) {
+    const res = await http.get(url.getXZQH, { params });
+    return res.data;
+  },
+  /**
+   * 获取访问日志
+   */
+  async getLoginLog(params) {
+    const res = await http.get(url.getLoginLog, { params });
+    return res.data;
+  },
+  /**
+   * 获取用户设备
+   */
+  async getUserDevices(params) {
+    const res = await http.get(url.getUserDevices, { params });
+    return res.data;
+  },
 };
