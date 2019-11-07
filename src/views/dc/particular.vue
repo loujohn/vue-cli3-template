@@ -302,7 +302,7 @@ export default {
         this.pcGeojson = pcGeojson;
         this.appGeojson = appGeojson;
       } else {
-        this.pcGeojson = '';
+        this.pcGeojson = this.originGeojson;
         this.appGeojson = '';
       }
       if (this.mapLoaded) {
