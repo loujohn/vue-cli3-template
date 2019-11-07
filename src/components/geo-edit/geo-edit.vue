@@ -37,7 +37,11 @@
             :on-exceed="handleExceed"
             ref="upload"
           >
-            <el-button size="small" type="text" slot="trigger" title='数据格式为.zip，请直接将".shp",".shx",".dbf"与".prj"压缩成zip文件，坐标系为国家2000地理坐标系'
+            <el-button
+              size="small"
+              type="text"
+              slot="trigger"
+              title='数据格式为.zip，请直接将".shp",".shx",".dbf"与".prj"压缩成zip文件，坐标系为国家2000地理坐标系'
               >导入范围</el-button
             >
           </el-upload>
@@ -47,7 +51,7 @@
       </div>
     </div>
     <div class="toggles">
-      <span class="btn pc" @click="handleToggle('调查范围')">
+      <span v-show="pcGeojson" class="btn pc" @click="handleToggle('调查范围')">
         <i class="dot" v-if="!btnCheckActive"></i>
         <i class="el-icon-check" v-else></i>
         <span class="text">调查范围</span>
@@ -122,9 +126,14 @@ export default {
 
       btnAssistActive: false,
       btnCheckActive: true,
-      btnOriginActive: true,
+      btnOriginActive: false,
       btncheckTraceActive: false,
     };
+  },
+  watch: {
+    pcGeojson(val) {
+      this.btnOriginActive = val ? false : true;
+    },
   },
   mounted() {
     if (this.map) {
