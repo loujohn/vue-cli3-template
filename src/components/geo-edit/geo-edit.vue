@@ -37,7 +37,7 @@
             :on-exceed="handleExceed"
             ref="upload"
           >
-            <el-button size="small" type="text" slot="trigger"
+            <el-button size="small" type="text" slot="trigger" title='数据格式为.zip，请直接将".shp",".shx",".dbf"与".prj"压缩成zip文件，坐标系为国家2000地理坐标系'
               >导入范围</el-button
             >
           </el-upload>
