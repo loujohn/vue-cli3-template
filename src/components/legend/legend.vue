@@ -64,6 +64,8 @@ export default {
       border-radius: 100%;
       vertical-align: middle;
       margin-right: 8px;
+      border: 1px solid #fff;
+      box-sizing: border-box;
     }
     .legend-text {
       font-size: 14px;

@@ -69,6 +69,7 @@ export default {
     fieldList(val) {
       if (val) {
         this.extraFields = [];
+        this.isAdd = false;
       }
     },
   },
