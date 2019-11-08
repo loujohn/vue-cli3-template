@@ -32,21 +32,39 @@
     <div class="no-attachment" v-show="isEmpty">
       <span>暂无附件</span>
     </div>
-    <!-- <el-dialog
-      :visible.sync="dialogVisible"
-      class="pic-dialog"
-      :before-close="reset"
-    >
-      <preview
-        :url="url"
-        :type="type"
-      ></preview>
-    </el-dialog> -->
+    <div v-if="dialogVisible" class="my-dialog" @click="dialogVisible = false">
+      <el-button
+        class="dialog-close"
+        type="primary"
+        icon="el-icon-close"
+        circle
+        @click="dialogVisible = false"
+      ></el-button>
+      <el-image :src="url" fit="contain" v-if="type === 'image'">
+        <div slot="placeholder" class="image-slot">
+          加载中
+          <span class="dot">...</span>
+        </div>
+        <div slot="error" class="image-slot">
+          <i class="el-icon-picture-outline"></i>
+          <a>加载失败</a>
+        </div>
+      </el-image>
+      <div v-if="type === 'pdf'" class="my-pdf">
+        <pdf
+          v-for="i in numPages"
+          :key="i"
+          :src="src"
+          :page="i"
+          style="width: 100%"
+        ></pdf>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// import preview from '../preview/preview';
+import pdf from 'vue-pdf';
 import { staticUrl } from 'config';
 export default {
   name: 'attachments',
@@ -55,6 +73,9 @@ export default {
       type: Array,
       default: () => [],
     },
+  },
+  components: {
+    pdf,
   },
   data() {
     return {
@@ -75,6 +96,9 @@ export default {
       ],
       dialogVisible: false,
       type: '',
+      url: '',
+      src: null,
+      numPages: undefined,
     };
   },
   computed: {
@@ -94,16 +118,24 @@ export default {
     downLoad(attachment) {
       window.open(`${staticUrl}${attachment.filePath}`);
     },
-    previewFile(item, downloadType, index) {
-      this.imgIndex = index || 0;
-      this.downloadType = downloadType;
-      this.url = `${staticUrl}${attachment.filePath}`;
+    previewFile(item) {
+      this.url = `${staticUrl}${item.filePath}`;
       if (item.suffix === 'pdf' || item.suffix === 'PDF') {
         this.type = 'pdf';
+        this.showPdf();
       } else {
         this.type = 'image';
       }
       this.dialogVisible = true;
+    },
+    showPdf() {
+      if (this.type === 'pdf') {
+        var loadingTask = pdf.createLoadingTask(this.url);
+        this.src = loadingTask;
+        this.src.then(pdf => {
+          this.numPages = pdf.numPages;
+        });
+      }
     },
   },
 };
@@ -173,6 +205,34 @@ export default {
         display: inline-block;
         color: #fff;
       }
+    }
+  }
+  .my-dialog {
+    width: 100%;
+    height: 100%;
+    z-index: 122;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10% 20%;
+    background: rgba(0, 0, 0, 0.411);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow-y: auto;
+    .dialog-close {
+      position: absolute;
+      top: 50px;
+      right: 80px;
+      background-color: #909399;
+      border-color: #909399;
+      .el-icon-close {
+        font-size: 50px;
+      }
+    }
+    .my-pdf {
+      height: 100%;
     }
   }
 }
