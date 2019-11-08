@@ -125,7 +125,7 @@
       </div>
       <div class="map-container">
         <v-map style="border-radius: 3px;" @load="handleMapLoad" />
-        <map-legend />
+        <map-legend v-if="map" />
       </div>
     </div>
   </div>
