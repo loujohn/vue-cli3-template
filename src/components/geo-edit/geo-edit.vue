@@ -133,6 +133,8 @@ export default {
   watch: {
     pcGeojson(val) {
       this.btnOriginActive = val ? false : true;
+      this.btnAssistActive = false;
+      this.btncheckTraceActive = false;
     },
   },
   mounted() {
