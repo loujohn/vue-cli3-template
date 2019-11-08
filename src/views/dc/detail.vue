@@ -125,6 +125,7 @@
       </div>
       <div class="map-container">
         <v-map style="border-radius: 3px;" @load="handleMapLoad" />
+        <map-legend />
       </div>
     </div>
   </div>
@@ -132,6 +133,7 @@
 <script>
 import customerCard from 'components/card/card';
 import vMap from 'components/map/map';
+import mapLegend from 'components/legend/legend';
 import list from 'mixins/list';
 import { surveyStatus, dateFormatter } from 'filters';
 import { task, survey } from 'api';
@@ -143,6 +145,7 @@ export default {
   components: {
     customerCard,
     vMap,
+    mapLegend,
   },
   mixins: [list, mapHandler],
   props: {
@@ -393,6 +396,7 @@ export default {
       width: 49.3%;
       height: 100%;
       border-radius: 3px;
+      position: relative;
     }
     .list {
       background-color: $base-color;
