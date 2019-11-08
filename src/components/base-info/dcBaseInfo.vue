@@ -1,6 +1,10 @@
 <template>
   <div class="baseinfo-wrapper">
     <div class="edit-trigger" v-if="canEdit">
+      <span v-show="edit" class="save" @click="doSave()">
+        <i class="el-icon-upload2"></i>
+        保存
+      </span>
       <span @click="doEdit()">
         <svg-icon iconClass="edit" />
         {{ edit ? '取消编辑' : '编辑' }}
@@ -11,7 +15,10 @@
         <el-form label-position="top" ref="form" :model="form" :rules="rules">
           <el-row :gutter="10">
             <el-col :span="12" v-for="(value, key) in form" :key="key">
-              <el-form-item :label="`${formConfig[key]['fieldAlias']}:`" :prop="key">
+              <el-form-item
+                :label="`${formConfig[key]['fieldAlias']}:`"
+                :prop="key"
+              >
                 <template
                   v-if="
                     formConfig[key]['fieldType'] === 0 ||
@@ -63,22 +70,22 @@
           <el-col :span="12" v-for="item in constFieldList" :key="item.id">
             <template v-if="item.fieldType === 1">
               <span class="isEdit">
-                <span v-if="item.is_pc_required === 1 && item.isEdit === 1">*</span>
+                <span v-if="item.is_pc_required === 1 && item.isEdit === 1"
+                  >*</span
+                >
               </span>
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">
-                {{
-                getValue(item.fieldValue, item.options)
-                }}
+                {{ getValue(item.fieldValue, item.options) }}
               </span>
             </template>
             <template v-else>
               <span class="isEdit">
-                <span v-if="item.is_pc_required === 1 && item.isEdit === 1">*</span>
+                <span v-if="item.is_pc_required === 1 && item.isEdit === 1"
+                  >*</span
+                >
               </span>
-              <span class="label-edit">
-                {{ item.fieldAlias }}:
-              </span>
+              <span class="label-edit"> {{ item.fieldAlias }}: </span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
           </el-col>
@@ -113,6 +120,17 @@ export default {
     },
   },
   methods: {
+    doSave() {
+      const fieldList = this.fieldList.map(item => {
+        const { id, fieldName } = item;
+        return {
+          taskFieldsId: id,
+          fieldValue: this.form[fieldName],
+        };
+      });
+      this.$emit('save-info', JSON.stringify(fieldList));
+      this.edit = !this.edit;
+    },
     doEdit() {
       if (this.edit) {
         this.$confirm('是否保存当前编辑?', '提示', {
@@ -156,6 +174,10 @@ export default {
 .edit-trigger {
   padding: 5px 10px;
   text-align: right;
+  .save {
+    display: inline-block;
+    margin-right: 10px;
+  }
   span {
     color: #409eff;
     font-size: 14px;
