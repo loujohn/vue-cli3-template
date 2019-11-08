@@ -3,9 +3,12 @@
     <div class="wrapper">
       <div
         class="attachment"
-        v-for="attachment in attachments"
+        v-for="(attachment, index) in attachments"
         :key="attachment.id"
+        @mouseenter="enter(index)"
+        @mouseleave="leave(index)"
       >
+        <div class="left">
         <div class="icon"><i class="el-icon-document"></i></div>
         <a
           class="my-list"
@@ -15,15 +18,35 @@
         >
           <span class="name">{{ attachment.originName }}</span>
         </a>
+        </div>
+        <div class="operate" >
+          <el-button type="text" @click="downLoad(attachment)" v-if="showButton && index === current">下载</el-button>
+          <el-button type="text" @click="previewFile(attachment)" v-if="
+                  showButton &&
+                    index === current &&
+                    isPreviewType.indexOf(attachment.suffix) > -1
+                ">预览</el-button>
+        </div>
       </div>
     </div>
     <div class="no-attachment" v-show="isEmpty">
       <span>暂无附件</span>
     </div>
+    <!-- <el-dialog
+      :visible.sync="dialogVisible"
+      class="pic-dialog"
+      :before-close="reset"
+    >
+      <preview
+        :url="url"
+        :type="type"
+      ></preview>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
+// import preview from '../preview/preview';
 import { staticUrl } from 'config';
 export default {
   name: 'attachments',
@@ -36,11 +59,51 @@ export default {
   data() {
     return {
       staticUrl,
+      showButton: false,
+      current: 0,
+      isPreviewType: [
+        'png',
+        'jpg',
+        'pdf',
+        'jpeg',
+        'bmp',
+        'PNG',
+        'JPG',
+        'PDF',
+        'JPEG',
+        'BMP',
+      ],
+      dialogVisible: false,
+      type: '',
     };
   },
   computed: {
     isEmpty() {
       return this.attachments.length === 0;
+    },
+  },
+  methods: {
+    enter(index) {
+      this.showButton = true;
+      this.current = index;
+    },
+    leave() {
+      this.showButton = false;
+      this.current = null;
+    },
+    downLoad(attachment) {
+      window.open(`${staticUrl}${attachment.filePath}`);
+    },
+    previewFile(item, downloadType, index) {
+      this.imgIndex = index || 0;
+      this.downloadType = downloadType;
+      this.url = `${staticUrl}${attachment.filePath}`;
+      if (item.suffix === 'pdf' || item.suffix === 'PDF') {
+        this.type = 'pdf';
+      } else {
+        this.type = 'image';
+      }
+      this.dialogVisible = true;
     },
   },
 };
@@ -54,6 +117,17 @@ export default {
   overflow: auto;
   box-sizing: border-box;
   .attachment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .left {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .operate {
+      margin-right: 10px;
+    }
     a {
       color: inherit;
       text-decoration: none;
