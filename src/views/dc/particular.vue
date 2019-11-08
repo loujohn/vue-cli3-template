@@ -213,7 +213,7 @@ export default {
         if (res.code === 200 && res.message === 'ok') {
           this.$message({
             type: 'success',
-            message: '同步成功',
+            message: '保存成功',
           });
         }
         this.getTaskDetail();
