@@ -8,7 +8,7 @@
         @mouseenter="enter(index)"
         @mouseleave="leave(index)"
       >
-        <div class="left">
+        <div class="left-content">
         <div class="icon"><i class="el-icon-document"></i></div>
         <a
           class="my-list"
@@ -152,7 +152,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .left {
+    .left-content {
       display: flex;
       align-items: center;
       justify-content: flex-start;
