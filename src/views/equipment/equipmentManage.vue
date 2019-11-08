@@ -66,10 +66,11 @@
         <el-table-column type="selection"></el-table-column>
         <el-table-column type="index"></el-table-column>
         <el-table-column label="行政区" prop="xzqhName"></el-table-column>
-        <el-table-column label="用户" prop="realName"></el-table-column>
+        <el-table-column label="用户名" prop="userName"></el-table-column>
+        <el-table-column label="真实姓名" prop="realName"></el-table-column>
         <el-table-column label="电话号码" prop="telephone"></el-table-column>
         <el-table-column label="设备类型" prop="type"></el-table-column>
-        <el-table-column label="设备型号" prop="osCode"></el-table-column>
+        <el-table-column label="设备型号" prop="name"></el-table-column>
         <el-table-column label="注册时间" prop="createTime"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
