@@ -456,6 +456,8 @@ export default {
     });
   },
   beforeRouteLeave(to, from, next) {
+    this.activeTabIndex = 0;
+    this.$refs['dc-base-info'].edit = false;
     if (this.$refs['geo-edit']) {
       this.$refs['geo-edit'].draw && this.$refs['geo-edit'].draw.deleteAll();
       this.$refs['geo-edit'].isDrawing = false;
