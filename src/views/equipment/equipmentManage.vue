@@ -75,7 +75,7 @@
             <el-button type="info" size="small" @click="transAllDevices(0)"
               >批量注销</el-button
             >
-            <el-button type="info" size="small" @click="transAllDevices(-1)"
+            <el-button type="warning" size="small" @click="transAllDevices(-1)"
               >批量启用</el-button
             >
           </el-col>
@@ -96,7 +96,7 @@
         <el-table-column label="电话号码" prop="telephone"></el-table-column>
         <el-table-column label="设备类型" prop="type"></el-table-column>
         <el-table-column label="设备型号" prop="name"></el-table-column>
-        <el-table-column label="注册时间" prop="createTime"></el-table-column>
+        <el-table-column label="注册时间" prop="createTime" width="160"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
             <el-tag
@@ -110,7 +110,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
-              type="info"
+              :type="scope.row.status === 0 ? 'danger' : 'warning'"
               size="mini"
               @click="transOneDevices(scope)"
               >{{ scope.row.status === 0 ? '注销' : '启用' }}</el-button
@@ -296,16 +296,16 @@ export default {
     }
 
     .normalTag {
-      background: #0094ec;
-      border-color: #0094ec;
-      color: #fff;
+      color: #409eff;
+      border: 1px solid #d9ecff;
+      background-color: #ecf5ff;
       width: 60px;
       text-align: center;
     }
     .logoutTag {
-      background: #67c23a;
-      border-color: #67c23a;
-      color: #fff;
+      background-color: #f4f4f5;
+      border-color: #e9e9eb;
+      color: #909399;
       width: 60px;
       text-align: center;
     }
