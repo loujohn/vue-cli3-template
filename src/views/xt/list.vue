@@ -1,41 +1,39 @@
 <template>
   <div class="template-list">
     <div class="my-breadcrumb">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item><i class="el-icon-s-home"></i> 系统</el-breadcrumb-item>
-      <el-breadcrumb-item>模版列表</el-breadcrumb-item>
-    </el-breadcrumb>
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item
+          ><i class="el-icon-s-home"></i> 系统</el-breadcrumb-item
+        >
+        <el-breadcrumb-item>模版列表</el-breadcrumb-item>
+      </el-breadcrumb>
     </div>
     <div class="list">
       <div class="operation">
-        <edit-template @add-success="getList" btnText="新增模版"></edit-template>
+        <edit-template
+          @add-success="getList"
+          btnText="新增模版"
+        ></edit-template>
       </div>
-      <el-table
-        :data="list"
-        header-row-class-name="customer-table-header"
-      >
+      <el-table :data="list" header-row-class-name="customer-table-header">
         <el-table-column type="index"></el-table-column>
-        <el-table-column
-          label="模版名称"
-          prop="templateName"
-        ></el-table-column>
-        <el-table-column
-          label="创建时间"
-          prop="createTime"
-        ></el-table-column>
-        <el-table-column
-          label="操作"
-          width="130px"
-        >
+        <el-table-column label="模版名称" prop="templateName"></el-table-column>
+        <el-table-column label="创建时间" prop="createTime"></el-table-column>
+        <el-table-column label="操作" width="130px">
           <template slot-scope="scope">
             <div style="display: flex; justify-content: space-around">
               <qx-detail :id="scope.row.id"></qx-detail>
-              <edit-template @add-success="getList" btnText="编辑" :id="scope.row.id"></edit-template>
+              <edit-template
+                @add-success="getList"
+                btnText="编辑"
+                :id="scope.row.id"
+              ></edit-template>
               <el-button
                 type="text"
                 size="mini"
                 @click="toDeleteTemplate(scope.row.id)"
-              >删除</el-button>
+                >删除</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -66,8 +64,7 @@ export default {
   },
   mixins: [list],
   data() {
-    return {
-    };
+    return {};
   },
   mounted() {
     this.getList();
@@ -77,20 +74,22 @@ export default {
       this.$confirm('此操作将永久删除该模版, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.deleteTemplate(id);
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
+        type: 'warning',
+      })
+        .then(() => {
+          this.deleteTemplate(id);
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          });
         });
-      });
     },
     async deleteTemplate(id) {
       let params = {
         id: id,
-      }
+      };
       let res = await task.deleteTemplate(params);
       if (res.code === 200 && res.message === 'ok') {
         this.$message({
@@ -137,43 +136,43 @@ export default {
       padding: 0px;
     }
     .el-breadcrumb__item {
-      color:#FFF;
-      display:block;
-      position:relative;
+      color: #fff;
+      display: block;
+      position: relative;
       text-decoration: none;
       background: #0094ec;
       height: 40px;
       width: 60px;
-      line-height:40px;
+      line-height: 40px;
       padding: 0 10px 0 5px;
       text-align: center;
       margin-right: 23px;
-      &:first-child{
-        padding-left:15px;
+      &:first-child {
+        padding-left: 15px;
         border-radius: 4px 0 0 4px;
-        &:before{
-          border:none;
+        &:before {
+          border: none;
         }
       }
 
       &:before,
-      &:after{
-        content: "";
-        position:absolute;
+      &:after {
+        content: '';
+        position: absolute;
         top: 0;
-        border:0 solid #0094ec;
-        border-width:20px 10px;
+        border: 0 solid #0094ec;
+        border-width: 20px 10px;
         width: 0;
         height: 0;
       }
-      &:before{
-        left:-20px;
-        border-left-color:transparent;
+      &:before {
+        left: -20px;
+        border-left-color: transparent;
       }
-      &:after{
-        left:100%;
-        border-color:transparent;
-        border-left-color:#0094ec;
+      &:after {
+        left: 100%;
+        border-color: transparent;
+        border-left-color: #0094ec;
       }
 
       .el-breadcrumb__inner {

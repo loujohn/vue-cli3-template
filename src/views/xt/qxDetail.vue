@@ -8,12 +8,15 @@
 <template>
   <div>
     <el-button type="text" size="small" @click="getTemplate">
-      {{
-      btnText
-      }}
+      {{ btnText }}
     </el-button>
 
-    <el-dialog :title="btnText" :visible.sync="centerDialogVisible" width="1200px" center>
+    <el-dialog
+      :title="btnText"
+      :visible.sync="centerDialogVisible"
+      width="1200px"
+      center
+    >
       <div class="form-card">
         <div class="form-title">
           <div class="form-rectangle">
@@ -44,59 +47,52 @@
         <div class="form-content">
           <el-table :data="form.referenceInfo.fields">
             <el-table-column label="别名" prop="fieldAlias"></el-table-column>
-            <el-table-column label="字段名称" prop="fieldName"></el-table-column>
+            <el-table-column
+              label="字段名称"
+              prop="fieldName"
+            ></el-table-column>
             <el-table-column label="行政区划">
               <template slot-scope="scope">
-                {{
-                scope.row.isXzqh === 1 ? '是' : '否'
-                }}
+                {{ scope.row.isXzqh === 1 ? '是' : '否' }}
               </template>
             </el-table-column>
             <el-table-column label="可编辑">
               <template slot-scope="scope">
-                {{
-                scope.row.isEdit === 1 ? '是' : '否'
-                }}
+                {{ scope.row.isEdit === 1 ? '是' : '否' }}
               </template>
             </el-table-column>
             <el-table-column label="APP必填">
               <template slot-scope="scope">
-                {{
-                scope.row.isAppRequired === 1 ? '是' : '否'
-                }}
+                {{ scope.row.isAppRequired === 1 ? '是' : '否' }}
               </template>
             </el-table-column>
             <el-table-column label="PC必填">
               <template slot-scope="scope">
-                {{
-                scope.row.isPcRequired === 1 ? '是' : '否'
-                }}
+                {{ scope.row.isPcRequired === 1 ? '是' : '否' }}
               </template>
             </el-table-column>
             <el-table-column label="在PC展示">
               <template slot-scope="scope">
-                {{
-                scope.row.isPcShow === 1 ? '是' : '否'
-                }}
+                {{ scope.row.isPcShow === 1 ? '是' : '否' }}
               </template>
             </el-table-column>
             <el-table-column label="在APP展示">
               <template slot-scope="scope">
-                {{
-                scope.row.isAppShow === 1 ? '是' : '否'
-                }}
+                {{ scope.row.isAppShow === 1 ? '是' : '否' }}
               </template>
             </el-table-column>
             <el-table-column label="字段类型">
               <template slot-scope="scope">
-                {{
-                scope.row.fieldType === 1 ? '下拉框' : '输入框'
-                }}
+                {{ scope.row.fieldType === 1 ? '下拉框' : '输入框' }}
               </template>
             </el-table-column>
             <el-table-column label="枚举值">
               <template slot-scope="scope">
-                <el-tooltip effect="dark" :content="getDictionaryInfo(scope)" placement="top">
+                <el-tooltip
+                  effect="dark"
+                  :content="getDictionaryInfo(scope)"
+                  placement="top"
+                >
                   <span>{{ getDictionaryKey(scope) }}</span>
                 </el-tooltip>
               </template>

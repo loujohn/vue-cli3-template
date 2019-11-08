@@ -9243,7 +9243,7 @@ vue-loader@^15.7.0:
 
 vue-pdf@^4.0.7:
   version "4.0.7"
-  resolved "https://registry.yarnpkg.com/vue-pdf/-/vue-pdf-4.0.7.tgz#64a5bf0cec2423f7b596d70b4b69d2717b574531"
+  resolved "https://registry.npmjs.org/vue-pdf/-/vue-pdf-4.0.7.tgz#64a5bf0cec2423f7b596d70b4b69d2717b574531"
   integrity sha512-fId38x4WrD4NalJV4AFzr30iX+IyycI+ii8fFNcgikWBrhHEytZwfOFDwNv57SLgtgBMocYwm+gBIOTyvixXMg==
   dependencies:
     babel-plugin-syntax-dynamic-import "^6.18.0"
