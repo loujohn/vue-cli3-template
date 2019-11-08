@@ -24,7 +24,13 @@
           </el-col>
           <el-col :span="4">
             <span class="label">行政区:</span>
-            <el-select v-model="xzqh" size="small" clearable filterable @change="getList(1)">
+            <el-select
+              v-model="xzqh"
+              size="small"
+              clearable
+              filterable
+              @change="getList(1)"
+            >
               <el-option
                 v-for="item in xzqhList"
                 :key="item.code"
@@ -35,7 +41,12 @@
           </el-col>
           <el-col :span="4">
             <span class="label">设备类型:</span>
-            <el-select v-model="deviceType" size="small" clearable @change="getList(1)">
+            <el-select
+              v-model="deviceType"
+              size="small"
+              clearable
+              @change="getList(1)"
+            >
               <el-option
                 v-for="item in equipmentList"
                 :key="item.value"
@@ -46,7 +57,12 @@
           </el-col>
           <el-col :span="4">
             <span class="label">状态:</span>
-            <el-select v-model="status" size="small" clearable @change="getList(1)">
+            <el-select
+              v-model="status"
+              size="small"
+              clearable
+              @change="getList(1)"
+            >
               <el-option
                 v-for="item in ztList"
                 :key="item.value"
@@ -56,13 +72,22 @@
             </el-select>
           </el-col>
           <el-col :span="8" style="display: flex; justify-content: flex-end">
-            <el-button type="info" size="small" @click="transAllDevices(0)">批量注销</el-button>
-            <el-button type="info" size="small" @click="transAllDevices(-1)">批量启用</el-button>
+            <el-button type="info" size="small" @click="transAllDevices(0)"
+              >批量注销</el-button
+            >
+            <el-button type="info" size="small" @click="transAllDevices(-1)"
+              >批量启用</el-button
+            >
           </el-col>
         </el-row>
       </div>
-      <el-table header-row-class-name="customer-table-header" ref="table" :data="list" @select="handleSelect"
-        @select-all="handleSelectAll">
+      <el-table
+        header-row-class-name="customer-table-header"
+        ref="table"
+        :data="list"
+        @select="handleSelect"
+        @select-all="handleSelectAll"
+      >
         <el-table-column type="selection"></el-table-column>
         <el-table-column type="index"></el-table-column>
         <el-table-column label="行政区" prop="xzqhName"></el-table-column>
@@ -74,12 +99,22 @@
         <el-table-column label="注册时间" prop="createTime"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
-            <el-tag size="medium" :class="scope.row.status === 0 ? 'normalTag' : 'logoutTag'"> {{scope.row.status === 0 ? '正 常' : '已注销'}} </el-tag>
+            <el-tag
+              size="medium"
+              :class="scope.row.status === 0 ? 'normalTag' : 'logoutTag'"
+            >
+              {{ scope.row.status === 0 ? '正 常' : '已注销' }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="info" size="mini" @click="transOneDevices(scope)">{{scope.row.status === 0 ? '注销' : '启用'}}</el-button>
+            <el-button
+              type="info"
+              size="mini"
+              @click="transOneDevices(scope)"
+              >{{ scope.row.status === 0 ? '注销' : '启用' }}</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -153,7 +188,7 @@ export default {
         xzqh: this.xzqh || undefined,
         deviceType: this.deviceType || undefined,
         status: this.status || undefined,
-      }
+      };
       const data = await task.getUserDevices(params);
       const { dataList, totalCount } = data;
       this.list = dataList;
@@ -162,7 +197,9 @@ export default {
     handleSelect(selection, row) {
       const existed = this.$R.contains(row.userId)(this.selectList);
       if (existed) {
-        this.selectList = this.$R.filter(e => e !== row.userId)(this.selectList);
+        this.selectList = this.$R.filter(e => e !== row.userId)(
+          this.selectList,
+        );
       } else {
         this.selectList.push(row.userId);
       }
@@ -196,7 +233,7 @@ export default {
     async logoutDevices(ids) {
       let params = {
         userIdArrayStr: ids,
-      }
+      };
       const data = await task.disableDevices(params);
       if (data.code === 200 && data.message === 'ok') {
         this.$message({
@@ -216,7 +253,7 @@ export default {
     async startDevices(ids) {
       let params = {
         userIdArrayStr: ids,
-      }
+      };
       const data = await task.enableDevices(params);
       if (data.code === 200 && data.message === 'ok') {
         this.$message({

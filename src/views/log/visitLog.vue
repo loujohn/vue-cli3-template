@@ -13,7 +13,14 @@
         <el-row :gutter="30">
           <el-col :span="4">
             <span class="label">用户名:</span>
-            <el-input v-model="keyword" placeholder="请输入用户名" size="small" class="my-input" clearable @input="getList(1)"></el-input>
+            <el-input
+              v-model="keyword"
+              placeholder="请输入用户名"
+              size="small"
+              class="my-input"
+              clearable
+              @input="getList(1)"
+            ></el-input>
           </el-col>
           <el-col :span="4">
             <span class="label">行政区:</span>
@@ -111,7 +118,7 @@ export default {
         startTime: startTime || undefined,
         endTime: endTime || undefined,
         keyword: this.keyword || undefined,
-      }
+      };
       const data = await task.getLoginLog(params);
       const { dataList, totalCount } = data;
       this.list = dataList;
@@ -133,7 +140,8 @@ export default {
         font-size: $font-sm;
         padding-right: 8px;
       }
-      .my-input, .el-select {
+      .my-input,
+      .el-select {
         width: calc(100% - 68px);
         .el-input__inner {
           background-color: #f8f8f8;

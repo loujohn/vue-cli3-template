@@ -66,19 +66,31 @@
         <el-row :gutter="10">
           <el-col :span="24" v-for="item in constFieldList" :key="item.id">
             <template v-if="item.fieldType === 0">
-              <span class="tips"><span v-if="item.is_pc_required === 1 && item.isEdit === 1">* </span></span>
+              <span class="tips"
+                ><span v-if="item.is_pc_required === 1 && item.isEdit === 1"
+                  >*
+                </span></span
+              >
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
             <template v-else-if="item.fieldType === 1">
-              <span class="tips"><span v-if="item.is_pc_required === 1 && item.isEdit === 1">* </span></span>
+              <span class="tips"
+                ><span v-if="item.is_pc_required === 1 && item.isEdit === 1"
+                  >*
+                </span></span
+              >
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{
                 getValue(item.fieldValue, item.options)
               }}</span>
             </template>
             <template v-else-if="item.fieldType === 2">
-              <span class="tips"><span v-if="item.is_pc_required === 1 && item.isEdit === 1">* </span></span>
+              <span class="tips"
+                ><span v-if="item.is_pc_required === 1 && item.isEdit === 1"
+                  >*
+                </span></span
+              >
               <span class="label-edit">{{ item.fieldAlias }}:</span>
               <span class="content">{{ item.fieldValue }}</span>
             </template>
@@ -108,7 +120,7 @@ export default {
   data() {
     return {
       isEdit: false,
-    }
+    };
   },
   computed: {
     showForm() {
@@ -136,7 +148,7 @@ export default {
                 }
                 this.isEdit = !this.isEdit;
               }
-            })
+            });
           })
           .catch(() => {
             this.isEdit = !this.isEdit;

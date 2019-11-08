@@ -46,7 +46,12 @@ export default {
     handleChange(file, fileList) {
       this.fileList = fileList;
       let type = file.name.substring(file.name.lastIndexOf('.') + 1);
-      if (type === 'zip' || type === 'ZIP' || type === 'rar' || type === 'RAR') {
+      if (
+        type === 'zip' ||
+        type === 'ZIP' ||
+        type === 'rar' ||
+        type === 'RAR'
+      ) {
         this.$message({
           message: '上传文件不能为压缩包',
           type: 'error',

@@ -9,23 +9,33 @@
         @mouseleave="leave(index)"
       >
         <div class="left">
-        <div class="icon"><i class="el-icon-document"></i></div>
-        <a
-          class="my-list"
-          target="_blank"
-          :href="`${staticUrl}${attachment.filePath}`"
-          :download="attachment.originName"
-        >
-          <span class="name">{{ attachment.originName }}</span>
-        </a>
+          <div class="icon"><i class="el-icon-document"></i></div>
+          <a
+            class="my-list"
+            target="_blank"
+            :href="`${staticUrl}${attachment.filePath}`"
+            :download="attachment.originName"
+          >
+            <span class="name">{{ attachment.originName }}</span>
+          </a>
         </div>
-        <div class="operate" >
-          <el-button type="text" @click="downLoad(attachment)" v-if="showButton && index === current">下载</el-button>
-          <el-button type="text" @click="previewFile(attachment)" v-if="
-                  showButton &&
-                    index === current &&
-                    isPreviewType.indexOf(attachment.suffix) > -1
-                ">预览</el-button>
+        <div class="operate">
+          <el-button
+            type="text"
+            @click="downLoad(attachment)"
+            v-if="showButton && index === current"
+            >下载</el-button
+          >
+          <el-button
+            type="text"
+            @click="previewFile(attachment)"
+            v-if="
+              showButton &&
+                index === current &&
+                isPreviewType.indexOf(attachment.suffix) > -1
+            "
+            >预览</el-button
+          >
         </div>
       </div>
     </div>
@@ -188,7 +198,7 @@ export default {
     border-radius: 4px;
     margin-bottom: 10px;
     height: 30px;
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     .icon {
