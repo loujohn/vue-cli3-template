@@ -24,7 +24,7 @@
       <el-dropdown @command="handleCommand">
         <div class="user">
           <svg-icon iconClass="user"></svg-icon>
-          <span>{{ realName }} {{ userName }}</span>
+          <span>{{ realName }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="logout">退出登录</el-dropdown-item>
