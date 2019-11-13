@@ -211,9 +211,9 @@ export default {
       map: null,
       marker: null,
       pcGeojson: '',
-      showPcGeojson: false,
+      showPcGeojson: true,
       originGeojson: '',
-      showOriginGeojson: true,
+      showOriginGeojson: false,
       traceGeojson: '',
       showTraceGeojson: false,
     };
@@ -285,12 +285,12 @@ export default {
             console.error(error);
           }
           if (!this.originGeojson) return false;
+          if (!this.pcGeojson) {
+            this.pcGeojson = this.originGeojson;
+          }
           if (this.map) {
             this.map.resize();
-            this.setGeojson(this.map, originGeo, this.originGeojson);
-            const center = this.getCenter(this.originGeojson);
-            this.setGeojson(this.map, directionGeo, center);
-            this.marker = this.addMarker(this.map, this.marker, { center });
+            this.setGeojson(this.map, pcGeo, this.pcGeojson);
             const bbox = this.getBbox(this.originGeojson);
             this.map.fitBounds(bbox, { padding: 200 });
           }
@@ -331,6 +331,7 @@ export default {
       this.showTraceGeojson = false;
       this.clearGeojson(this.map, pcGeo);
       this.clearGeojson(this.map, surverUserTrace);
+      this.showPcGeojson = true;
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
@@ -438,15 +439,12 @@ export default {
     },
     handleMapLoad(e) {
       this.map = e.target;
-      this.initGeoLayers(this.map, originGeo);
       this.initGeoLayers(this.map, pcGeo);
+      this.initGeoLayers(this.map, originGeo);
       this.initSymbolLayer(this.map, directionGeo);
       this.initLineLayer(this.map, surverUserTrace);
-      if (this.originGeojson) {
-        this.setGeojson(this.map, originGeo, this.originGeojson);
-        const center = this.getCenter(this.originGeojson);
-        // this.setGeojson(this.map, directionGeo, center);
-        this.marker = this.addMarker(this.map, this.marker, { center });
+      if (this.pcGeojson) {
+        this.setGeojson(this.map, pcGeo, this.pcGeojson);
         const bbox = this.getBbox(this.originGeojson);
         this.map.fitBounds(bbox, { padding: 200 });
       }
