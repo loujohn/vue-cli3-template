@@ -332,6 +332,8 @@ export default {
       this.clearGeojson(this.map, pcGeo);
       this.clearGeojson(this.map, surverUserTrace);
       this.showPcGeojson = true;
+      this.showOriginGeojson = false;
+      this.showTraceGeojson = false;
     },
     setActiveTabIndex(index) {
       this.activeTabIndex = index;
