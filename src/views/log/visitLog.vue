@@ -62,6 +62,7 @@
         <el-table-column label="用户名" prop="userName"></el-table-column>
         <el-table-column label="真实姓名" prop="realName"></el-table-column>
         <el-table-column label="访问终端" prop="os"></el-table-column>
+        <el-table-column label="设备码" prop="osCode"></el-table-column>
         <el-table-column label="访问IP" prop="loginIp"></el-table-column>
         <el-table-column label="访问时间" prop="actionTime"></el-table-column>
       </el-table>
