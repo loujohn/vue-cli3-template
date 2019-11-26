@@ -78,13 +78,17 @@
             >
             </el-date-picker>
           </el-col>
-          <!-- <el-col :span="4">
-            <span class="label">到期时间:</span>
-            <el-select
-              v-model="form.dqsj"
-              :size="size"
-            ></el-select>
-          </el-col> -->
+          <el-col :md="{ span: 6, offset: 2 }" :lg="{ span: 4, offset: 4 }">
+            <el-input
+              placeholder="输入关键字搜索"
+              size="small"
+              suffix-icon="el-icon-search"
+              v-model="params.keyword"
+              clearable
+              @keyup.enter.native="handleSearch()"
+              @clear="handleSearch()"
+            ></el-input>
+          </el-col>
         </el-row>
       </div>
       <el-table
@@ -97,7 +101,7 @@
           v-for="(item, index) in fields"
           :key="index"
           :label="item.fieldAlias"
-          :prop="`referenceInfo.fields[${item.fieldName}]`"
+          :prop="item.fieldName"
           :width="getWidth(item.fieldAlias)"
         ></el-table-column>
         <el-table-column

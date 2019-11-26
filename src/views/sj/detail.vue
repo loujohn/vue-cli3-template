@@ -71,6 +71,17 @@
             >
             </el-date-picker>
           </el-col>
+          <el-col :md="{ span: 6, offset: 2 }" :lg="{ span: 4, offset: 4 }">
+            <el-input
+              placeholder="输入关键字搜索"
+              size="small"
+              suffix-icon="el-icon-search"
+              v-model="params.keyword"
+              clearable
+              @keyup.enter.native="handleSearch()"
+              @clear="handleSearch()"
+            ></el-input>
+          </el-col>
         </el-row>
       </div>
       <el-table :data="list" header-row-class-name="customer-table-header">
@@ -78,7 +89,7 @@
         <el-table-column
           :key="index"
           :label="item.fieldAlias"
-          :prop="`referenceInfo.fields[${item.fieldName}]`"
+          :prop="item.fieldName"
           :width="getWidth(item)"
           v-for="(item, index) in fields"
         ></el-table-column>

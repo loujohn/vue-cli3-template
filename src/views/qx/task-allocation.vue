@@ -112,7 +112,7 @@
           v-for="(item, index) in fields"
           :key="index"
           :label="item.fieldAlias"
-          :prop="`referenceInfo.fields[${item.fieldName}]`"
+          :prop="item.fieldName"
           :width="getWidth(item.fieldAlias)"
         >
         </el-table-column>

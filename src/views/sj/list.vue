@@ -18,14 +18,29 @@
     </div>
     <div class="list">
       <div class="operation">
-        <el-button
-          type="primary"
-          size="small"
-          icon="el-icon-plus"
-          @click="$router.push({ name: 'sj-task' })"
-        >
-          新增任务
-        </el-button>
+        <el-row>
+          <el-col :span="12">
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-plus"
+              @click="$router.push({ name: 'sj-task' })"
+            >
+              新增任务
+            </el-button>
+          </el-col>
+          <el-col :md="{ span: 6, offset: 6 }" :lg="{ span: 4, offset: 8 }">
+            <el-input
+              placeholder="输入关键字搜索"
+              size="small"
+              suffix-icon="el-icon-search"
+              v-model="params.keyword"
+              clearable
+              @keyup.enter.native="handleSearch()"
+              @clear="handleSearch()"
+            ></el-input>
+          </el-col>
+        </el-row>
       </div>
       <el-table :data="list" header-row-class-name="customer-table-header">
         <el-table-column type="index"></el-table-column>
