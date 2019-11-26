@@ -96,6 +96,7 @@
         <el-table-column label="电话号码" prop="telephone"></el-table-column>
         <el-table-column label="设备类型" prop="type"></el-table-column>
         <el-table-column label="设备型号" prop="name"></el-table-column>
+        <el-table-column label="设备码" prop="osCode"></el-table-column>
         <el-table-column label="注册时间" prop="createTime" width="160"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
@@ -107,7 +108,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
