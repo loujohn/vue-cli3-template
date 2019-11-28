@@ -109,6 +109,11 @@
           :selectable="selectable"
         ></el-table-column>
         <el-table-column
+          label="行政区名称"
+          prop="xzqhName"
+          width="100px"
+        ></el-table-column>
+        <el-table-column
           v-for="(item, index) in fields"
           :key="index"
           :label="item.fieldAlias"
