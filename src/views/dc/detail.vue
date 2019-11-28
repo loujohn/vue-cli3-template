@@ -81,6 +81,11 @@
             v-if="params.surveyStage === 1"
           ></el-table-column>
           <el-table-column
+            label="行政区名称"
+            prop="xzqhName"
+            width="100px"
+          ></el-table-column>
+          <el-table-column
             v-for="(item, index) in fields"
             :key="index"
             :label="item.fieldAlias"
@@ -94,7 +99,7 @@
           </el-table-column>
           <el-table-column
             label="调查人员"
-            prop="referenceInfo.surverUserName"
+            prop="surverUserName"
             width="80px"
           ></el-table-column>
           <el-table-column label="状态" width="90px">

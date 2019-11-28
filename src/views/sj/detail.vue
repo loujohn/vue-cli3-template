@@ -87,6 +87,11 @@
       <el-table :data="list" header-row-class-name="customer-table-header">
         <el-table-column type="index"></el-table-column>
         <el-table-column
+          width="100px"
+          label="行政区名称"
+          prop="xzqhName"
+        ></el-table-column>
+        <el-table-column
           :key="index"
           :label="item.fieldAlias"
           :prop="item.fieldName"
@@ -96,7 +101,7 @@
         <el-table-column
           width="120"
           label="调查人员"
-          prop="referenceInfo.surverUserName"
+          prop="surverUserName"
         ></el-table-column>
         <el-table-column
           label="调查时间"
@@ -278,7 +283,7 @@ export default {
         // case '矿山名称':
         //   return '350px';
         case '地块编号':
-          return '120px';
+          return '150px';
         case '行政区名称':
           return '100px';
         default:
