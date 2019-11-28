@@ -29,7 +29,7 @@
               新增任务
             </el-button>
           </el-col>
-          <el-col :md="{ span: 6, offset: 6 }" :lg="{ span: 4, offset: 8 }">
+          <!-- <el-col :md="{ span: 6, offset: 6 }" :lg="{ span: 4, offset: 8 }">
             <el-input
               placeholder="输入关键字搜索"
               size="small"
@@ -39,7 +39,7 @@
               @keyup.enter.native="handleSearch()"
               @clear="handleSearch()"
             ></el-input>
-          </el-col>
+          </el-col> -->
         </el-row>
       </div>
       <el-table :data="list" header-row-class-name="customer-table-header">
