@@ -105,6 +105,13 @@
               <el-button @click="handleLogin">登 录</el-button>
             </el-form-item>
           </el-form>
+
+        </div>
+      </div>
+      <div class="download">
+        <div class="download-content">
+          <img class="app" :src="app" alt="" />
+          <div><svg-icon iconClass="安卓"></svg-icon> 安卓下载</div>
         </div>
       </div>
     </div>
@@ -128,6 +135,7 @@ import Verify from 'vue2-verify';
 const logo = require('@/assets/images/login/logo.png');
 const titleLogo = require('assets/images/sj/kuangshan .png');
 const loginbg = require('@/assets/images/login/background.png');
+const app = require('@/assets/images/login/app.png');
 export default {
   name: 'Login',
   components: {
@@ -139,6 +147,7 @@ export default {
       loginbg,
       logo,
       titleLogo,
+      app,
       loginForm: {
         username: '',
         password: '',
@@ -351,7 +360,7 @@ $light_gray: #eee;
     }
     .content-login {
       width: 100%;
-      height: 80%;
+      height: 70%;
       display: flex;
       align-items: center;
       .login-form {
@@ -441,6 +450,22 @@ $light_gray: #eee;
               box-shadow: none;
             }
           }
+        }
+      }
+    }
+    .download {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 10px 10px 0;
+      .download-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .app {
+          width: 100px;
+          height: 100px;
+          margin-bottom: 3px;
         }
       }
     }
