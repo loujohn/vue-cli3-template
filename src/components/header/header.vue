@@ -2,7 +2,7 @@
   <div class="head">
     <router-link tag="span" :to="{ path: getRoutePath() }" class="title">
       <img class="img" :src="titleLogo" alt />
-      {{ title }}
+      <!-- {{ '重庆市矿山调查系统' }} -->
     </router-link>
     <div class="right">
       <div class="menu-wrapper" v-if="getPermission()">
@@ -36,7 +36,7 @@
 <script>
 import { title } from 'config';
 import { mapGetters } from 'vuex';
-import titleLogo from 'assets/images/sj/kuangshan .png';
+import titleLogo from 'assets/images/sj/logoAll.png';
 export default {
   name: 'v-header',
   data() {
@@ -148,7 +148,7 @@ export default {
     align-items: center;
     .img {
       height: 45px;
-      width: 45px;
+      width: 345px;
       margin-right: 8px;
     }
   }
