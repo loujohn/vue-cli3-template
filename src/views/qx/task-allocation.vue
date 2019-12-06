@@ -291,7 +291,27 @@ export default {
       const res = await task.taskDistributeByRange(params);
       if (res.code.toString() === '200' && res.message === 'ok') {
         this.showPagination = false;
-        this.selectedTasks = res.data.filter(
+        let temp = res.data;
+        temp = temp.map(e => {
+          if (!e.referenceInfo) {
+            return e;
+          }
+          const {
+            referenceInfo: { fields },
+            surveyUserName,
+          } = e;
+          for (let key in fields) {
+            if (key === 'xzqh') {
+              e['xzqhName'] = fields[key];
+            } else {
+              e[key] = fields[key];
+            }
+          }
+          e.surveyUserName = surveyUserName;
+          delete e.referenceInfo;
+          return e;
+        });
+        this.selectedTasks = temp.filter(
           e => e.distributionStatus === this.status && e.surveyStage === 0,
         );
         let idMap = {};
