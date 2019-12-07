@@ -13,7 +13,8 @@
     <el-row :gutter="10" v-show="!isEmpty">
       <el-col :span="6" v-for="(image, index) in images" :key="index">
         <el-image
-          fit="scale-down"
+          style="width: 120px; height: 120px; cursor: pointer;"
+          fit="fit"
           :src="`${staticUrl}${image.filePath}`"
           @click="handleImageClick(image)"
           :class="current === index ? 'beChoose' : 'normal'"
