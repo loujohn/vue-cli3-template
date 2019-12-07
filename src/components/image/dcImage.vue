@@ -13,7 +13,7 @@
     <el-row :gutter="10" v-show="!isEmpty">
       <el-col :span="6" v-for="(image, index) in images" :key="index">
         <el-image
-          style="width: 120px; height: 120px; cursor: pointer;"
+          style="width: 100%; height: 140px; cursor: pointer;"
           fit="fit"
           :src="`${staticUrl}${image.filePath}`"
           @click="handleImageClick(image)"
