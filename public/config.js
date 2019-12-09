@@ -9,7 +9,7 @@ if (
   common = 'http://zrzy.cqdlzx.com';
 }
 window.config = {
-  title: '重庆市矿山资源调查系统',
+  title: '重庆市矿山生态修复系统',
   baseMapUrl:
     'http://zhsq.digitalcq.com/D2CJsonV2/zhsqdt/ZHSQDT_IMAGE_New.json',
   baseUrl: common + '/dc-core/',
