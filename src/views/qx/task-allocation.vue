@@ -271,8 +271,9 @@ export default {
     getWidth(name) {
       switch (name) {
         case '地块编号':
+          return '170px';
         case '行政区名称':
-          return '100px';
+          return '120px';
         default:
           return null;
       }
