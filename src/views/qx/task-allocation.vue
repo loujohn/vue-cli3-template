@@ -123,7 +123,7 @@
         </el-table-column>
         <el-table-column
           label="调查人员"
-          prop="referenceInfo.surverUserName"
+          prop="surverUserName"
           width="100px"
         ></el-table-column>
         <el-table-column label=""></el-table-column>
