@@ -128,7 +128,7 @@ export default {
 <style lang="scss">
 .head {
   height: 70px;
-  padding: 0 40px;
+  padding: 0 30px;
   // background-color: $header-bg-color;
   background-color: #0087d7;
   display: flex;
@@ -148,7 +148,7 @@ export default {
     align-items: center;
     .img {
       height: 45px;
-      width: 293px;
+      width: 292px;
       margin-right: 8px;
     }
   }
