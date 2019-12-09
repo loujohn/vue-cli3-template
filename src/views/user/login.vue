@@ -79,7 +79,7 @@
 <script>
 import { title } from 'config';
 import Verify from 'vue2-verify';
-const logo = require('@/assets/images/login/logoAll.png');
+const logo = require('@/assets/images/login/logo_01.png');
 const loginbg = require('@/assets/images/login/background.png');
 const app = require('@/assets/images/login/app.png');
 export default {
@@ -222,7 +222,7 @@ $light_gray: #eee;
         align-items: center;
       }
       .logo {
-        width: 450px;
+        width: 396px;
         height: 60px;
       }
       .title-logo {

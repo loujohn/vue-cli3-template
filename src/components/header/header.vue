@@ -36,7 +36,7 @@
 <script>
 import { title } from 'config';
 import { mapGetters } from 'vuex';
-import titleLogo from 'assets/images/sj/logoAll.png';
+import titleLogo from 'assets/images/sj/logo_01.png';
 export default {
   name: 'v-header',
   data() {
@@ -148,7 +148,7 @@ export default {
     align-items: center;
     .img {
       height: 45px;
-      width: 345px;
+      width: 293px;
       margin-right: 8px;
     }
   }
