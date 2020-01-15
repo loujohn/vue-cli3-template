@@ -1,11 +1,25 @@
 {
-  "name": "template-vue-cli3-preset",
+  "name": "vue-cli-plugin-preset",
   "version": "1.0.0",
-  "description": "vue cli3 项目预设模版",
-  "main": "preset.json",
-  "repository": {
-    "type": "git",
+  "description": "",
+  "main": "index.js",
+  "keywords": [
+    "vue",
+    "vue-cli",
+    "preset"
+  ],
+  "author": "",
+  "scripts": {
+    "commit": "git-cz"
   },
-  "author": "liujunhong",
-  "license": "MIT"
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "^3.0.2"
+  }
 }
