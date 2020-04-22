@@ -18,7 +18,7 @@ module.exports = (api, opts, rootOpts) => {
   api.extendPackage({
     devDependencies: {
       'serve': '^11.0.0',
-      'style-resources-loader': '1.2.1',
+      'style-resources-loader': '^1.3.3',
     }
   })
 
@@ -30,7 +30,7 @@ module.exports = (api, opts, rootOpts) => {
 
   api.extendPackage({
     dependencies: {
-      'axios': '^0.18.0',
+      'axios': '^0.19.2',
       'babel-polyfill': '^6.26.0',
       'lodash': '^4.17.11',
       'normalize.css': '^8.0.1',
@@ -49,7 +49,7 @@ module.exports = (api, opts, rootOpts) => {
   // 添加 postcss 插件
   api.extendPackage({
     devDependencies: {
-      'postcss-px-to-viewport': '1.1.0'
+      'postcss-px-to-viewport': '^1.1.1'
     }
   })
 
@@ -88,7 +88,7 @@ module.exports = (api, opts, rootOpts) => {
     api.extendPackage({
       devDependencies: {
         "node-sass": "^4.11.0",
-        "sass-loader": "^7.1.0"
+        "sass-loader": "^8.0.2"
       }
     })
   }
@@ -152,10 +152,9 @@ module.exports = (api, opts, rootOpts) => {
     api.extendPackage({
       dependencies: {
         "register-service-worker": "^1.6.2",
-        "sass-loader": "^7.1.0"
       },
       devDependencies: {
-        "@vue/cli-plugin-pwa": "^3.5.1"
+        "@vue/cli-plugin-pwa": "^4.3.1"
       }
     })
   }
